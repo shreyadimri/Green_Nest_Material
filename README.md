@@ -15,8 +15,7 @@ Welcome to the Green Nest Material project repository! This repository contains 
     - `02_reference_data` contains .bib files downloaded from the Web of Science and Scopus and the final unique_reference_list generated from combining and de-duplicating these files.\
     - `03_title_abstract_screening` contains data files with screening decisions, combined dataset after abstract screening and the selected dataset for subsequent steps.
 
-```{=html}
-<!-- -->
+
 ```
 -   `02_data_extraction/` This folder contains all the files associated with the data extraction for meta-analysis. It contains the different sets for data extraction for the three screeners. It also contains the final extracted data and the combined cleaned dataset for further steps.
 
