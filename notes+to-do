@@ -22,3 +22,15 @@ Open Research Statement
 
 Supplementary Materials
 
+Record packages & versions
+In order of comprehensiveness/ease:
+
+{renv}
+
+init(), snapshot(), restore()
+{groundhog}
+
+groundhog.library(pkg-name, date)
+sessionInfo()
+
+sessionInfo() |> report::report()

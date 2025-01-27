@@ -1,6 +1,7 @@
 project:
   type: manuscript
-
+  output-dir: docs
+  
 manuscript: 
  article: manuscript_GNM.qmd
  
