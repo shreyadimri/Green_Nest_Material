@@ -1,0 +1,20 @@
+project:
+  type: manuscript
+
+manuscript: 
+ article: manuscript_GNM.qmd
+ 
+format: 
+ html:
+  comments: 
+   hypothesis: true
+ # docx: default
+ # pdf: default
+
+execute:
+ freeze: auto
+ cache: false
+ notebook: false
+
+editor: visual
+

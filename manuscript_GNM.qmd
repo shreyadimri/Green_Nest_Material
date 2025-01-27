@@ -1,0 +1,23 @@
+---
+title: "WORKING TITLE: The adaptive value of green nest material across birds: A systematic review and meta-analysis"
+authors:
+  - name: Shreya Dimri
+    affiliation: Department of Evolutionary Biology, Bielefeld University, Bielefeld, Germany
+    corresponding: true
+  - name: Tuba Rizvi
+    affiliation: Department of Evolutionary Biology, Bielefeld University, Bielefeld, Germany
+  - name: Júlio Segovia
+    affiliation: Department of Evolutionary Biology, Bielefeld University, Bielefeld, Germany
+  - name: Alfredo Sánchez-Tójar
+    affiliation: Department of Evolutionary Biology, Bielefeld University, Bielefeld, Germany
+    
+bibliography: references.bib
+---
+
+# Methods (\~2200 words)
+
+@dimri2024
+
+then methods and results (generally following one of my previous meta-analysis, e.g. the Gambusia one)
+
+# Supplementary Materials
