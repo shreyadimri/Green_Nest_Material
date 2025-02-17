@@ -16,8 +16,58 @@ bibliography: references.bib
 
 # Methods (\~2200 words)
 
-@dimri2024
+### Registration and Reporting
 
-then methods and results (generally following one of my previous meta-analysis, e.g. the Gambusia one)
+We pre-registered our predictions, methods and planned analysis prior to data exploration and analysis [@dimri2024]. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @supptbl-1). All resources associated with this study, including data and code, are available at [https://github.com/shreyadimri/Green_Nest_Material](#0){.uri} (insert Zenodo citation later).
+
+### Systematic Review
+
+#### Literature search
+
+We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022 @supptbl-2
+
+#### Eligibility criteria
+
+#### Study selection and eligibility criteria
+
+-   Keyword search: where and when..
+
+-   Justification for development of keyword search
+
+-   Findings/Results of search
+
+-   Exclusion criteria
+
+-   How many papers in final meta-analysis and how many effect sizes
+
+-   PRISMA Diagram link
+
+### Data Extraction
+
+-   What did we extract in priority order
+
+-   Wrote to authors for missing info, used methods to deal with missing info
+
+-   Figures extraction
+
+-   Moderators extracted
+
+### Effect size calculation
+
+### Meta-analysis and meta-regressions
+
+-   main effect model
+
+-   meta-regressions for testing hypothesis
+
+-   meta-regressions for exploratory analyses
+
+Senstivity analysis and Publication Bias Test
+
+### Deviations from registration
 
 # Supplementary Materials
+
+<details><summary> Supplementary materials </summary>
+{{< include supplementary_appendix.qmd >}}
+</details>
