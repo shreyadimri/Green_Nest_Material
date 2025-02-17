@@ -18,6 +18,7 @@ bibliography: references.bib
 
 ### Registration and Reporting
 
+<<<<<<< HEAD
 We pre-registered our predictions, methods and planned analysis prior to data exploration and analysis [@dimri2024]. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @supptbl-1). All resources associated with this study, including data and code, are available at [https://github.com/shreyadimri/Green_Nest_Material](#0){.uri} (insert Zenodo citation later).
 
 ### Systematic Review
@@ -70,4 +71,4 @@ Senstivity analysis and Publication Bias Test
 
 <details><summary> Supplementary materials </summary>
 {{< include supplementary_appendix.qmd >}}
-</details>
+

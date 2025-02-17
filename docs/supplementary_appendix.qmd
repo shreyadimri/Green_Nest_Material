@@ -12,6 +12,7 @@ title: "Supplementary Appendix"
 |      |      |      |
 
 Here is a Prisma list that we have filled according to
+
 :::
 
 ::: {#supptbl-2}
