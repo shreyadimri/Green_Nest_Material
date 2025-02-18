@@ -9,14 +9,16 @@ format:
  html:
   comments: 
    hypothesis: true
-  crossref:
-   custom:
+
+crossref:
+  custom:
     - kind: float
-      key: supptbl
-      latex-env: supptbl
-      reference-prefix: Table S
+      key: figsupp
+      latex-env: figsupp
+      reference-prefix: Figure S
       space-before-numbering: false
-      latex-list-of-description: Supplementary Table
+      latex-list-of-description: Supplementary Figure
+      
  # docx: default
  # pdf: default
 
