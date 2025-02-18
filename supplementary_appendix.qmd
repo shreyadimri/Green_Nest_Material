@@ -15,4 +15,6 @@ Prisma Eco-Evo Checklist @odea2021
 
 ::: {#figsupp-string}
 The search was conducted twice, the first time on 07.09.2022 and then repeated on 12.08.2024 to ensure it was the most up to date and did not miss any additional articles on the topic that were published meanwhile. For both the searches, we did not use any time limitation i.e. it included all the published literature till that given date. We used **Advance Search** option for both Web of Science Core Collection Database and Scopus Database using the search query given below.
+
+{{< include search_string.txt >}}
 :::
