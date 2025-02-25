@@ -22,9 +22,9 @@ pacman::p_load(readr)
 
 # Methods (\~2200 words)
 
-Registration and Reporting
+## Registration and Reporting
 
-We pre-registered our predictions, methods and planned analysis prior to data exploration and analysis [@dimri2024]. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
+We pre-registered our study protocol on Open Science Framework [@dimri2024] prior to data exploration and analysis. The pre-registration details study objective, a priori hypothesis and predictions, methods and planned data analysis. Unless stated otherwise, we adhered to the registered protocol. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
 
 ## Systematic Review
 
@@ -33,14 +33,13 @@ We pre-registered our predictions, methods and planned analysis prior to data ex
 ```{r load search data, include=FALSE, echo=FALSE}
 
 unique_reference_list <- read_csv("data/unique_reference_list.csv")
-
+full_reference_before_deduplication<-read_csv("data/full_reference_before_deduplication.csv")
+selected_abstract_screening<-read_csv("data/selected_abstract_screening.csv")
 ```
 
-We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022 and updated it on 12.08.2024. The search query was designed in three blocks to included terms for predictor/treatment ("green*" OR "herb*" OR "aromatic*" AND "nest*"), population of interest ("bird*" OR "aves" OR "avian" OR "ornithol*" OR "passerine*" OR "passeriform*" OR "songbird*" OR list of all bird genera) and only experimental studies ("experiment*" OR "manipulat\*") (for complete search string details see @figsupp-string). We searched the title, abstract and keywords in English language only. Our search found `{r} nrow(unique_reference_list)`
+We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022 and updated it on 12.08.2024. The search query was designed in three blocks to included terms for predictor/treatment (“green\*” OR “herb\*” OR “aromatic\*”) AND “nest\*”), population of interest (“bird\*” OR “aves” OR “avian” OR “ornithol\*” OR “passerine\*” OR “passeriform\*” OR “songbird\*” OR list of all bird genera) and only experimental studies ("experiment\*" OR "manipulat\*") (for complete search string tailored for specific database see @figsupp-string). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found `{r} nrow(unique_reference_list)` unique articles after removing `{r} nrow(full_reference_before_deduplication)-nrow(unique_reference_list)` duplicates using R package 'revtools' v0.4.1 (@westgate2019). We validated our search using an initial library of 15 key articles (\@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package 'litsearchr' v1.0.0 (@grames2019) to confirm our keyword selection, which did not yield any new relevant terms.
 
-#### Literature search
-
-We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022
+All title and abstract screening were screened independently by atleast two screeners (SD,TR,JMGS) following a pre-designed decision tree (@figsupp-decision-tree) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs) and measured any form of fitness proxy that can be used to address any of our hypothesis. `{r} nrow(selected_abstract_screening)` articles passed title and abstract screening.
 
 Eligibility criteria
 
