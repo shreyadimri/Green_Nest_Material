@@ -22,27 +22,41 @@ pacman::p_load(readr)
 
 # Methods (\~2200 words)
 
-Registration and Reporting
+## Registration and Reporting
 
-We pre-registered our predictions, methods and planned analysis prior to data exploration and analysis [@dimri2024]. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
+We pre-registered our study protocol on Open Science Framework [@dimri2024] prior to data exploration and analysis. The pre-registration details study objective, a priori hypothesis and predictions, methods and planned data analysis. Unless stated otherwise, we adhered to the registered protocol. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
 
 ## Systematic Review
 
-### Literature search
+### Study selection and eligibility crtieria
 
 ```{r load search data, include=FALSE, echo=FALSE}
 
 unique_reference_list <- read_csv("data/unique_reference_list.csv")
+full_reference_before_deduplication<-read_csv("data/full_reference_before_deduplication.csv")
+selected_abstract_screening<-read_csv("data/selected_abstract_screening.csv")
 
+# For updated search
+unique_reference_list_repeat <- read_csv("data/unique_reference_repeat_12082024.csv")
+full_reference_before_deduplication_repeat<-read_csv("data/full_reference_repeat_12082024.csv")
+selected_abstract_screening_repeat<-read_csv("data/selected_abstract_screening_repeat.csv")
 ```
 
-We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022 and updated it on 12.08.2024. The search query was designed in three blocks to included terms for predictor/treatment ("green*" OR "herb*" OR "aromatic*" AND "nest*"), population of interest ("bird*" OR "aves" OR "avian" OR "ornithol*" OR "passerine*" OR "passeriform*" OR "songbird*" OR list of all bird genera) and only experimental studies ("experiment*" OR "manipulat\*") (for complete search string details see @figsupp-string). We searched the title, abstract and keywords in English language only. Our search found `{r} nrow(unique_reference_list)`
+We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment ("green\*" OR "herb\*" OR "aromatic\*") AND "nest\*"), population of interest ("bird\*" OR "aves" OR "avian" OR "ornithol\*" OR "passerine\*" OR "passeriform\*" OR "songbird\*" OR list of all bird genera) and only experimental studies ("experiment\*" OR "manipulat\*") (for complete search string tailored for specific database see @figsupp-string). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found `{r} nrow(unique_reference_list)` unique articles after removing `{r} nrow(full_reference_before_deduplication)-nrow(unique_reference_list)` duplicates using R package 'revtools' v0.4.1 (@westgate2019). We validated our search using an initial library of 15 key articles (\@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package 'litsearchr' v1.0.0 (@grames2019) to confirm our keyword selection, which did not yield any new relevant terms.
 
-#### Literature search
+All title and abstract screening were screened independently by atleast two screeners (\~66% each by SD, TR, JMGS) following a pre-designed decision tree (@figsupp-decision-tree) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs) and measured any form of fitness proxy that can be used to address any of our hypothesis. `{r} nrow(selected_abstract_screening)` articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (\~33% each by SD, TR, JMGS) and double checked by another. The three screeners collectively resolved the conflicting decisions (\~1% for title and abstract screening and 0% for fulltext screening) through discussion.
 
-We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022
+We repeated our search using the same search string on 12.08.2024 and found `{r} nrow(full_reference_before_deduplication_repeat)` articles. After deduplicating, SD screened the title and abstract for the `{r} nrow(unique_reference_list_repeat)` unique articles using the same decision tree. We found `{r} sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)` article by updating our search. In addition, we identified `{r}  nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T))` articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis.
 
 Eligibility criteria
+
+Eligibility criteria
+
+Titles and abstracts were screened using **Rayyan QCRI** (Ouzzani et al. 2016) by multiple reviewers, following a pre-defined decision tree (**Supplementary Figure S1**). A subset of studies (\~20%) was double-screened to ensure consistency, with conflicts (\~7% of cases) resolved through discussion. Following abstract screening, **\[X\] studies** proceeded to full-text review. Studies were included if they (1) involved free-living or captive birds, (2) experimentally tested the effects of green nest materials, and (3) reported fitness-related outcomes (e.g., survival, immune response, reproductive success).
+
+During full-text screening, **\[Y\] studies** were excluded due to missing quantitative data (e.g., mean, sample size, dispersion measures). When necessary, we contacted authors of studies published after **1995** to request missing data. For studies where authors did not respond, we imputed missing standard deviations when feasible but did not impute missing standard errors (**see Data Extraction and Effect Size Calculation**).
+
+The final dataset included **\[Z\] studies** (see PRISMA flowchart, **Figure 1**). All included studies, along with data, analysis code, and additional variables beyond our primary predictions, are available at **\[repository link\]** for transparency and reproducibility.Study selection and eligibility criteria
 
 #### Study selection and eligibility criteria
 

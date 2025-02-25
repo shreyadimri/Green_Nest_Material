@@ -53,6 +53,9 @@ div.csl-indent {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-81e35ebdb4125010edbabe6010586085.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script async="" src="https://hypothes.is/embed.js"></script>
 <script>
   window.document.addEventListener("DOMContentLoaded", function (_event) {
@@ -70,6 +73,8 @@ div.csl-indent {
 <meta name="citation_reference" content="citation_title=The adaptive value of green nest material across birds: A systematic review and meta-analysis;,citation_author=Shreya Dimri;,citation_author=Tuba Rizvi;,citation_author=Julio Do Monte Gonzalez De Segovia;,citation_author=Alfredo Sánchez-Tójar;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_fulltext_html_url=https://osf.io/s7j6z/;,citation_doi=10.17605/OSF.IO/S7J6Z;">
 <meta name="citation_reference" content="citation_title=Preferred reporting items for systematic reviews and meta-analyses in ecology and evolutionary biology: a PRISMA extension;,citation_author=Rose E. O’Dea;,citation_author=Malgorzata Lagisz;,citation_author=Michael D. Jennions;,citation_author=Julia Koricheva;,citation_author=Daniel W. A. Noble;,citation_author=Timothy H. Parker;,citation_author=Jessica Gurevitch;,citation_author=Matthew J. Page;,citation_author=Gavin Stewart;,citation_author=David Moher;,citation_author=Shinichi Nakagawa;,citation_publication_date=2021-05-07;,citation_cover_date=2021-05-07;,citation_year=2021;,citation_fulltext_html_url=http://dx.doi.org/10.1111/brv.12721;,citation_issue=5;,citation_doi=10.1111/brv.12721;,citation_volume=96;,citation_language=en;,citation_journal_title=Biological Reviews;">
 <meta name="citation_reference" content="citation_title=Preferred reporting items for systematic reviews and meta-analyses in ecology and evolutionary biology: a PRISMA extension;,citation_author=Rose E. O’Dea;,citation_author=Malgorzata Lagisz;,citation_author=Michael D. Jennions;,citation_author=Julia Koricheva;,citation_author=Daniel W. A. Noble;,citation_author=Timothy H. Parker;,citation_author=Jessica Gurevitch;,citation_author=Matthew J. Page;,citation_author=Gavin Stewart;,citation_author=David Moher;,citation_author=Shinichi Nakagawa;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/abs/10.1111/brv.12721;,citation_issue=5;,citation_doi=10.1111/brv.12721;,citation_volume=96;,citation_language=en;,citation_journal_title=Biological Reviews;">
+<meta name="citation_reference" content="citation_title=An automated approach to identifying search terms for systematic reviews using keyword co-occurrence networks;,citation_author=Eliza M. Grames;,citation_author=Andrew N. Stillman;,citation_author=Morgan W. Tingley;,citation_author=Chris S. Elphick;,citation_editor=Robert Freckleton;,citation_publication_date=2019-08-11;,citation_cover_date=2019-08-11;,citation_year=2019;,citation_fulltext_html_url=http://dx.doi.org/10.1111/2041-210X.13268;,citation_issue=10;,citation_doi=10.1111/2041-210x.13268;,citation_volume=10;,citation_language=en;,citation_journal_title=Methods in Ecology and Evolution;">
+<meta name="citation_reference" content="citation_title=revtools: An R package to support article screening for evidence synthesis;,citation_author=Martin J. Westgate;,citation_publication_date=2019-10-18;,citation_cover_date=2019-10-18;,citation_year=2019;,citation_fulltext_html_url=http://dx.doi.org/10.1002/jrsm.1374;,citation_issue=4;,citation_doi=10.1002/jrsm.1374;,citation_volume=10;,citation_language=en;,citation_journal_title=Research Synthesis Methods;">
 </head>
 
 <body>
@@ -144,9 +149,10 @@ div.csl-indent {
   <ul>
   <li><a href="#methods-2200-words" id="toc-methods-2200-words" class="nav-link active" data-scroll-target="#methods-2200-words">Methods (~2200 words)</a>
   <ul class="collapse">
+  <li><a href="#registration-and-reporting" id="toc-registration-and-reporting" class="nav-link" data-scroll-target="#registration-and-reporting">Registration and Reporting</a></li>
   <li><a href="#systematic-review" id="toc-systematic-review" class="nav-link" data-scroll-target="#systematic-review">Systematic Review</a>
   <ul class="collapse">
-  <li><a href="#literature-search" id="toc-literature-search" class="nav-link" data-scroll-target="#literature-search">Literature search</a></li>
+  <li><a href="#study-selection-and-eligibility-crtieria" id="toc-study-selection-and-eligibility-crtieria" class="nav-link" data-scroll-target="#study-selection-and-eligibility-crtieria">Study selection and eligibility crtieria</a></li>
   <li><a href="#data-extraction" id="toc-data-extraction" class="nav-link" data-scroll-target="#data-extraction">Data Extraction</a></li>
   <li><a href="#effect-size-calculation" id="toc-effect-size-calculation" class="nav-link" data-scroll-target="#effect-size-calculation">Effect size calculation</a></li>
   <li><a href="#meta-analysis-and-meta-regressions" id="toc-meta-analysis-and-meta-regressions" class="nav-link" data-scroll-target="#meta-analysis-and-meta-regressions">Meta-analysis and meta-regressions</a></li>
@@ -168,18 +174,22 @@ div.csl-indent {
 
 <section id="methods-2200-words" class="level1">
 <h1>Methods (~2200 words)</h1>
-<p>Registration and Reporting</p>
-<p>We pre-registered our predictions, methods and planned analysis prior to data exploration and analysis <span class="citation" data-cites="dimri2024">(<a href="#ref-dimri2024" role="doc-biblioref">Dimri et al. 2024</a>)</span>. We followed the PRISMA-EcoEvo guidelines <span class="citation" data-cites="odea2021">(<a href="#ref-odea2021" role="doc-biblioref">O’Dea et al. 2021</a>)</span> for reporting this study (in <a href="#figsupp-checklist" class="quarto-xref">Figure S1</a>). All resources associated with this study, including data and code, are available at [<a href="https://github.com/shreyadimri/Green_Nest_Material" class="uri">https://github.com/shreyadimri/Green_Nest_Material</a>] (insert Zenodo citation later).</p>
+<section id="registration-and-reporting" class="level2">
+<h2 class="anchored" data-anchor-id="registration-and-reporting">Registration and Reporting</h2>
+<p>We pre-registered our study protocol on Open Science Framework <span class="citation" data-cites="dimri2024">(<a href="#ref-dimri2024" role="doc-biblioref">Dimri et al. 2024</a>)</span> prior to data exploration and analysis. The pre-registration details study objective, a priori hypothesis and predictions, methods and planned data analysis. Unless stated otherwise, we adhered to the registered protocol. We followed the PRISMA-EcoEvo guidelines <span class="citation" data-cites="odea2021">(<a href="#ref-odea2021" role="doc-biblioref">O’Dea et al. 2021</a>)</span> for reporting this study (in <a href="#figsupp-checklist" class="quarto-xref">Figure S1</a>). All resources associated with this study, including data and code, are available at [<a href="https://github.com/shreyadimri/Green_Nest_Material" class="uri">https://github.com/shreyadimri/Green_Nest_Material</a>] (insert Zenodo citation later).</p>
+</section>
 <section id="systematic-review" class="level2">
 <h2 class="anchored" data-anchor-id="systematic-review">Systematic Review</h2>
-<section id="literature-search" class="level3">
-<h3 class="anchored" data-anchor-id="literature-search">Literature search</h3>
-<p>We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022 and updated it on 12.08.2024. The search query was designed in three blocks to included terms for predictor/treatment (“green<em>” OR ”herb</em>” OR “aromatic<em>” AND ”nest</em>”), population of interest (“bird<em>” OR ”aves” OR ”avian” OR ”ornithol</em>” OR “passerine<em>” OR ”passeriform</em>” OR “songbird<em>” OR list of all bird genera) and only experimental studies (”experiment</em>” OR “manipulat*”) (for complete search string details see <a href="#figsupp-string" class="quarto-xref">Figure S2</a>). We searched the title, abstract and keywords in English language only. Our search found 383</p>
-<section id="literature-search-1" class="level4">
-<h4 class="anchored" data-anchor-id="literature-search-1">Literature search</h4>
-<p>We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022</p>
+<section id="study-selection-and-eligibility-crtieria" class="level3">
+<h3 class="anchored" data-anchor-id="study-selection-and-eligibility-crtieria">Study selection and eligibility crtieria</h3>
+<p>We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment (“green*” OR “herb*” OR “aromatic*”) AND “nest*”), population of interest (“bird*” OR “aves” OR “avian” OR “ornithol*” OR “passerine*” OR “passeriform*” OR “songbird*” OR list of all bird genera) and only experimental studies (“experiment*” OR “manipulat*”) (for complete search string tailored for specific database see <a href="#figsupp-string" class="quarto-xref">Figure S2</a>). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found 383 unique articles after removing 152 duplicates using R package ‘revtools’ v0.4.1 (<span class="citation" data-cites="westgate2019">Westgate (<a href="#ref-westgate2019" role="doc-biblioref">2019</a>)</span>). We validated our search using an initial library of 15 key articles (@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package ‘litsearchr’ v1.0.0 (<span class="citation" data-cites="grames2019">Grames et al. (<a href="#ref-grames2019" role="doc-biblioref">2019</a>)</span>) to confirm our keyword selection, which did not yield any new relevant terms.</p>
+<p>All title and abstract screening were screened independently by atleast two screeners (~66% each by SD, TR, JMGS) following a pre-designed decision tree (<a href="#figsupp-decision-tree" class="quarto-xref">Figure S3</a>) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs) and measured any form of fitness proxy that can be used to address any of our hypothesis. 40 articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (~33% each by SD, TR, JMGS) and double checked by another. The three screeners collectively resolved the conflicting decisions (~1% for title and abstract screening and 0% for fulltext screening) through discussion.</p>
+<p>We repeated our search using the same search string on 12.08.2024 and found 66 articles. After deduplicating, SD screened the title and abstract for the 53 unique articles using the same decision tree. We found 1 article by updating our search. In addition, we identified 3 articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis.</p>
 <p>Eligibility criteria</p>
-</section>
+<p>Eligibility criteria</p>
+<p>Titles and abstracts were screened using <strong>Rayyan QCRI</strong> (Ouzzani et al.&nbsp;2016) by multiple reviewers, following a pre-defined decision tree (<strong>Supplementary Figure S1</strong>). A subset of studies (~20%) was double-screened to ensure consistency, with conflicts (~7% of cases) resolved through discussion. Following abstract screening, <strong>[X] studies</strong> proceeded to full-text review. Studies were included if they (1) involved free-living or captive birds, (2) experimentally tested the effects of green nest materials, and (3) reported fitness-related outcomes (e.g., survival, immune response, reproductive success).</p>
+<p>During full-text screening, <strong>[Y] studies</strong> were excluded due to missing quantitative data (e.g., mean, sample size, dispersion measures). When necessary, we contacted authors of studies published after <strong>1995</strong> to request missing data. For studies where authors did not respond, we imputed missing standard deviations when feasible but did not impute missing standard errors (<strong>see Data Extraction and Effect Size Calculation</strong>).</p>
+<p>The final dataset included <strong>[Z] studies</strong> (see PRISMA flowchart, <strong>Figure 1</strong>). All included studies, along with data, analysis code, and additional variables beyond our primary predictions, are available at <strong>[repository link]</strong> for transparency and reproducibility.Study selection and eligibility criteria</p>
 <section id="study-selection-and-eligibility-criteria" class="level4">
 <h4 class="anchored" data-anchor-id="study-selection-and-eligibility-criteria">Study selection and eligibility criteria</h4>
 <ul>
@@ -300,6 +310,16 @@ Figure S2: Complete search string for the systematic search
 </figcaption>
 </figure>
 </div>
+<div id="figsupp-decision-tree" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-figsupp figure">
+<div aria-describedby="figsupp-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Decision_Tree_updated.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure S3: "><img src="images/Decision_Tree_updated.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-figsupp quarto-uncaptioned" id="figsupp-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure S3
+</figcaption>
+</figure>
+</div>
 </details>
 
 </section>
@@ -309,8 +329,14 @@ Figure S2: Complete search string for the systematic search
 <div id="ref-dimri2024" class="csl-entry" role="listitem">
 Dimri, Shreya, Tuba Rizvi, Julio Do Monte Gonzalez De Segovia, and Alfredo Sánchez-Tójar. 2024. <span>“The Adaptive Value of Green Nest Material Across Birds: A Systematic Review and Meta-Analysis.”</span> <a href="https://doi.org/10.17605/OSF.IO/S7J6Z">https://doi.org/10.17605/OSF.IO/S7J6Z</a>.
 </div>
+<div id="ref-grames2019" class="csl-entry" role="listitem">
+Grames, Eliza M., Andrew N. Stillman, Morgan W. Tingley, and Chris S. Elphick. 2019. <span>“An Automated Approach to Identifying Search Terms for Systematic Reviews Using Keyword Co<span>-</span>Occurrence Networks.”</span> Edited by Robert Freckleton. <em>Methods in Ecology and Evolution</em> 10 (10): 1645–54. <a href="https://doi.org/10.1111/2041-210x.13268">https://doi.org/10.1111/2041-210x.13268</a>.
+</div>
 <div id="ref-odea2021" class="csl-entry" role="listitem">
 O’Dea, Rose E., Malgorzata Lagisz, Michael D. Jennions, Julia Koricheva, Daniel W. A. Noble, Timothy H. Parker, Jessica Gurevitch, et al. 2021. <span>“Preferred Reporting Items for Systematic Reviews and Meta-Analyses in Ecology and Evolutionary Biology: A PRISMA Extension.”</span> <em>Biological Reviews</em> 96 (5): 1695–1722. <a href="https://doi.org/10.1111/brv.12721">https://doi.org/10.1111/brv.12721</a>.
+</div>
+<div id="ref-westgate2019" class="csl-entry" role="listitem">
+Westgate, Martin J. 2019. <span>“Revtools: An R Package to Support Article Screening for Evidence Synthesis.”</span> <em>Research Synthesis Methods</em> 10 (4): 606–14. <a href="https://doi.org/10.1002/jrsm.1374">https://doi.org/10.1002/jrsm.1374</a>.
 </div>
 </div></section></div></main>
 <!-- /main column -->
@@ -732,6 +758,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

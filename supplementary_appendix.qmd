@@ -35,3 +35,7 @@ The search was also conducted on SCOPUS using Advance Search Option and Title Ab
 
 Complete search string for the systematic search
 :::
+
+::: {#figsupp-decision-tree}
+![](images/Decision_Tree_updated.png)
+:::
