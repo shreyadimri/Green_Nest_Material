@@ -39,3 +39,7 @@ Complete search string for the systematic search
 ::: {#figsupp-decision-tree}
 ![](images/Decision_Tree_updated.png)
 :::
+
+::: {#figsupp-prisma-flowchart}
+This is the prisma flowchart
+:::

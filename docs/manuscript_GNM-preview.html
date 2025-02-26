@@ -280,7 +280,7 @@
   <li><a href="#registration-and-reporting" id="toc-registration-and-reporting" class="nav-link" data-scroll-target="#registration-and-reporting">Registration and Reporting</a></li>
   <li><a href="#systematic-review" id="toc-systematic-review" class="nav-link" data-scroll-target="#systematic-review">Systematic Review</a>
   <ul class="collapse">
-  <li><a href="#study-selection-and-eligibility-crtieria" id="toc-study-selection-and-eligibility-crtieria" class="nav-link" data-scroll-target="#study-selection-and-eligibility-crtieria">Study selection and eligibility crtieria</a></li>
+  <li><a href="#study-selection-and-eligibility-criteria" id="toc-study-selection-and-eligibility-criteria" class="nav-link" data-scroll-target="#study-selection-and-eligibility-criteria">Study selection and eligibility criteria</a></li>
   <li><a href="#data-extraction" id="toc-data-extraction" class="nav-link" data-scroll-target="#data-extraction">Data Extraction</a></li>
   <li><a href="#effect-size-calculation" id="toc-effect-size-calculation" class="nav-link" data-scroll-target="#effect-size-calculation">Effect size calculation</a></li>
   <li><a href="#meta-analysis-and-meta-regressions" id="toc-meta-analysis-and-meta-regressions" class="nav-link" data-scroll-target="#meta-analysis-and-meta-regressions">Meta-analysis and meta-regressions</a></li>
@@ -306,8 +306,8 @@
 </section>
 <section id="systematic-review" class="level2">
 <h2 class="anchored" data-anchor-id="systematic-review">Systematic Review</h2>
-<section id="study-selection-and-eligibility-crtieria" class="level3">
-<h3 class="anchored" data-anchor-id="study-selection-and-eligibility-crtieria">Study selection and eligibility crtieria</h3>
+<section id="study-selection-and-eligibility-criteria" class="level3">
+<h3 class="anchored" data-anchor-id="study-selection-and-eligibility-criteria">Study selection and eligibility criteria</h3>
 <div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>unique_reference_list <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/unique_reference_list.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -443,29 +443,30 @@ lgl  (1): notes
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For fulltext screening</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>excluded_fulltext <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/excluded_fulltext.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 17 Columns: 52
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (13): paper_ID, fulltext_screening, fulltext_notes, variable_note, autho...
+dbl  (5): year_publication, CH, PCH, shared_experiment, shared_control
+lgl (34): experiment_ID, group_ID, repeated_trait_ID, treatment_plant_specie...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
 </div></div>
-<p>We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment (“green*” OR “herb*” OR “aromatic*”) AND “nest*”), population of interest (“bird*” OR “aves” OR “avian” OR “ornithol*” OR “passerine*” OR “passeriform*” OR “songbird*” OR list of all bird genera) and only experimental studies (“experiment*” OR “manipulat*”) (for complete search string tailored for specific database see <a href="#figsupp-string" class="quarto-xref">Figure S2</a>). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found 383 unique articles after removing 152 duplicates using R package ‘revtools’ v0.4.1 (<span class="citation" data-cites="westgate2019">Westgate (<a href="#ref-westgate2019" role="doc-biblioref">2019</a>)</span>). We validated our search using an initial library of 15 key articles (@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package ‘litsearchr’ v1.0.0 (<span class="citation" data-cites="grames2019">Grames et al. (<a href="#ref-grames2019" role="doc-biblioref">2019</a>)</span>) to confirm our keyword selection, which did not yield any new relevant terms.</p>
-<p>All title and abstract screening were screened independently by atleast two screeners (~66% each by SD, TR, JMGS) following a pre-designed decision tree (<a href="#figsupp-decision-tree" class="quarto-xref">Figure S3</a>) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs) and measured any form of fitness proxy that can be used to address any of our hypothesis. 40 articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (~33% each by SD, TR, JMGS) and double checked by another. The three screeners collectively resolved the conflicting decisions (~1% for title and abstract screening and 0% for fulltext screening) through discussion.</p>
-<p>We repeated our search using the same search string on 12.08.2024 and found 66 articles. After deduplicating, SD screened the title and abstract for the 53 unique articles using the same decision tree. We found 1 article by updating our search. In addition, we identified 3 articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis.</p>
-<p>Eligibility criteria</p>
-<p>Eligibility criteria</p>
-<p>Titles and abstracts were screened using <strong>Rayyan QCRI</strong> (Ouzzani et al.&nbsp;2016) by multiple reviewers, following a pre-defined decision tree (<strong>Supplementary Figure S1</strong>). A subset of studies (~20%) was double-screened to ensure consistency, with conflicts (~7% of cases) resolved through discussion. Following abstract screening, <strong>[X] studies</strong> proceeded to full-text review. Studies were included if they (1) involved free-living or captive birds, (2) experimentally tested the effects of green nest materials, and (3) reported fitness-related outcomes (e.g., survival, immune response, reproductive success).</p>
-<p>During full-text screening, <strong>[Y] studies</strong> were excluded due to missing quantitative data (e.g., mean, sample size, dispersion measures). When necessary, we contacted authors of studies published after <strong>1995</strong> to request missing data. For studies where authors did not respond, we imputed missing standard deviations when feasible but did not impute missing standard errors (<strong>see Data Extraction and Effect Size Calculation</strong>).</p>
-<p>The final dataset included <strong>[Z] studies</strong> (see PRISMA flowchart, <strong>Figure 1</strong>). All included studies, along with data, analysis code, and additional variables beyond our primary predictions, are available at <strong>[repository link]</strong> for transparency and reproducibility.Study selection and eligibility criteria</p>
-<section id="study-selection-and-eligibility-criteria" class="level4">
-<h4 class="anchored" data-anchor-id="study-selection-and-eligibility-criteria">Study selection and eligibility criteria</h4>
-<ul>
-<li><p>Keyword search: where and when..</p></li>
-<li><p>Justification for development of keyword search</p></li>
-<li><p>Findings/Results of search</p></li>
-<li><p>Exclusion criteria</p></li>
-<li><p>How many papers in final meta-analysis and how many effect sizes</p></li>
-<li><p>PRISMA Diagram link</p></li>
-</ul>
-</section>
+<p>We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment (“green*” OR “herb*” OR “aromatic*”) AND “nest*”), population of interest (“bird*” OR “aves” OR “avian” OR “ornithol*” OR “passerine*” OR “passeriform*” OR “songbird*” OR list of all bird genera) and only experimental studies (“experiment*” OR “manipulat*”) (for complete search string tailored to specific database see <a href="#figsupp-string" class="quarto-xref">Figure S2</a>). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found 383 unique articles after removing 152 duplicates using R package ‘revtools’ v0.4.1 (<span class="citation" data-cites="westgate2019">Westgate (<a href="#ref-westgate2019" role="doc-biblioref">2019</a>)</span>). We validated our search using an initial library of 15 key articles (@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package ‘litsearchr’ v1.0.0 (<span class="citation" data-cites="grames2019">Grames et al. (<a href="#ref-grames2019" role="doc-biblioref">2019</a>)</span>) to confirm our keyword selection, which did not yield any new relevant terms.</p>
+<p>All title and abstract screening were screened independently by atleast two screeners (~66% each by SD, TR, JMGS) following a pre-designed decision tree (<a href="#figsupp-decision-tree" class="quarto-xref">Figure S3</a>) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). 40 articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. 17 articles were excluded and all conflicts in screening decision (~1% for title and abstract screening and none for fulltext screening) were resolved through discussion.</p>
+<p>We repeated our search using the same search string on 12.08.2024 and found 66 additional articles. After deduplicating, SD screened the title and abstract for the 53 unique articles using the same decision tree. We found 1 article by updating our search. In addition, we identified 3 articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis. The exact number of screened and included studies along with reason of exclusion are shown in <a href="#figsupp-prisma-flowchart" class="quarto-xref">Figure S4</a>. We finally extracted data for 27 articles and 2 unpublished studies. These were identified through our efforts to contact the authors of all included studies, and one dataset was provided by a co-author of this paper. <!--# Fix the code for generating this number later by using the data file directly to calculate the number of article --></p>
 </section>
 <section id="data-extraction" class="level3">
 <h3 class="anchored" data-anchor-id="data-extraction">Data Extraction</h3>
+<ul>
+<li>How many papers in final meta-analysis and how many effect sizes</li>
+</ul>
+<!-- -->
 <ul>
 <li><p>What did we extract in priority order</p></li>
 <li><p>Wrote to authors for missing info, used methods to deal with missing info</p></li>
@@ -579,6 +580,16 @@ Figure S2: Complete search string for the systematic search
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-figsupp quarto-uncaptioned" id="figsupp-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure S3
+</figcaption>
+</figure>
+</div>
+<div id="figsupp-prisma-flowchart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-figsupp figure">
+<div aria-describedby="figsupp-prisma-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p>This is the prisma flowchart</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-figsupp quarto-uncaptioned" id="figsupp-prisma-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure S4
 </figcaption>
 </figure>
 </div>
