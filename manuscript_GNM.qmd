@@ -26,9 +26,7 @@ pacman::p_load(readr)
 
 We pre-registered our study protocol on Open Science Framework [@dimri2024] prior to data exploration and analysis. The pre-registration details study objective, a priori hypothesis and predictions, methods and planned data analysis. Unless stated otherwise, we adhered to the registered protocol. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
 
-## Systematic Review
-
-### Study selection and eligibility criteria
+## Study selection and eligibility criteria
 
 ```{r load search data, include=FALSE, echo=FALSE}
 
@@ -49,23 +47,29 @@ We conducted a systematic search on Web of science Core Collection and Scopus ci
 
 All title and abstract screening were screened independently by atleast two screeners (\~66% each by SD, TR, JMGS) following a pre-designed decision tree (@figsupp-decision-tree) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). `{r} nrow(selected_abstract_screening)` articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (\~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. `{r} nrow(excluded_fulltext)` articles were excluded and all conflicts in screening decision (\~1% for title and abstract screening and none for fulltext screening) were resolved through discussion.
 
-We repeated our search using the same search string on 12.08.2024 and found `{r} nrow(full_reference_before_deduplication_repeat)` additional articles. After deduplicating, SD screened the title and abstract for the `{r} nrow(unique_reference_list_repeat)` unique articles using the same decision tree. We found `{r} sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)` article by updating our search. In addition, we identified `{r}  nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T))` articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis. The exact number of screened and included studies along with reason of exclusion are shown in @figsupp-prisma-flowchart. We finally extracted data for `{r}  nrow(selected_abstract_screening_repeat) + (nrow(selected_abstract_screening)-nrow(excluded_fulltext))` articles and 2 unpublished studies. These were identified through our efforts to contact the authors of all included studies, and one dataset was provided by a co-author of this paper. <!--# Fix the code for generating this number later by using the data file directly to calculate the number of article -->
+We repeated our search using the same search string on 12.08.2024 and found `{r} nrow(full_reference_before_deduplication_repeat)` additional articles. After deduplicating, SD screened the title and abstract for the `{r} nrow(unique_reference_list_repeat)` unique articles using the same decision tree. We found `{r} sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)` article by updating our search. In addition, we identified `{r}  nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T))` articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis. The exact number of screened and included studies along with reason of exclusion are shown in @figsupp-prisma-flowchart.
 
-### Data Extraction
+## Data Extraction
 
--   How many papers in final meta-analysis and how many effect sizes
+### Data collection process
 
-<!-- -->
+Data was extracted evenly by one of the three authors (\~33% each SD, TR and JMGS) and was checked by another to ensure correctness of the data. We extracted the primary data (i.e., measures of central tendency and variance) from text whenever possible. In cases where primary data was only available in figures (such as boxplots), we used 'metaDigitise' v.1.0.1 (@pick2018). If primary data was not available, we extracted any inferential statistics (t-test, F-statistics) that could be used to calculate an effect size. In cases where the values could not be extracted from the article but datasets were provided, we calculated the means, SD and sample sizes from the raw data.
 
--   What did we extract in priority order
+To obtain any missing data and to locate any grey literature, we wrote to the corresponding author of the articles that passed fulltext screening using a standardized email template (\@figsupp-email). We obtained one unpublished dataset ... \[calculate estimates here\].. Another unpublished dataset was provided by a co-author of this paper. We extracted data for `{r}  nrow(selected_abstract_screening_repeat) + (nrow(selected_abstract_screening)-nrow(excluded_fulltext))` articles and 2 unpublished studies.
 
--   Wrote to authors for missing info, used methods to deal with missing info
+<!--# Fix the code for generating this number later by using the data file directly to calculate the number of article -->
 
--   Figures extraction
+### Extracted variables
 
--   Moderators extracted
+We extracted mean, variance and sample size for a control-treatment pairwise comparison. Controls included non-aromatic materials (e.g., grass, moss), lesser amounts of aromatic material, or no material. Treatments consisted of aromatic materials added by authors, birds, or both. In cases comparing non-aromatic material to a blank nest, the non-aromatic material was considered the treatment. We recorded the type of comparison being made as a moderator. Each pairwise comparison was given a unique Observation ID, a paper ID (for each article reporting this data), an experiment ID (for estimates coming from the same experimental setup), a group ID (for estimates from the same group of individual) and a repeated trait ID (for estimates that were measured repeatedly across time).
 
-### Effect size calculation
+For each study we also extracted information related to the study subjects (species of birds, location of the study population), the methodology of the study (plant species used as treatment and control, trait measured) and information about the extracted data (location or source of the data recorded). We categorized the trait measured into 6 broad categories - physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology. In cases where the trait measured was a type of parasite or pathogen, we categorised the parasite studied ino arthropods or micro-organisms. For a complete list of variables extracted see @figsupp-variables .
+
+## Effect size calculation
+
+Using the information we extracted from the articles, we calculated two effect sizes,along with their associated sampling variance, for each pairwise comparison-log response ratio (hereafter lnRR) and standardised mean difference with heteroscedasticity correction (hereafter SMDH).
+
+-   How many papers in final meta-analysis and how many effect size.
 
 ### Meta-analysis and meta-regressions
 

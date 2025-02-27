@@ -1,5 +1,4 @@
 ---
-title: "Supplementary Appendix"
 bibliography: references.bib
 ---
 
@@ -11,6 +10,16 @@ bibliography: references.bib
 |                |                 |          |                      |       |
 
 Prisma Eco-Evo Checklist according to @odea2021
+:::
+
+::: {#figsupp-variables}
+| variable name | description | values | Notes |
+|---------------|-------------|--------|-------|
+|               |             |        |       |
+|               |             |        |       |
+|               |             |        |       |
+
+This is the list of all the variables that were extracted for the purpose of this study
 :::
 
 ::: {#figsupp-string}
