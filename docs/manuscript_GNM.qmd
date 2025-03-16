@@ -20,7 +20,7 @@ pacman::p_load(readr)
 
 ```
 
-# Methods (\~2200 words)
+# Methods (\~2200-3800 words)
 
 ## Registration and Reporting
 
@@ -43,7 +43,7 @@ selected_abstract_screening_repeat<-read_csv("data/selected_abstract_screening_r
 excluded_fulltext <- read_csv("data/excluded_fulltext.csv")
 ```
 
-We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment ("green\*" OR "herb\*" OR "aromatic\*") AND "nest\*"), population of interest ("bird\*" OR "aves" OR "avian" OR "ornithol\*" OR "passerine\*" OR "passeriform\*" OR "songbird\*" OR list of all bird genera) and only experimental studies ("experiment\*" OR "manipulat\*") (for complete search string tailored to specific database see @figsupp-string). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found `{r} nrow(unique_reference_list)` unique articles after removing `{r} nrow(full_reference_before_deduplication)-nrow(unique_reference_list)` duplicates using R package 'revtools' v0.4.1 (@westgate2019). We validated our search using an initial library of 15 key articles (\@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package 'litsearchr' v1.0.0 (@grames2019) to confirm our keyword selection, which did not yield any new relevant terms.
+We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment ("green\*" OR "herb\*" OR "aromatic\*") AND "nest\*"), population of interest ("bird\*" OR "aves" OR "avian" OR "ornithol\*" OR "passerine\*" OR "passeriform\*" OR "songbird\*" OR list of all bird genera) and only experimental studies ("experiment\*" OR "manipulat\*") (for complete search string tailored to specific database see @figsupp-string). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found `{r} nrow(unique_reference_list)` unique articles after removing `{r} nrow(full_reference_before_deduplication)-nrow(unique_reference_list)` duplicates using R package 'revtools' v0.4.1 (@westgate2019). We validated our search using an initial library of 15 relevant articles (\@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package 'litsearchr' v1.0.0 (@grames2019) to confirm our keyword selection, which did not yield any new relevant terms.
 
 All title and abstract screening were screened independently by atleast two screeners (\~66% each by SD, TR, JMGS) following a pre-designed decision tree (@figsupp-decision-tree) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). `{r} nrow(selected_abstract_screening)` articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (\~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. `{r} nrow(excluded_fulltext)` articles were excluded and all conflicts in screening decision (\~1% for title and abstract screening and none for fulltext screening) were resolved through discussion.
 
@@ -63,13 +63,15 @@ To obtain any missing data and to locate any grey literature, we wrote to the co
 
 We extracted mean, variance and sample size for a control-treatment pairwise comparison. Controls included non-aromatic materials (e.g., grass, moss), lesser amounts of aromatic material, or no material. Treatments consisted of aromatic materials added by authors, birds, or both. In cases comparing non-aromatic material to a blank nest, the non-aromatic material was considered the treatment. We recorded the type of comparison being made as a moderator. Each pairwise comparison was given a unique Observation ID, a paper ID (for each article reporting this data), an experiment ID (for estimates coming from the same experimental setup), a group ID (for estimates from the same group of individual) and a repeated trait ID (for estimates that were measured repeatedly across time).
 
-For each study we also extracted information related to the study subjects (species of birds, location of the study population), the methodology of the study (plant species used as treatment and control, trait measured) and information about the extracted data (location or source of the data recorded). We categorized the trait measured into 6 broad categories - physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology. In cases where the trait measured was a type of parasite or pathogen, we categorised the parasite studied ino arthropods or micro-organisms. For a complete list of variables extracted see @figsupp-variables .
+For each study we also extracted information related to the study subjects (species of birds, location of the study population), the methodology of the study (plant species used as treatment and control, trait measured) and information about the extracted data (location or source of the data recorded). We categorized the trait measured into 6 broad categories - physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology. In cases where the trait measured was a type of parasite or pathogen, we categorised the parasite studied into arthropods or micro-organisms. For a complete list of variables extracted see @figsupp-variables .
 
 ## Effect size calculation
 
-Using the information we extracted from the articles, we calculated two effect sizes,along with their associated sampling variance, for each pairwise comparison-log response ratio (hereafter lnRR) and standardised mean difference with heteroscedasticity correction (hereafter SMDH).
+We calculated two effect sizes for each pairwise comparision-log response ratio (lnRR) and standardised mean difference with heteroscedasticity correction (SMDH), using escalc function (measure= ROM and SMDH respectively, vtype= "LS") in metafor package (@metafor). We specified treatment group as the numerator and the control group as the denominator for lnRR and treatment minus control for SMDH, such that the positive values indicate the trait value increased in the treatment group. In cases such as measures of parasite load or prevalence, laying or hatching dates, courtship time, scab score etc., the sign was inverted to ensure comparability across all fitness proxies. In all cases, the effect size were coded such that the fitness proxies were positively correlated with the overall fitness.
 
--   How many papers in final meta-analysis and how many effect size.
+For studies reporting only inferential statistics (e.g., t-tests, ANCOVA, or contingency tables), we estimated SMD values using the equations provided by @thehand2019. lnRR cannot be computed from inferential statistics, and only SMD under the assumption of homoskedasticity was derived from such data. Since lnRR can only be used for ratio scale data, we excluded all effect sizes with a negative value (n=?) when calculating lnRR.
+
+The sample sizes used was the number of nests in each group, and not the number of individuals, whenever possible. In cases where the control or treatment group was used repeatedly across multiple comparisons, sample sizes were adjusted by dividing them by the number of times each group was used in the comparison, to account for shared group non-independence. For the cases where the authors reported no significant difference between the two groups (k=2, n=16) but did not provide the values, we used zero as the effect size. To impute the SD for these cases, we used the missing case approach following @nakagawa2022.
 
 ### Meta-analysis and meta-regressions
 
@@ -82,6 +84,54 @@ Using the information we extracted from the articles, we calculated two effect s
 Senstivity analysis and Publication Bias Test
 
 ### Deviations from registration
+
+## Stuff that needs to go somewhere
+
+**Methods**
+
+**Effect Size Calculation**
+
+To quantify the effect of green nest material on bird fitness, we computed effect sizes using two primary metrics: log response ratio (lnRR) and standardized mean difference with heteroscedasticity correction (SMDH). lnRR was calculated following Hedges et al. (1999) using the `escalc()` function in the R package `metafor` (Viechtbauer, 2010), with `measure=ROM` and `vtype=LS`, the latter ensuring large sample approximation for sampling variance estimation (Bonett, 2008). SMDH was computed similarly using `measure=SMDH`, incorporating bias correction for heteroscedasticity (Bonett, 2009). For studies reporting inferential statistics (e.g., t-values, F-values) but not primary data, we derived SMD estimates using equations from Lajeunesse (2013) and Nakagawa & Cuthill (2007). Effect sizes were adjusted to ensure that positive values corresponded to increased fitness in experimental groups relative to controls. To account for repeated use of control or treatment groups across multiple comparisons, sample sizes were adjusted by dividing them by the number of times each group appeared in comparisons.
+
+**Meta-Analysis and Meta-Regression**
+
+We conducted two separate multilevel meta-analyses (intercept-only models) to estimate the overall effect size using both lnRR and SMDH as dependent variables. Sampling variances were modeled as variance--covariance matrices assuming a 0.5 correlation (ρ) between sampling variances from the same study (Noble et al., 2017). Robust variance estimation was applied using the `robust()` function from `metafor`, employing the CR2 correction from the `clubSandwich` package (Pustejovsky, 2024) for small-sample adjustments. Sensitivity analyses were conducted with correlation values of 0.3 and 0.7, with results reported in supplementary materials.
+
+For moderator analyses, we implemented unimoderator multilevel meta-regressions to investigate heterogeneity sources. These models included key moderators such as parasite type, experimental design, bird species, and trait type. Categorical moderators required a minimum of five data points per level; otherwise, levels were merged or excluded from analyses. To assess heterogeneity, we calculated four metrics (I², τ², CV, and M) following Yang et al. (2023). The proportion of heterogeneity explained by moderators was quantified using R² marginal (Nakagawa & Schielzeth, 2013).
+
+**Publication Bias and Heterogeneity**
+
+Publication bias was assessed through multilevel meta-regressions maintaining the same random-effects structure as above. Following Nakagawa et al. (2022), we executed the following steps:
+
+1.  A uni-moderator meta-regression to detect small-study effects for both lnRR and SMDH, using the square root of the inverse effective sample size as the moderator.
+
+2.  A subsequent uni-moderator meta-regression using the inverse effective sample size to provide a less biased adjusted overall effect.
+
+3.  A time-lag bias analysis using publication year (mean-centered) as the moderator.
+
+4.  A full meta-regression model incorporating small-study effects, time-lag bias, and all other moderators to assess combined heterogeneity sources.
+
+Heterogeneity was further explored using variance decomposition and random-effects modeling, including species and phylogeny if additional effect sizes warranted phylogenetic non-independence correction (Cinar et al., 2022).
+
+**Sensitivity Analyses**
+
+To ensure robustness, we conducted additional sensitivity analyses:
+
+1.  Repeating meta-analyses and meta-regressions using only effect sizes derived from means, SDs, and sample sizes, excluding those based on inferential statistics.
+
+2.  Implementing a bivariate multilevel meta-analytic model (Yang et al., 2024) incorporating both lnRR and SMDH as response variables.
+
+3.  Re-running intercept-only meta-analyses with different sampling variance correlations (ρ = 0.3 and 0.7) and extending these sensitivity analyses to meta-regressions if necessary.
+
+Non-pre-registered sensitivity analyses that emerged during data processing were reported in supplementary materials.
+
+**Data Management and Software**
+
+All data extraction and cleaning were conducted in R. The dataset and analysis scripts are publicly available on GitHub (https://github.com/shreyadimri/Green_Nest_Material). Effect size calculations and meta-analyses were performed using the `metafor` package (Viechtbauer, 2010), and additional robust variance estimation was conducted with the `clubSandwich` package (Pustejovsky, 2024).
+
+# Results
+
+How many papers in final meta-analysis and how many effect size.
 
 ## Supplementary Appendix
 
