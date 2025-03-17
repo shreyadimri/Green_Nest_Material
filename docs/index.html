@@ -77,7 +77,9 @@ div.csl-indent {
 <meta name="citation_reference" content="citation_title=Reproducible, flexible and high-throughput data extraction from primary literature: The metaDigitise r package;,citation_author=Joel L. Pick;,citation_author=Shinichi Nakagawa;,citation_author=Daniel W. A. Noble;,citation_editor=Samantha Price;,citation_publication_date=2018-11-26;,citation_cover_date=2018-11-26;,citation_year=2018;,citation_fulltext_html_url=http://dx.doi.org/10.1111/2041-210X.13118;,citation_issue=3;,citation_doi=10.1111/2041-210x.13118;,citation_volume=10;,citation_language=en;,citation_journal_title=Methods in Ecology and Evolution;">
 <meta name="citation_reference" content="citation_title=Conducting meta-analyses in r with the metafor package;,citation_author=Wolfgang Viechtbauer;,citation_publication_date=2010;,citation_cover_date=2010;,citation_year=2010;,citation_doi=10.18637/jss.v036.i03;,citation_volume=36;">
 <meta name="citation_reference" content="citation_title=A robust and readily implementable method for the meta-analysis of response ratios with and without missing standard deviations;,citation_author=Shinichi Nakagawa;,citation_author=Daniel W. A. Noble;,citation_author=Malgorzata Lagisz;,citation_author=Rebecca Spake;,citation_author=Wolfgang Viechtbauer;,citation_author=Alistair M. Senior;,citation_publication_date=2022-12-26;,citation_cover_date=2022-12-26;,citation_year=2022;,citation_fulltext_html_url=http://dx.doi.org/10.1111/ele.14144;,citation_issue=2;,citation_doi=10.1111/ele.14144;,citation_volume=26;,citation_language=en;,citation_journal_title=Ecology Letters;">
-<meta name="citation_reference" content="citation_title=The handbook of research synthesis and meta-analysis;,citation_editor=HARRIS COOPER;,citation_editor=LARRY V. HEDGES;,citation_editor=JEFFREY C. VALENTINE;,citation_publication_date=2019-06-14;,citation_cover_date=2019-06-14;,citation_year=2019;,citation_fulltext_html_url=http://dx.doi.org/10.7758/9781610448864;,citation_doi=10.7758/9781610448864;">
+<meta name="citation_reference" content="citation_title=The handbook of research synthesis and meta-analysis;,citation_editor=Harris Cooper;,citation_editor=Larry V. Hedges;,citation_editor=Jeffery C. Valentine;,citation_publication_date=2019-06-14;,citation_cover_date=2019-06-14;,citation_year=2019;,citation_fulltext_html_url=http://dx.doi.org/10.7758/9781610448864;,citation_doi=10.7758/9781610448864;">
+<meta name="citation_reference" content="citation_title=Nonindependence and sensitivity analyses in ecological and evolutionary meta-analyses;,citation_author=Daniel W. A. Noble;,citation_author=Malgorzata Lagisz;,citation_author=Rose E. O’dea;,citation_author=Shinichi Nakagawa;,citation_publication_date=2017-03-09;,citation_cover_date=2017-03-09;,citation_year=2017;,citation_fulltext_html_url=http://dx.doi.org/10.1111/mec.14031;,citation_issue=9;,citation_doi=10.1111/mec.14031;,citation_volume=26;,citation_language=en;,citation_journal_title=Molecular Ecology;">
+<meta name="citation_reference" content="citation_title=Interpreting prediction intervals and distributions for decoding biological generality in meta-analyses;,citation_author=Yefeng Yang;,citation_author=Daniel WA Noble;,citation_author=Alistair M Senior;,citation_author=Malgorzata Lagisz;,citation_author=Shinichi Nakagawa;,citation_publication_date=2025-02-12;,citation_cover_date=2025-02-12;,citation_year=2025;,citation_fulltext_html_url=http://dx.doi.org/10.7554/eLife.103339.1;">
 </head>
 
 <body>
@@ -159,11 +161,12 @@ div.csl-indent {
   <li><a href="#data-collection-process" id="toc-data-collection-process" class="nav-link" data-scroll-target="#data-collection-process">Data collection process</a></li>
   <li><a href="#extracted-variables" id="toc-extracted-variables" class="nav-link" data-scroll-target="#extracted-variables">Extracted variables</a></li>
   </ul></li>
-  <li><a href="#effect-size-calculation" id="toc-effect-size-calculation" class="nav-link" data-scroll-target="#effect-size-calculation">Effect size calculation</a>
-  <ul class="collapse">
-  <li><a href="#meta-analysis-and-meta-regressions" id="toc-meta-analysis-and-meta-regressions" class="nav-link" data-scroll-target="#meta-analysis-and-meta-regressions">Meta-analysis and meta-regressions</a></li>
+  <li><a href="#effect-size-calculation" id="toc-effect-size-calculation" class="nav-link" data-scroll-target="#effect-size-calculation">Effect size calculation</a></li>
+  <li><a href="#meta-analysis" id="toc-meta-analysis" class="nav-link" data-scroll-target="#meta-analysis">Meta-analysis</a></li>
+  <li><a href="#meta-regression-for-testing-hypothesis" id="toc-meta-regression-for-testing-hypothesis" class="nav-link" data-scroll-target="#meta-regression-for-testing-hypothesis">Meta-regression for testing hypothesis</a></li>
+  <li><a href="#meta-regression-for-exploratory-analyses" id="toc-meta-regression-for-exploratory-analyses" class="nav-link" data-scroll-target="#meta-regression-for-exploratory-analyses">Meta-regression for exploratory analyses</a></li>
+  <li><a href="#publication-bias-test" id="toc-publication-bias-test" class="nav-link" data-scroll-target="#publication-bias-test">Publication Bias Test</a></li>
   <li><a href="#deviations-from-registration" id="toc-deviations-from-registration" class="nav-link" data-scroll-target="#deviations-from-registration">Deviations from registration</a></li>
-  </ul></li>
   <li><a href="#stuff-that-needs-to-go-somewhere" id="toc-stuff-that-needs-to-go-somewhere" class="nav-link" data-scroll-target="#stuff-that-needs-to-go-somewhere">Stuff that needs to go somewhere</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
@@ -191,7 +194,7 @@ div.csl-indent {
 <section id="study-selection-and-eligibility-criteria" class="level2">
 <h2 class="anchored" data-anchor-id="study-selection-and-eligibility-criteria">Study selection and eligibility criteria</h2>
 <p>We conducted a systematic search on Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment (“green*” OR “herb*” OR “aromatic*”) AND “nest*”), population of interest (“bird*” OR “aves” OR “avian” OR “ornithol*” OR “passerine*” OR “passeriform*” OR “songbird*” OR list of all bird genera) and only experimental studies (“experiment*” OR “manipulat*”) (for complete search string tailored to specific database see <a href="#figsupp-string" class="quarto-xref">Figure S3</a>). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found 383 unique articles after removing 152 duplicates using R package ‘revtools’ v0.4.1 (<span class="citation" data-cites="westgate2019">Westgate (<a href="#ref-westgate2019" role="doc-biblioref">2019</a>)</span>). We validated our search using an initial library of 15 relevant articles (@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package ‘litsearchr’ v1.0.0 (<span class="citation" data-cites="grames2019">Grames et al. (<a href="#ref-grames2019" role="doc-biblioref">2019</a>)</span>) to confirm our keyword selection, which did not yield any new relevant terms.</p>
-<p>All title and abstract screening were screened independently by atleast two screeners (~66% each by SD, TR, JMGS) following a pre-designed decision tree (<a href="#figsupp-decision-tree" class="quarto-xref">Figure S4</a>) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). 40 articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. 17 articles were excluded and all conflicts in screening decision (~1% for title and abstract screening and none for fulltext screening) were resolved through discussion.</p>
+<p>All title and abstract screening were screened independently by atleast two screeners (~66% each by SD, TR, JMGS) following a pre-designed decision tree (<a href="#figsupp-decision-tree" class="quarto-xref">Figure S4</a>) in revtools. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). 40 articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. 19 articles were excluded and all conflicts in screening decision (~1% for title and abstract screening and none for fulltext screening) were resolved through discussion.</p>
 <p>We repeated our search using the same search string on 12.08.2024 and found 66 additional articles. After deduplicating, SD screened the title and abstract for the 53 unique articles using the same decision tree. We found 1 article by updating our search. In addition, we identified 3 articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis. The exact number of screened and included studies along with reason of exclusion are shown in <a href="#figsupp-prisma-flowchart" class="quarto-xref">Figure S5</a>.</p>
 </section>
 <section id="data-extraction" class="level2">
@@ -199,8 +202,7 @@ div.csl-indent {
 <section id="data-collection-process" class="level3">
 <h3 class="anchored" data-anchor-id="data-collection-process">Data collection process</h3>
 <p>Data was extracted evenly by one of the three authors (~33% each SD, TR and JMGS) and was checked by another to ensure correctness of the data. We extracted the primary data (i.e., measures of central tendency and variance) from text whenever possible. In cases where primary data was only available in figures (such as boxplots), we used ‘metaDigitise’ v.1.0.1 (<span class="citation" data-cites="pick2018">Pick, Nakagawa, and Noble (<a href="#ref-pick2018" role="doc-biblioref">2018</a>)</span>). If primary data was not available, we extracted any inferential statistics (t-test, F-statistics) that could be used to calculate an effect size. In cases where the values could not be extracted from the article but datasets were provided, we calculated the means, SD and sample sizes from the raw data.</p>
-<p>To obtain any missing data and to locate any grey literature, we wrote to the corresponding author of the articles that passed fulltext screening using a standardized email template (@figsupp-email). We obtained one unpublished dataset … [calculate estimates here].. Another unpublished dataset was provided by a co-author of this paper. We extracted data for 27 articles and 2 unpublished studies.</p>
-<!--# Fix the code for generating this number later by using the data file directly to calculate the number of article -->
+<p>To obtain any missing data and to locate any grey literature, we wrote to the corresponding author of the articles that passed fulltext screening using a standardized email template (@figsupp-email). We obtained one unpublished dataset … [calculate estimates here].. Another unpublished dataset was provided by a co-author of this paper. We extracted data for 24 published articles and 2 unpublished studies.</p>
 </section>
 <section id="extracted-variables" class="level3">
 <h3 class="anchored" data-anchor-id="extracted-variables">Extracted variables</h3>
@@ -210,31 +212,26 @@ div.csl-indent {
 </section>
 <section id="effect-size-calculation" class="level2">
 <h2 class="anchored" data-anchor-id="effect-size-calculation">Effect size calculation</h2>
-<p>We calculated two effect sizes for each pairwise comparision-log response ratio (lnRR) and standardised mean difference with heteroscedasticity correction (SMDH), using escalc function (measure= ROM and SMDH respectively, vtype= “LS”) in metafor package (<span class="citation" data-cites="metafor">Viechtbauer (<a href="#ref-metafor" role="doc-biblioref">2010</a>)</span>). We specified treatment group as the numerator and the control group as the denominator for lnRR and treatment minus control for SMDH, such that the positive values indicate the trait value increased in the treatment group. In cases such as measures of parasite load or prevalence, laying or hatching dates, courtship time, scab score etc., the sign was inverted to ensure comparability across all fitness proxies. In all cases, the effect size were coded such that the fitness proxies were positively correlated with the overall fitness.</p>
-<p>For studies reporting only inferential statistics (e.g., t-tests, ANCOVA, or contingency tables), we estimated SMD values using the equations provided by <span class="citation" data-cites="thehand2019">COOPER, HEDGES, and VALENTINE (<a href="#ref-thehand2019" role="doc-biblioref">2019</a>)</span>. lnRR cannot be computed from inferential statistics, and only SMD under the assumption of homoskedasticity was derived from such data. Since lnRR can only be used for ratio scale data, we excluded all effect sizes with a negative value (n=?) when calculating lnRR.</p>
-<p>The sample sizes used was the number of nests in each group, and not the number of individuals, whenever possible. In cases where the control or treatment group was used repeatedly across multiple comparisons, sample sizes were adjusted by dividing them by the number of times each group was used in the comparison, to account for shared group non-independence. For the cases where the authors reported no significant difference between the two groups (k=2, n=16) but did not provide the values, we used zero as the effect size. To impute the SD for these cases, we used the missing case approach following <span class="citation" data-cites="nakagawa2022">Nakagawa et al. (<a href="#ref-nakagawa2022" role="doc-biblioref">2022</a>)</span>.</p>
-<section id="meta-analysis-and-meta-regressions" class="level3">
-<h3 class="anchored" data-anchor-id="meta-analysis-and-meta-regressions">Meta-analysis and meta-regressions</h3>
-<ul>
-<li><p>main effect model</p></li>
-<li><p>meta-regressions for testing hypothesis</p></li>
-<li><p>meta-regressions for exploratory analyses</p></li>
-</ul>
-<p>Senstivity analysis and Publication Bias Test</p>
+<p>We calculated two effect sizes for each pairwise comparision-log response ratio (lnRR) and standardised mean difference with heteroscedasticity correction (SMDH), using <code>escalc</code> function (<code>measure= ROM</code> and <code>SMDH</code> respectively, <code>vtype= "LS"</code>) in <code>metafor</code> package (<span class="citation" data-cites="metafor">Viechtbauer (<a href="#ref-metafor" role="doc-biblioref">2010</a>)</span>). We specified treatment group as the numerator and the control group as the denominator for lnRR and treatment minus control for SMDH, such that the positive values indicate the trait value increased in the treatment group. In cases such as measures of parasite load or prevalence, laying or hatching dates, courtship time, scab score etc., the sign was inverted to ensure comparability across all fitness proxies. In all cases, the effect size were coded such that the fitness proxies were positively correlated with the overall fitness.</p>
+<p>For studies reporting only inferential statistics (e.g., t-tests, ANCOVA), we estimated SMD values (n=4, k=2) using the equations provided by <span class="citation" data-cites="thehand2019">Cooper, Hedges, and Valentine (<a href="#ref-thehand2019" role="doc-biblioref">2019</a>)</span> . In cases of dichotomous variables (e.g., successful nests, n=3, k=1) we used the data to calculate log odds ratio using <code>escalc</code> function (<code>measure=OR</code>) and convert it to SMD using equations from <span class="citation" data-cites="thehand2019">Cooper, Hedges, and Valentine (<a href="#ref-thehand2019" role="doc-biblioref">2019</a>)</span>. Since lnRR cannot be calculated from inferential statistics or dichotomous variables, only SMD under the assumption of homoskedasticity was derived from such data. We excluded these effect sizes along with any zero or negative values (n=8, k=5) when calculating lnRR.</p>
+<p>The sample sizes used was the number of nests in each group, and not the number of individuals, whenever possible. In cases where the control or treatment group was used repeatedly across multiple comparisons, sample sizes were adjusted by dividing them by the number of times each group was used in the comparison, to account for shared group non-independence. For the cases where the authors reported no significant difference between the two groups (n=16, k=2) but did not provide the values, we used zero as the effect size. To impute the SD for these cases, we used the missing case approach following <span class="citation" data-cites="nakagawa2022">Nakagawa et al. (<a href="#ref-nakagawa2022" role="doc-biblioref">2022</a>)</span>.</p>
 </section>
-<section id="deviations-from-registration" class="level3">
-<h3 class="anchored" data-anchor-id="deviations-from-registration">Deviations from registration</h3>
+<section id="meta-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="meta-analysis">Meta-analysis</h2>
+<p>We used rma.mv function from metafor pacjage using ‘REML’ method to fit all the models. To estimate the overall effect of green nest material addition to the nest on fitness across bird species that perform this behaviour, we fitted two separate multilevel intercept-only meta-analytical using lnRR or SMDH as dependent variables. Sampling variances were modelled as variance-covariance matrices assuming a 0.5 correlation (ρ) between sampling variances from the same study <span class="citation" data-cites="noble2017">(<a href="#ref-noble2017" role="doc-biblioref">Noble et al. 2017</a>)</span>.</p>
+<p><em>To understand the sources of variation, we calculated Q and total heterogeneity (𝜎2), its source (or relative heterogeneity; I2) and two different metrics to understand its magnitude – a mean-standardized metric (CV) and a variance-mean-standardized metric (M; more in</em> <span class="citation" data-cites="yang2025">Yang et al. (<a href="#ref-yang2025" role="doc-biblioref">2025</a>)</span><em>).</em></p>
+<p><em>To understand the sources of variation or heterogeneity, for the intercept-only models, we will use the pluralistic approach recently suggested by which consists of calculating four metrics of heterogeneity (σ2, I2, CV, M) to comprehensively understand both total and random-effect specific heterogeneity. For the meta-regressions, we will calculate Rmarginal2 to quantify the heterogeneity explained by the moderator(s) in proportion to the total variation (Nakagawa &amp; Schielzeth, 2013).</em></p>
 </section>
+<section id="meta-regression-for-testing-hypothesis" class="level2">
+<h2 class="anchored" data-anchor-id="meta-regression-for-testing-hypothesis">Meta-regression for testing hypothesis</h2>
+<p>For understanding the effect of green nest material on reproductive success (courtship hypothesis) and on protective effects and health benefits for the nestling (Parental care hypothesis), we ran a multilevel meta-regression with ‘hypothesis’ (Courtship hypothesis, Parental care hypothesis, Both) as a moderator.</p>
+<p><em>For meta-regression models, we estimated the percentage of heterogeneity explained by the moderators using R2marginal (Nakagawa &amp; Schielzeth 2013). We graphically presented the results as orchard plots using the R package “orchaRd” v.2.0 (Nakagawa et al.&nbsp;2023).</em></p>
 </section>
-<section id="stuff-that-needs-to-go-somewhere" class="level2">
-<h2 class="anchored" data-anchor-id="stuff-that-needs-to-go-somewhere">Stuff that needs to go somewhere</h2>
-<p><strong>Methods</strong></p>
-<p><strong>Effect Size Calculation</strong></p>
-<p>To quantify the effect of green nest material on bird fitness, we computed effect sizes using two primary metrics: log response ratio (lnRR) and standardized mean difference with heteroscedasticity correction (SMDH). lnRR was calculated following Hedges et al.&nbsp;(1999) using the <code>escalc()</code> function in the R package <code>metafor</code> (Viechtbauer, 2010), with <code>measure=ROM</code> and <code>vtype=LS</code>, the latter ensuring large sample approximation for sampling variance estimation (Bonett, 2008). SMDH was computed similarly using <code>measure=SMDH</code>, incorporating bias correction for heteroscedasticity (Bonett, 2009). For studies reporting inferential statistics (e.g., t-values, F-values) but not primary data, we derived SMD estimates using equations from Lajeunesse (2013) and Nakagawa &amp; Cuthill (2007). Effect sizes were adjusted to ensure that positive values corresponded to increased fitness in experimental groups relative to controls. To account for repeated use of control or treatment groups across multiple comparisons, sample sizes were adjusted by dividing them by the number of times each group appeared in comparisons.</p>
-<p><strong>Meta-Analysis and Meta-Regression</strong></p>
-<p>We conducted two separate multilevel meta-analyses (intercept-only models) to estimate the overall effect size using both lnRR and SMDH as dependent variables. Sampling variances were modeled as variance–covariance matrices assuming a 0.5 correlation (ρ) between sampling variances from the same study (Noble et al., 2017). Robust variance estimation was applied using the <code>robust()</code> function from <code>metafor</code>, employing the CR2 correction from the <code>clubSandwich</code> package (Pustejovsky, 2024) for small-sample adjustments. Sensitivity analyses were conducted with correlation values of 0.3 and 0.7, with results reported in supplementary materials.</p>
-<p>For moderator analyses, we implemented unimoderator multilevel meta-regressions to investigate heterogeneity sources. These models included key moderators such as parasite type, experimental design, bird species, and trait type. Categorical moderators required a minimum of five data points per level; otherwise, levels were merged or excluded from analyses. To assess heterogeneity, we calculated four metrics (I², τ², CV, and M) following Yang et al.&nbsp;(2023). The proportion of heterogeneity explained by moderators was quantified using R² marginal (Nakagawa &amp; Schielzeth, 2013).</p>
-<p><strong>Publication Bias and Heterogeneity</strong></p>
+<section id="meta-regression-for-exploratory-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="meta-regression-for-exploratory-analyses">Meta-regression for exploratory analyses</h2>
+</section>
+<section id="publication-bias-test" class="level2">
+<h2 class="anchored" data-anchor-id="publication-bias-test">Publication Bias Test</h2>
 <p>Publication bias was assessed through multilevel meta-regressions maintaining the same random-effects structure as above. Following Nakagawa et al.&nbsp;(2022), we executed the following steps:</p>
 <ol type="1">
 <li><p>A uni-moderator meta-regression to detect small-study effects for both lnRR and SMDH, using the square root of the inverse effective sample size as the moderator.</p></li>
@@ -243,6 +240,9 @@ div.csl-indent {
 <li><p>A full meta-regression model incorporating small-study effects, time-lag bias, and all other moderators to assess combined heterogeneity sources.</p></li>
 </ol>
 <p>Heterogeneity was further explored using variance decomposition and random-effects modeling, including species and phylogeny if additional effect sizes warranted phylogenetic non-independence correction (Cinar et al., 2022).</p>
+</section>
+<section id="deviations-from-registration" class="level2">
+<h2 class="anchored" data-anchor-id="deviations-from-registration">Deviations from registration</h2>
 <p><strong>Sensitivity Analyses</strong></p>
 <p>To ensure robustness, we conducted additional sensitivity analyses:</p>
 <ol type="1">
@@ -251,13 +251,14 @@ div.csl-indent {
 <li><p>Re-running intercept-only meta-analyses with different sampling variance correlations (ρ = 0.3 and 0.7) and extending these sensitivity analyses to meta-regressions if necessary.</p></li>
 </ol>
 <p>Non-pre-registered sensitivity analyses that emerged during data processing were reported in supplementary materials.</p>
-<p><strong>Data Management and Software</strong></p>
-<p>All data extraction and cleaning were conducted in R. The dataset and analysis scripts are publicly available on GitHub (https://github.com/shreyadimri/Green_Nest_Material). Effect size calculations and meta-analyses were performed using the <code>metafor</code> package (Viechtbauer, 2010), and additional robust variance estimation was conducted with the <code>clubSandwich</code> package (Pustejovsky, 2024).</p>
+</section>
+<section id="stuff-that-needs-to-go-somewhere" class="level2">
+<h2 class="anchored" data-anchor-id="stuff-that-needs-to-go-somewhere">Stuff that needs to go somewhere</h2>
 </section>
 </section>
 <section id="results" class="level1">
 <h1>Results</h1>
-<p>How many papers in final meta-analysis and how many effect size.</p>
+<p>We obtained X effect sizes from k studies including How many papers in final meta-analysis and how many effect size.</p>
 <section id="supplementary-appendix" class="level2">
 <h2 class="anchored" data-anchor-id="supplementary-appendix">Supplementary Appendix</h2>
 <details>
@@ -407,7 +408,7 @@ Figure S5
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-thehand2019" class="csl-entry" role="listitem">
-COOPER, HARRIS, LARRY V. HEDGES, and JEFFREY C. VALENTINE, eds. 2019. <span>“The Handbook of Research Synthesis and Meta-Analysis,”</span> June. <a href="https://doi.org/10.7758/9781610448864">https://doi.org/10.7758/9781610448864</a>.
+Cooper, Harris, Larry V. Hedges, and Jeffery C. Valentine, eds. 2019. <span>“The Handbook of Research Synthesis and Meta-Analysis,”</span> June. <a href="https://doi.org/10.7758/9781610448864">https://doi.org/10.7758/9781610448864</a>.
 </div>
 <div id="ref-dimri2024" class="csl-entry" role="listitem">
 Dimri, Shreya, Tuba Rizvi, Julio Do Monte Gonzalez De Segovia, and Alfredo Sánchez-Tójar. 2024. <span>“The Adaptive Value of Green Nest Material Across Birds: A Systematic Review and Meta-Analysis.”</span> <a href="https://doi.org/10.17605/OSF.IO/S7J6Z">https://doi.org/10.17605/OSF.IO/S7J6Z</a>.
@@ -417,6 +418,9 @@ Grames, Eliza M., Andrew N. Stillman, Morgan W. Tingley, and Chris S. Elphick. 2
 </div>
 <div id="ref-nakagawa2022" class="csl-entry" role="listitem">
 Nakagawa, Shinichi, Daniel W. A. Noble, Malgorzata Lagisz, Rebecca Spake, Wolfgang Viechtbauer, and Alistair M. Senior. 2022. <span>“A Robust and Readily Implementable Method for the Meta<span>-</span>Analysis of Response Ratios with and Without Missing Standard Deviations.”</span> <em>Ecology Letters</em> 26 (2): 232–44. <a href="https://doi.org/10.1111/ele.14144">https://doi.org/10.1111/ele.14144</a>.
+</div>
+<div id="ref-noble2017" class="csl-entry" role="listitem">
+Noble, Daniel W. A., Malgorzata Lagisz, Rose E. O’dea, and Shinichi Nakagawa. 2017. <span>“Nonindependence and Sensitivity Analyses in Ecological and Evolutionary Meta<span>-</span>Analyses.”</span> <em>Molecular Ecology</em> 26 (9): 2410–25. <a href="https://doi.org/10.1111/mec.14031">https://doi.org/10.1111/mec.14031</a>.
 </div>
 <div id="ref-odea2021" class="csl-entry" role="listitem">
 O’Dea, Rose E., Malgorzata Lagisz, Michael D. Jennions, Julia Koricheva, Daniel W. A. Noble, Timothy H. Parker, Jessica Gurevitch, et al. 2021. <span>“Preferred Reporting Items for Systematic Reviews and Meta<span>-</span>Analyses in Ecology and Evolutionary Biology: A PRISMA Extension.”</span> <em>Biological Reviews</em> 96 (5): 1695–1722. <a href="https://doi.org/10.1111/brv.12721">https://doi.org/10.1111/brv.12721</a>.
@@ -429,6 +433,9 @@ Viechtbauer, Wolfgang. 2010. <span>“Conducting Meta-Analyses in <span></span>r
 </div>
 <div id="ref-westgate2019" class="csl-entry" role="listitem">
 Westgate, Martin J. 2019. <span>“Revtools: An R Package to Support Article Screening for Evidence Synthesis.”</span> <em>Research Synthesis Methods</em> 10 (4): 606–14. <a href="https://doi.org/10.1002/jrsm.1374">https://doi.org/10.1002/jrsm.1374</a>.
+</div>
+<div id="ref-yang2025" class="csl-entry" role="listitem">
+Yang, Yefeng, Daniel WA Noble, Alistair M Senior, Malgorzata Lagisz, and Shinichi Nakagawa. 2025. <span>“Interpreting Prediction Intervals and Distributions for Decoding Biological Generality in Meta-Analyses.”</span> <a href="http://dx.doi.org/10.7554/eLife.103339.1">http://dx.doi.org/10.7554/eLife.103339.1</a>.
 </div>
 </div></section></div></main>
 <!-- /main column -->
