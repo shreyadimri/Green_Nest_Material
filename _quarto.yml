@@ -9,6 +9,9 @@ format:
  html:
   comments: 
    hypothesis: true
+ # docx: 
+ #  fontsize: 12
+ # pdf: default
 
 crossref:
   custom:
@@ -19,8 +22,7 @@ crossref:
       space-before-numbering: false
       latex-list-of-description: Supplementary Figure
       
- # docx: default
- # pdf: default
+
 
       
 execute:

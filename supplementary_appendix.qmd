@@ -1,5 +1,6 @@
 ---
 bibliography: references.bib
+code-fold: true
 ---
 
 ::: {#figsupp-checklist}
@@ -20,6 +21,59 @@ Prisma Eco-Evo Checklist according to @odea2021
 |               |             |        |       |
 
 This is the list of all the variables that were extracted for the purpose of this study
+:::
+
+::: {#figsupp-own-library}
+```{r}
+pacman::p_load(readr,knitr, dplyr)
+own_library <- read_csv("data/01_systematic_search/01_search_strategy/own_library_references.csv", 
+                        show_col_types = F)
+own_library%>% 
+  select(c(title,author,doi, journal, year, issn))%>% 
+  kable(col.names=(c("Article Title","Authors","DOI", "Journal", "Year of Publication", "ISSN" )),
+        caption = "Articles from our own library used for validating search strategy")
+```
+:::
+
+::: {#figsupp-random-effect}
+```{r}
+pacman::p_load(readr, dplyr, tidyverse)
+install.packages("devtools", repos = "https://cloud.r-project.org/")
+devtools::install_github("davidsjoberg/ggsankey")
+library(ggsankey)
+analysis_dataset <- read_csv("data/03_data_cleaning/dataset_analysis.csv", 
+                        show_col_types = F)
+
+sankey_data <- analysis_dataset %>%
+  select(Observation_ID,paper_ID, experiment_ID_coded, group_ID_coded, repeated_trait_ID_coded)%>%
+  mutate(across(c(Observation_ID,paper_ID, experiment_ID_coded, group_ID_coded, repeated_trait_ID_coded), as.character)) %>%
+  make_long(Observation_ID,paper_ID, experiment_ID_coded, group_ID_coded, repeated_trait_ID_coded)
+
+ggplot(sankey_data, aes(x = x, next_x = next_x, node = node, next_node = next_node, fill = factor(node))) +
+  geom_alluvial(flow.alpha = .6) +
+  scale_fill_viridis_d(drop = FALSE) +
+  theme_alluvial(base_size = 18) +
+  labs(x = NULL) +
+  theme(legend.position = "none",
+        plot.title = element_text(hjust = .5))
+
+sankey_data_birds <- analysis_dataset %>%
+  select(paper_ID, bird_species, population_ID)%>%
+  mutate(across(c(paper_ID, bird_species, population_ID), as.character)) %>%
+  make_long(paper_ID, bird_species, population_ID)
+
+
+ggplot(sankey_data_birds, aes(x = x, 
+               next_x = next_x, 
+               node = node, 
+               next_node = next_node,
+               fill = factor(node))) +
+  geom_sankey() +
+  scale_fill_discrete(drop=FALSE) +
+  theme(legend.position = "none")
+
+
+```
 :::
 
 ::: {#figsupp-string}
@@ -51,4 +105,12 @@ Complete search string for the systematic search
 
 ::: {#figsupp-prisma-flowchart}
 This is the prisma flowchart
+:::
+
+::: {#figsupp-correlation}
+Table for different values of correlation
+:::
+
+::: {#figsupp-MLMA-excluded}
+Model output and plot including proxies that were excluded
 :::
