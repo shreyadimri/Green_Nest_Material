@@ -15,8 +15,8 @@ bibliography: references.bib
 ---
 
 ```{r Setup, include=FALSE, echo=FALSE}
-
-pacman::p_load(readr,tidyverse)
+devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
+pacman::p_load(readr,tidyverse,metafor,orchaRd)
 
 ```
 
@@ -43,17 +43,17 @@ excluded_fulltext <- read_csv("data/excluded_fulltext.csv")
 
 ## Registration and Reporting
 
-We pre-registered our study protocol on Open Science Framework [@dimri2024] prior to data exploration and analysis. The pre-registration details study objective, a priori hypothesis and predictions, methods and planned data analysis. Unless stated otherwise, we adhered to the registered protocol. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (in @figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
+We pre-registered our study protocol on Open Science Framework [@dimri2024] prior to data exploration and analysis. The pre-registration details the study's objectives, a priori hypotheses and predictions, methods and planned data analyses. Unless stated otherwise, we adhered to the registered protocol. We followed the PRISMA-EcoEvo guidelines [@odea2021] for reporting this study (@figsupp-checklist). All resources associated with this study, including data and code, are available at \[<https://github.com/shreyadimri/Green_Nest_Material>\] (insert Zenodo citation later).
 
 ## Information source and search
 
-We conducted a systematic search on the Web of science Core Collection and Scopus citation database on 07.09.2022. The search query was designed in three blocks to included terms for predictor/treatment ("green\*" OR "herb\*" OR "aromatic\*") AND "nest\*"), population of interest ("bird\*" OR "aves" OR "avian" OR "ornithol\*" OR "passerine\*" OR "passeriform\*" OR "songbird\*" OR list of all bird genera) and only experimental studies ("experiment\*" OR "manipulat\*") (for a complete search string tailored to specific database see @figsupp-string). We searched the title, abstract and keywords in English-language only with no restrictions on publication date or study type. We found `{r} nrow(unique_reference_list)` unique articles after removing `{r} nrow(full_reference_before_deduplication)-nrow(unique_reference_list)` duplicates using R package 'revtools' v0.4.1 (@westgate2019). We validated our search using an initial library of `{r} nrow(own_library)` relevant articles (@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package 'litsearchr' v1.0.0 (@grames2019) to confirm our keyword selection, which did not yield any new relevant terms.
+We conducted a systematic search on Web of Science Core Collection and Scopus on 07.09.2022. The keyword search query was designed in three blocks to included terms for predictor/treatment ("green\*" OR "herb\*" OR "aromatic\*") AND "nest\*"), population of interest ("bird\*" OR "aves" OR "avian" OR "ornithol\*" OR "passerine\*" OR "passeriform\*" OR "songbird\*" OR list of all bird genera) and only experimental studies ("experiment\*" OR "manipulat\*") (for a complete search string tailored to specific database see @figsupp-string). We searched the title, abstract and keywords in English-language only, with no restrictions on publication date or study type. We found `{r} nrow(unique_reference_list)` unique articles after removing `{r} nrow(full_reference_before_deduplication)-nrow(unique_reference_list)` duplicates using R package 'revtools' v0.4.1 (@westgate2019). We validated our search using an initial library of `{r} nrow(own_library)` relevant articles (@figsupp-own-library), ensuring all were retrieved. Additionally, we used R package 'litsearchr' v1.0.0 (@grames2019) to confirm our keyword selection, which did not yield any new relevant terms.
 
 ## Eligibility criteria
 
-All title and abstract screening were screened independently by atleast two screeners (\~66% each by SD, TR, JMGS) following a pre-designed decision tree (@figsupp-decision-tree) in `revtools`. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). `{r} nrow(selected_abstract_screening)` articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (\~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. `{r} nrow(excluded_fulltext)` articles were excluded and all conflicts in screening decisions (\~1% for title and abstract screening and none for fulltext screening) were resolved through discussion.
+All title and abstract screening were screened independently by atleast two screeners (\~66% each by SD, TR, JMGS) following a pre-designed decision tree (@figsupp-decision-tree) in `revtools`. We included all studies on birds that experimentally manipulated the green nest material (including aromatics or herbs). `{r} nrow(selected_abstract_screening)` articles passed title and abstract screening and further evaluated in a fulltext screening by a single screener (\~33% each by SD, TR, JMGS) and double checked by another. We used the same criteria as above with an additional evaluation of whether the variable of interest in the article was a fitness proxy. `{r} nrow(excluded_fulltext)` articles were excluded and all conflicts in screening decisions (\~1% disagreement for title and abstract screening and none for fulltext screening) were resolved through discussion.
 
-We repeated our search using the same search string on 12.08.2024 and found `{r} nrow(full_reference_before_deduplication_repeat)` additional articles. After de-duplicating, SD screened the title and abstract for the `{r} nrow(unique_reference_list_repeat)` unique articles using the same decision tree. We found `{r} sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)` article by updating our search. In addition, we identified `{r}  nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T))` articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis. The exact number of screened and included studies along with reasons of exclusion are shown in @figsupp-prisma-flowchart.
+We repeated our search using the same search string on 12.08.2024 and found `{r} nrow(full_reference_before_deduplication_repeat)` additional articles. After de-duplicating, SD screened the title and abstract for the `{r} nrow(unique_reference_list_repeat)` unique articles using the same decision tree. We found `{r} sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)` article by updating our search. In addition, we identified `{r} nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T))` articles through other sources that were not a part of our search. These studies met our inclusion criteria and were added to our meta-analysis. The exact number of screened and included studies along with reasons of exclusion are shown in @figsupp-prisma-flowchart.
 
 ## Data Extraction
 
@@ -84,7 +84,7 @@ To obtain any missing data and to locate any grey literature, we wrote to the co
 
 We extracted mean, variance and sample size for a control-treatment pairwise comparison. Controls included non-aromatic materials (e.g., grass, moss), lesser amounts of aromatic material, or no material. Treatments consisted of aromatic materials added by authors, birds, or both. In cases comparing non-aromatic material to a blank nest, the non-aromatic material was considered the treatment. We recorded the type of comparison being made as a moderator.
 
-For each study we also extracted information related to the study subjects (species of birds, location of the study population), the methodology of the study (plant species used as treatment and control, trait measured) and information about the extracted data (location or source of the data recorded). We categorized the trait measured into 6 broad categories - physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology. In cases where the trait measured was a type of parasite or pathogen, we categorised the parasite studied into arthropods or micro-organisms. For a complete list of variables extracted see @figsupp-variables . We excluded some traits (n=`{r} nrow(excluded_proxies)` , k=`{r} length(unique(excluded_proxies$paper_ID))`) measured from all our analysis because it was unclear how they related to fitness (see @figsupp-excluded-proxies for the list and reason of exclusion). We also had to exclude some fitness proxies (n=?, k=?) because of the low sample size per group (less than x).
+For each study we also extracted information related to the study subjects (species of birds, location of the study population), the methodology of the study (plant species used as treatment and control, trait measured) and information about the extracted data (location or source of the data recorded). We categorized the trait measured into 6 broad categories - physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology. In cases where the trait measured was a type of parasite or pathogen, we categorised the parasite studied into arthropods or micro-organisms. For a complete list of variables extracted see @figsupp-variables . We excluded some traits (k=`{r} nrow(excluded_proxies)` , n=`{r} length(unique(excluded_proxies$paper_ID))`) measured from all our analysis because it was unclear how they related to fitness (see @figsupp-excluded-proxies for the list and reason of exclusion). We also had to exclude some fitness proxies (n=?, k=?) because of the low sample size per group (less than x).
 
 ## Effect size calculation
 
@@ -102,9 +102,9 @@ negative_lnRR<-dataset_after_cleaning%>%
 
 ```
 
-We calculated two effect sizes for each pairwise comparison-log response ratio (lnRR) and standardised mean difference with heteroskedasticity correction (SMDH), using `escalc` function (`measure= ROM` and `SMDH` respectively, `vtype= "LS"`) in `metafor` package (@metafor). We specified treatment group as the numerator and the control group as the denominator for lnRR and treatment minus control for SMDH, such that the positive values indicate the trait value increased in the treatment group. In cases such as measures of parasite load or prevalence, laying or hatching dates, courtship time, scab score etc., the sign was inverted to ensure comparability across all fitness proxies. In all cases, the effect sizes were coded such that the fitness proxies were positively correlated with the overall fitness.
+We calculated two effect sizes for each pairwise comparison-log response ratio (lnRR) and standardised mean difference with heteroskedasticity correction (SMDH), using `escalc` function (`measure= ROM` and `SMDH` respectively, `vtype= "LS"`) in `metafor` package (@metafor). We specified the treatment group as the numerator and the control group as the denominator for lnRR and treatment minus control for SMDH, such that the positive values indicate the trait value increased in the treatment group. In cases such as measures of parasite load or prevalence, laying or hatching dates, courtship time, scab score etc., the sign was inverted to ensure comparability across all fitness proxies. In all cases, the effect sizes were coded such that the fitness proxies were positively correlated with the overall fitness.
 
-For studies reporting only inferential statistics (e.g., t-tests, ANCOVA), we estimated SMD values (n=`{r} nrow(inferential_stats)`, k=`{r} length(unique(inferential_stats$paper_ID))`) using the equations provided by @thehand2019 . In cases of dichotomous variables (e.g., successful nests, n=`{r} nrow(contingency_table)`, k=`{r} length(unique(contingency_table$paper_ID))`) we used the data to calculate log odds ratio using `escalc` function (`measure=OR`) and convert it to SMD using equations from @thehand2019. Since lnRR cannot be calculated from inferential statistics or dichotomous variables, only SMD under the assumption of homoscedasticity was derived from such data. We excluded these effect sizes along with any zero or negative values (n=`{r} nrow(negative_lnRR)`, k=`{r} length(unique(negative_lnRR$paper_ID))`) when calculating lnRR.
+For studies reporting only inferential statistics (e.g., t-tests, ANCOVA), we estimated SMD values (k=`{r} nrow(inferential_stats)`, n=`{r} length(unique(inferential_stats$paper_ID))`) using the equations provided by @thehand2019 . In cases of dichotomous variables (e.g., successful nests, k=`{r} nrow(contingency_table)`, n=`{r} length(unique(contingency_table$paper_ID))`) we used the data to calculate log odds ratio using `escalc` function (`measure=OR`) and convert it to SMD using equations from @thehand2019. Since lnRR cannot be calculated from inferential statistics or dichotomous variables, only SMD under the assumption of homoscedasticity was derived from such data. We excluded these effect sizes along with any zero or negative values (k=`{r} nrow(negative_lnRR)`, n=`{r} length(unique(negative_lnRR$paper_ID))`) when calculating lnRR.
 
 The sample sizes used were the number of nests in each group, and not the number of individuals, whenever possible. In cases where the control or treatment group was used repeatedly across multiple comparisons, sample sizes were adjusted by dividing them by the number of times each group was used in the comparison, to account for shared group non-independence. For the cases where the authors reported no significant difference between the two groups (n=`{r} nrow(no_ES)`, k=`{r} length(unique(no_ES$paper_ID))`) but did not provide the values, we used zero as the effect size. To impute the SD for these cases, we used the missing-case approach following @nakagawa2022.
 
@@ -118,7 +118,7 @@ We fitted the following random effects in all our models unless stated otherwise
 
 ### Meta-analytical models for biological predictions
 
-To estimate the overall effect of green nest material addition to the nest on fitness across bird species that perform this behaviour, we fitted two separate multilevel intercept-only meta-analytical models using lnRR or SMDH as dependent variables. We used `rma.mv` function from `metafor` package using the 'REML' method. Test statistics and confidence intervals for the fixed effects were computed using t distribution. We used the entire dataset for this analysis except some traits (n=`{r} nrow(SAonly_proxies)` , k=`{r} length(unique(SAonly_proxies$paper_ID))`; see @figsupp-SAonly_proxies for details) that we decided to exclude from all our analysis due to lack of evidence supporting their relationship with fitness. However, we also conducted a sensitivity analysis (@figsupp-MLMA-excluded) including these proxies to ensure robustness of our results. In the model using SMDH, We estimated total amount of heterogeneity ($𝜎^2$; the variation not explained by the sampling error), its sources (or relative heterogeneity; $I^2$), mean-standardised metric ($CVH2$) and variance-mean-standardised metric of heterogeneity ($M2$) (@yang2025).
+To estimate the overall effect of green nest material addition to the nest on fitness across bird species that perform this behaviour, we fitted two separate multilevel intercept-only meta-analytical models using lnRR or SMDH as dependent variables. We used the `rma.mv` function from the `metafor` package using the 'REML' method. Test statistics and confidence intervals for the fixed effects were computed using t distribution. We used the entire dataset for this analysis except some traits (k=`{r} nrow(SAonly_proxies)` , n=`{r} length(unique(SAonly_proxies$paper_ID))`; see @figsupp-SAonly_proxies for details) that we decided to exclude from all our analysis due to lack of evidence supporting their relationship with fitness. However, we also conducted a sensitivity analysis (@figsupp-MLMA-excluded) including these proxies to ensure robustness of our results. In the model using SMDH, We estimated total amount of heterogeneity ($𝜎^2$; the variation not explained by the sampling error), its sources (or relative heterogeneity; $I^2$), mean-standardised metric ($CVH2$) and variance-mean-standardised metric of heterogeneity ($M2$) (@yang2025).
 
 To test the effect of green nest material on reproductive success (courtship hypothesis) and on protective effects and health benefits for the nestling (Parental care hypothesis), we ran a multilevel meta-regression with 'hypothesis' (Courtship hypothesis, Parental care hypothesis, Both) as a moderator. using the entire dataset. For this and all meta-regressions, we estimated $R_{marginal}^2$, the percentage of heterogeneity explained by the moderators (@nakagawa2012) using the entire dataset.
 
@@ -132,7 +132,75 @@ Publication bias is the higher likelihood of a subset of research findings, such
 
 # Results
 
-We obtained X effect sizes from k studies including How many papers in final meta-analysis and how many effect size.
+```{r}
+dataset_analysis <- read_csv("data/03_data_cleaning/dataset_analysis.csv")
+
+ES_per_study<-dataset_analysis%>%group_by(paper_ID)%>%count(paper_ID)
+
+birds_info<-dataset_analysis%>%group_by(bird_species)%>%count(bird_species)
+birds_info$perc<-(birds_info$n/nrow(dataset_analysis))*100
+```
+
+We obtained `{r} nrow(dataset_analysis)` effect sizes from `{r} length(unique(dataset_analysis$paper_ID))` studies, published between `{r} min((dataset_analysis$year_publication),na.rm = T)`-`{r} max((dataset_analysis$year_publication),na.rm = T)`. The mean (±SD) number of effect sizes per study was `{r} as.numeric(format(mean(ES_per_study$n), digit=3))` ± `{r} as.numeric(format(sd(ES_per_study$n), digit=3))`, with a range of `{r} min(ES_per_study$n)`--`{r} max(ES_per_study$n)` effect sizes per study. Median and mean sample sizes per effect size were `{r} median(c(dataset_analysis$effective_n_control,dataset_analysis$effective_n_experiment))` and `{r} as.numeric(format(mean(c(dataset_analysis$effective_n_control,dataset_analysis$effective_n_experiment)), digit=3))` respectively (range: `{r} min(c(dataset_analysis$effective_n_control,dataset_analysis$effective_n_experiment))`-- `{r} max(c(dataset_analysis$effective_n_control,dataset_analysis$effective_n_experiment))`; `{r} nrow(dataset_analysis%>%select(paper_ID,effective_n_control,effective_n_experiment, lnRR, SMDH)%>%filter(effective_n_experiment<2|effective_n_control<2))` effect sizes had a sample size less than 2 in each group). The studies were conducted on `{r} length(unique(dataset_analysis$bird_species))` species across `{r} length(unique(dataset_analysis$population_ID))` locations. About `{r} round(sum(birds_info$perc[birds_info$perc>15]))`% of the effect sizes come from three bird species (`{r} birds_info$bird_species[birds_info$perc > 15][1]`, k = `{r} birds_info$n[birds_info$perc > 15][1]`; `{r} birds_info$bird_species[birds_info$perc > 15][2]`, k = `{r} birds_info$n[birds_info$perc > 15][2]`; `{r} birds_info$bird_species[birds_info$perc > 15][3]`, k = `{r} birds_info$n[birds_info$perc > 15][3]`).
+
+**Does addition of green nest material have an adaptive function?**
+
+```{r}
+intercept_lnRR<-readRDS(here::here("model/intercept_lnRR.rds"))
+intercept_SMDH<-readRDS(here::here("model/intercept_SMDH.rds"))
+```
+
+The intercept only meta-analytic model using the log response ratio (lnRR) estimated a `{r} round((exp(as.double(coef(intercept_lnRR)))-1)*100,1)`% increase in fitness in nests with green nest material across bird species \[Figure ; lnRR = `{r} as.double(formatC(coef(intercept_lnRR), digits = 3, format = "f"))`, 95% CI: \[`{r} as.double(formatC((intercept_lnRR)$ci.lb, digits = 3, format = "f"))`, `{r} as.double(formatC((intercept_lnRR)$ci.ub, digits = 3, format = "f"))`\], 95% PI: \[`{r} as.double(formatC(predict(intercept_lnRR)$pi.lb, digits = 3, format = "f"))`, `{r} as.double(formatC(predict(intercept_lnRR)$pi.ub, digits = 3, format = "f"))`\], p-value = `{r} as.double(formatC(intercept_lnRR$pval, digits = 2, format = "f"))`, k = `{r} intercept_lnRR$k`, n = `{r} length(intercept_lnRR$s.levels.f[[1]])`\]. The total heterogeneity (𝜎2) was estimated at `{r} round(sum(intercept_lnRR$sigma2), 3)` (Q = `{r} round(sum(intercept_lnRR$QE),3)`, p \< 0.001). Measures of relative heterogeneity (I^2^~total~ = `{r} round(as.double(orchaRd::i2_ml(intercept_lnRR)[1]),1)`%) and standardized heterogeneity (mean-standardized: CV~total~ = `{r} round(as.double(orchaRd::cvh1_ml(intercept_lnRR)[1]),2)` and variance-mean-standardized: M~total =~ `{r} round(as.double(orchaRd::m1_ml(intercept_lnRR)[1]),2)`) suggested high variability across effect sizes. Using standardized mean difference (SMDH) as an alternate effect size, the intercept only meta-analytic model estimated a small positive but statistically significant effect of green nest material on fitness \[Figure ; SMDH = `{r} as.double(formatC(coef(intercept_SMDH), digits = 3, format = "f"))`, 95% CI: \[`{r} as.double(formatC((intercept_SMDH)$ci.lb, digits = 3, format = "f"))`, `{r} as.double(formatC((intercept_SMDH)$ci.ub, digits = 3, format = "f"))`\], 95% PI: \[`{r} as.double(formatC(predict(intercept_SMDH)$pi.lb, digits = 3, format = "f"))`, `{r} as.double(formatC(predict(intercept_SMDH)$pi.ub, digits = 3, format = "f"))`\], p-value = `{r} as.double(formatC(intercept_SMDH$pval, digits = 3, format = "f"))`, k = `{r} intercept_SMDH$k`, n = `{r} length(intercept_SMDH$s.levels.f[[1]])`\]. Total heterogeneity was higher in case of SMDH (𝜎^2^= `{r} round(sum(intercept_SMDH$sigma2), 3)` Q = `{r} round(sum(intercept_SMDH$QE),3)`, p \< 0.001). and the relative heterogeneity was substantially reduced (I^2^~total~ = `{r} round(as.double(orchaRd::i2_ml(intercept_SMDH)[1]),1)`%). The standardized heterogeneity (CV~total~ = `{r} round(as.double(orchaRd::cvh1_ml(intercept_SMDH)[1]),2)` and M~total =~ `{r} round(as.double(orchaRd::m1_ml(intercept_SMDH)[1]),2)`) remained high. While lnRR and SMDH differ in their scale, both effect sizes suggest a small but positive effect of green nest material on fitness. These differences in overall effect can stem from the different underlying biological and statistical assumptions. lnRR incorporates the mean difference at a multiplicative scale whereas SMDH expresses the difference on an additive scale. The difference in relative heterogeneity between the two effect sizes aligns with broader trends observed in meta-analysis in ecology and evolution (see @yang2024 for more details).
+
+```{r}
+orchaRd::caterpillars(intercept_lnRR, mod = "1", group="paper_ID",xlab = "Effect size (Log Response Ratio - lnRR)")
+
+orchaRd::caterpillars(intercept_SMDH, mod = "1", group="paper_ID",xlab = "Effect size (Standardized Mean Difference - SMDH)")
+
+intercept_lnRR_plot <- orchard_plot(intercept_lnRR,
+                                         mod = "1",
+                                         group = "paper_ID",
+                                         trunk.size = 1,
+                                         branch.size = 2,
+                                         alpha = 0.3,
+                                         twig.size = 1,
+                                         xlab = "Effect size (Log Response Ratio - lnRR)",
+                                         colour = "#218833",
+                                         fill = T) +
+  scale_fill_manual(values = "#218833") +
+  scale_colour_manual(values = "#218833") +  
+  theme(legend.direction="horizontal", legend.title = element_text(size =8),
+        legend.text = element_text(size = 10), 
+        axis.title = element_text(size = 15),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_blank()) +
+  labs(x = "Intercept")
+  
+print(intercept_lnRR_plot)
+
+intercept_SMDH_plot <- orchard_plot(intercept_SMDH,
+                                         mod = "1",
+                                         group = "paper_ID",
+                                         trunk.size = 1,
+                                         branch.size = 2,
+                                         alpha = 0.3,
+                                         twig.size = 1,
+                                         xlab = "Effect size (Standardized Mean Difference - SMDH)",
+                                         colour = "#895129",
+                                         fill = T) +
+  scale_fill_manual(values = "#895129") +
+  scale_colour_manual(values = "#895129") +  
+  theme(legend.direction="horizontal", legend.title = element_text(size =8),
+        legend.text = element_text(size = 10), 
+        axis.title = element_text(size = 15),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_blank()) +
+  labs(x = "Intercept")
+  
+print(intercept_SMDH_plot)
+```
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
 
 ## Supplementary Appendix
 

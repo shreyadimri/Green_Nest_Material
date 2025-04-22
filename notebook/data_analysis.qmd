@@ -1,0 +1,1326 @@
+---
+title: "Green Nest Material Meta-Analysis"
+subtitle: "The adaptive value of green nest material across birds: A systematic review and meta-analysis"
+author: "Shreya Dimri"
+date: last-modified
+
+format:
+  html:
+   toc: true 
+   toc-title: "Table of Contents" 
+   toc-depth: 2 
+   toc-expand: 3 
+   toc-location: left 
+   mainfont: Verdana 
+   monofont: Jetbrains Mono 
+   fontsize: 12pt 
+   code-fold: show
+   df-print: paged 
+   highlight-style: github 
+   pdf: default
+editor: visual
+---
+
+```{r setup, warning=FALSE, message=FALSE, echo=F}
+
+# Setting up workspace
+
+# For plotting trees, and although not strictly necessary, we may need the `ggtree` R package, which you should be able to install by running:
+# if (!require("BiocManager", quietly = TRUE))
+# install.packages("BiocManager")
+# BiocManager::install("ggtree")
+
+#devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
+pacman::p_load(here, tidyverse, metafor,ggpubr,orchaRd,ggpubfigs) #Packages needed
+rm(list=ls()) ## cleaning up
+set.seed(430) #set seed for reproducibility (for random number generation)
+# Loading cleaned dataset
+dataset_analysis<- read_csv(here::here("data/03_data_cleaning/dataset_analysis.csv"))
+
+# Functions needed
+
+# function to estimate typical sampling error variance obtained from 
+# https://github.com/Yefeng0920/heterogeneity_ecoevo/tree/main/function
+sigma2_v <- function(mod){
+  sigma2_v <- sum(1 / mod$vi) * (mod$k - 1) /
+    (sum(1 / mod$vi)^2 - sum((1 / mod$vi)^2))
+  return(sigma2_v)
+}
+```
+
+### Creating Phylogeny for the plot
+
+```{r}
+# install.packages("pacman")
+# load packages
+pacman::p_load(rotl,
+               ape,
+               ggtree)
+# Doesn't matter if I take dataset_lnRR or dataset_SMDH
+bird_species <- unique(dataset_analysis$bird_species)
+
+# extracting taxonomic information
+taxa <- rotl::tnrs_match_names(names = bird_species)
+taxa
+# check approximate matches
+taxa[taxa$approximate_match==TRUE & !(is.na(taxa$approximate_match)),]
+# phylogenetic information for our species from the Open Tree of Life
+tree <- rotl::tol_induced_subtree(ott_ids = taxa[["ott_id"]], label_format = "name")
+ape::is.binary(tree)
+# here are the species included in the tree
+sort(tree$tip.label)
+
+# removing the underscore "_" from the tree tip.label
+tree$tip.label <- gsub("_"," ", tree$tip.label)
+sort(tree$tip.label)
+
+# compute branch lengths of tree
+phylo_branch <- compute.brlen(tree, method = "Grafen", power = 1)
+
+# check tree is ultrametric
+is.ultrametric(phylo_branch) # TRUE
+
+# matrix to be included in the models
+bird_phylo <- vcv(phylo_branch, cor = T)
+bird_phylo
+
+plot(tree) #check: https://www.rdocumentation.org/packages/ape/versions/5.3/topics/plot.phylo
+```
+
+### Visualizing random effects structure
+
+```{r}
+# install.packages("devtools")
+#devtools::install_github("davidsjoberg/ggsankey")
+library(ggsankey)
+
+sankey_data <- dataset_analysis %>%
+  select(Observation_ID, repeated_trait_ID_coded, paper_ID, experiment_ID_coded, group_ID_coded)%>%
+  mutate(across(c(Observation_ID, repeated_trait_ID_coded, paper_ID, experiment_ID_coded, group_ID_coded), as.character)) %>%
+  make_long(Observation_ID, repeated_trait_ID_coded, paper_ID, experiment_ID_coded, group_ID_coded)
+
+sankey_data <- dataset_analysis %>%
+  select(paper_ID, bird_species, population_ID)%>%
+  mutate(across(c(paper_ID, bird_species, population_ID), as.character)) %>%
+  make_long(paper_ID, bird_species, population_ID)
+
+
+ggplot(sankey_data, aes(x = x, 
+               next_x = next_x, 
+               node = node, 
+               next_node = next_node,
+               fill = factor(node))) +
+  geom_sankey() +
+  scale_fill_discrete(drop=FALSE) +
+  theme(legend.position = "none")
+
+ggplot(sankey_data, aes(x = x, next_x = next_x, node = node, next_node = next_node, fill = factor(node))) +
+  geom_alluvial(flow.alpha = .6) +
+  scale_fill_viridis_d(drop = FALSE) +
+  theme_alluvial(base_size = 18) +
+  labs(x = NULL) +
+  theme(legend.position = "none",
+        plot.title = element_text(hjust = .5))
+
+
+```
+
+# lnRR Multilevel meta-analysis
+
+```{r}
+# selecting dataset which are not flagged
+dataset_lnRR<-dataset_analysis%>%
+   filter(lnRR_sign != "NA" | lnRR_variance != "NA")%>%
+  filter(proxy_decision == "include")
+
+
+# selecting dataset which are flagged
+lnRR_con_flagged<-dataset_analysis%>%
+   filter(lnRR_sign != "NA" | lnRR_variance != "NA")%>%
+  filter(proxy_decision != "SMDH only" | proxy_decision != "contingency table" )
+
+# selecting dataset without those using 0 as ES because authors reported no effect
+
+lnRR_sin_missingES <- dataset_lnRR %>% 
+   filter(!proxy_comment %in% c("use 0 as ES"))
+
+lnRR_flagged_no_missingES<- lnRR_con_flagged %>% 
+   filter(!proxy_comment %in% c("use 0 as ES"))
+
+```
+
+## Intercept only models
+
+*"Does adding green material to the nest have an adaptive function across the bird species that perform this behaviour?"*
+
+```{r}
+
+VCV_lnRR<- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+```
+
+The MLMA using lnRR as the effect size measure incorporate the imputed sampling variance-covariance:
+
+```{r intercept-only-model-lnRR}
+
+
+intercept_lnRR<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_lnRR)
+
+# saving the model
+ saveRDS(intercept_lnRR, file = here::here("model/intercept_lnRR.rds"))
+
+summary(intercept_lnRR)
+predict(intercept_lnRR)
+
+```
+
+Now looking at the intercept only model
+
+```{r}
+
+
+# Then also:
+# # Typical sampling variance (which captures the statistical noise of the data, 
+# # but is rarely reported in the current meta-analytic practice):
+sigma2_v(intercept_lnRR)
+
+# To calculate heterogeneity, these are the functions from orchaRd:
+# # I2, CV and M
+sigma2_main_model_vector <- sum(intercept_lnRR$sigma2)
+I2_main_model_vector <- orchaRd::i2_ml(intercept_lnRR)
+CV_main_model_vector <- orchaRd::cvh1_ml(intercept_lnRR)
+M_main_model_vector <- orchaRd::m2_ml(intercept_lnRR)
+
+
+# # # Total unstandardized raw variance (i.e. total heterogeneity)
+round(sum(intercept_lnRR$sigma2), 3)
+
+```
+
+### Senstivity Analysis with flagged proxies
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_lnRR_flagged <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = lnRR_con_flagged,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+MLMA_lnRR_VCV_flagged<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_flagged, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = lnRR_con_flagged)
+
+
+# What is the effect now?
+
+summary(MLMA_lnRR_VCV_flagged)
+predict(MLMA_lnRR_VCV_flagged)
+
+```
+
+### Sensitivity Analysis without 0 ES
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_lnRR_no_missingES <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = lnRR_sin_missingES,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+MLMA_lnRR_VCV_no_missingES<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_no_missingES, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = lnRR_sin_missingES)
+
+
+# What is the effect now?
+
+summary(MLMA_lnRR_VCV_no_missingES)
+predict(MLMA_lnRR_VCV_no_missingES)
+
+```
+
+### Sensitivity Analysis with flagged proxies and no missing ES
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_flagged_no_missingES <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = lnRR_flagged_no_missingES,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+MLMA_lnRR_flagged_no_missingES<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_flagged_no_missingES, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = lnRR_flagged_no_missingES)
+
+
+# What is the effect now?
+
+summary(MLMA_lnRR_flagged_no_missingES)
+predict(MLMA_lnRR_flagged_no_missingES)
+```
+
+[**Robust variance estimation to guard against arbitary value of sampling correlation**]{.underline} - 'robust()' function from R package 'metafor' (Viechtbauer 2010) using 'CR2' (bias reduced linearization correction) from the R package 'clubSandwich' (Pustejovsky 2024) for small-sample size adjustment.
+
+At the moment, this is not working..
+
+```{r}
+#MLMA_lnRR_RVE<- robust(MLMA_lnRR_VCV,
+#                        cluster = paper_ID,
+#                        clubSandwich = TRUE,
+#                        verbose=T)
+
+# # summary(MLMA_lnRR_RVE)
+# I2_CI <- i2_ml(MLMA_lnRR_RVE) # Relative heterogeneity
+# round(I2_CI,2) # absolute heterogeneity is reported in the summary of the model
+```
+
+::: callout-important
+Sensitivity Analysis
+
+We will also perform a sensitivity analysis using 0.3 and 0.7 correlation between the sampling variances from the same paper_ID and report it in the supplementary materials. If this sensitivity analysis shows large differences in conclusions for the intercept-only model, we will proceed to perform such sensitivity analysis for the meta-regressions.
+:::
+
+First, set a series of ρs (i.e., 0.3, 0.5, 0.7) (we assume these values arbitrarily):
+
+```{r lnRR rho sensitivity analysis}
+# rho_range <- c(0.3, 0.5, 0.7)
+# 
+# MLMAlnRR_VCV_range <- list() # repeatedly run the specified model with varying rho
+# for (i in 1:length(rho_range))
+# {VCV_range <- vcalc(vi = lnRR_variance,
+#                   cluster = paper_ID,
+#                   subgroup = group_ID,
+#                   obs = Observation_ID,
+#                   data = dataset_lnRR,
+#                    rho = rho_range[i],
+#                     ) # impute sampling variance covariance matrix with varying rho
+# 
+# MLMAlnRR_VCV_range[[i]] <- rma.mv(yi = lnRR_sign,
+#                                   V = VCV_range, # sampling variance covariance matrix with varying values of rho.
+#                                  random = list(~ 1 | paper_ID,
+#                                   ~ 1 | Observation_ID,
+#                                   ~ 1 | experiment_ID,
+#                                   ~ 1 | group_ID,
+#                                   ~ 1 | repeated_trait_ID),
+#                                   method = "REML",
+#                                   data = dataset_lnRR # run the model with varying rho
+# )
+# }
+# 
+# save(VCV_range, file = here::here("GNM/figures/VCV_range.Rdata"))
+# save(MLMAlnRR_VCV_range, file = here::here("GNM/figures/MLMAlnRR_VCV_range.Rdata"))
+
+
+```
+
+```{r Table for lnRR rho sensitivity analysis}
+
+# t4 <- data.frame(rho  = rho_range,
+#                  "overall effect"  = sapply(MLMAlnRR_VCV_range, function(x) coef(x)),
+#                  "standard error" = sapply(MLMAlnRR_VCV_range, function(x) x$se),
+#                  "p-value" = sapply(MLMAlnRR_VCV_range, function(x) x$pval),
+#                  "Lower CI" = sapply(MLMAlnRR_VCV_range, function(x) x$ci.lb),
+#                  "Upper CI" = sapply(MLMAlnRR_VCV_range, function(x) x$ci.ub),
+#                  "Log-likehood" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[1,1]),
+#                  "AIC" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[3,1]),
+#                  "BIC" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[4,1]),
+#                  "AICc" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[5,1]))
+# 
+# colnames(t4) <- c("Sampling correlation", "Overall effect (lnRR)", "Standard error", "p-value", "Lower CI", "Upper CI", "Log-likehood", "AIC", "BIC", "AICc")
+# 
+# t4 %>% dfround(4) %>% DT::datatable()
+```
+
+### Plot
+
+```{r caterpillar plot lnRR}
+
+orchaRd::caterpillars(intercept_lnRR, mod = "1", group="paper_ID",xlab = "Effect size (Log response ratio - lnRR)")
+```
+
+```{r intercept only plot}
+
+lnRR_intercept_only_plot <- orchard_plot(intercept_lnRR,
+                                         mod = "1",
+                                         group = "paper_ID",
+                                         trunk.size = 1,
+                                         branch.size = 2,
+                                         alpha = 0.3,
+                                         twig.size = 1,
+                                         xlab = "Effect size (Log response ratio - lnRR)",
+                                         colour = "#218833",
+                                         fill = T) +
+  scale_fill_manual(values = "black") +
+  scale_colour_manual(values = "#218833") +  
+  theme(legend.direction="horizontal", legend.title = element_text(size =8),
+        legend.text = element_text(size = 10), 
+        axis.title = element_text(size = 15),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_blank()) +
+  labs(x = "Intercept")
+  
+
+print(lnRR_intercept_only_plot)
+```
+
+```{# intercept_only_plot<- ggarrange(MLMA_lnRR_intercept_only_plot,}
+#                                       MLMA_lnRR_VCV_intercept_only_plot,
+#                                       ncol = 2,  nrow = 1)
+
+# intercept_only_plot
+# ggsave("intercept_only_plot.pdf", plot = intercept_only_plot, height = 250, width = 500, units = "mm", dpi = 600)
+
+
+```
+
+## Uni-moderator multilevel meta-regressions
+
+#### Hypothesis
+
+To address our secondary questions "Does the addition of green nest material by birds increase their reproductive success? (Courtship hypothesis)" and "Does the addition of green nest material have protective effects and health benefits for the nestlings? (Parental care hypothesis)", we will make use of the unimoderator multilevel meta-regressions hypothesis type (levels: CH, PCH, Both) as the moderator.
+
+```{r}
+MR_lnRR_hypothesis <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + Hypothesis,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+# save(MR_lnRR_hypothesis, file = here::here("GNM/figures/MR_lnRR_hypothesis.Rdata"))
+```
+
+```{r Plot lnRR meta-regression on hypothesis}
+
+ MR_lnRR_hypothesis_plot <-
+  orchard_plot(
+    mod_results(
+       MR_lnRR_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID",
+      data = dataset_lnRR
+    ), xlab ="") +
+  scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  labs(x = "",
+       y = "lnRR")+
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  ggtitle("Different Hypothesis")
+ 
+  MR_lnRR_hypothesis_plot
+```
+
+#### Exploratory Analysis
+
+For our exploratory analyses (see section Exploratory Analyses), we will run unimoderator multilevel meta-regressions using the following moderators:
+
+#### Type of parasites
+
+(levels: arthropods, micro-organisms) 
+
+```{r Types of parasite}
+# This analysis only includes dataset that has a proxy relating to parasite or pathogen
+dataset_lnRR_parasite <- dataset_lnRR%>%
+  filter(trait_type == "Parasitic_and_pathogenic")
+VCV_lnRR_parasite <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_parasite,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+ MR_lnRR_parasite <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_parasite,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + parasite_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                   test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR_parasite)
+
+ # Warning: 4 rows with NAs omitted from model fitting.
+ # Check what rows are these.. 
+ 
+ # save( MR_lnRR_parasite, file = here::here("GNM/figures/ MR_lnRR_parasite.Rdata"))
+```
+
+```{r}
+ MR_lnRR_parasite_plot <-
+  orchard_plot(
+    mod_results(
+        MR_lnRR_parasite,
+      mod = "parasite_type",
+      group = "paper_ID",
+      data = dataset_lnRR_parasite
+    ),
+    xlab = "")+
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  labs(x = "",
+       y = "lnRR")+
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  ggtitle("Parasite_type")
+ 
+   MR_lnRR_parasite_plot
+```
+
+2\. Time of addition of green nest material (levels: before egg hatching, after egg hatching, continuously throughout the nesting phase).
+
+#### Type of experimental design
+
+(levels: 1 = non-aromatic vs. aromatic, 2 = no added material vs. aromatic, 3 = no added material vs. non-aromatic).
+
+```{r}
+# This analysis only includes dataset that has a proxy relating to comaparision type
+dataset_lnRR_design <- dataset_lnRR %>%
+  filter(!is.na(comparision_type))%>%
+  mutate(comparision_type= as.factor(comparision_type))
+
+VCV_lnRR_design <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_design,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+MR_lnRR_design <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_design ,# specify lnRR's sampling variance;
+                    mods = ~ comparision_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR_design )
+
+# save(MR_lnRR_design, file = here::here("GNM/figures/MR_lnRR_trait.Rdata"))
+```
+
+```{r}
+
+
+MR_lnRR_design_plot <-
+  orchard_plot(
+    mod_results(
+        MR_lnRR_design,
+      mod = "comparision_type",
+      group = "paper_ID",
+      data = dataset_lnRR_design
+    ),
+    xlab = "")+
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  labs(x = "",
+       y = "lnRR")+
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  ggtitle("Experimental Design")
+ 
+   MR_lnRR_design_plot
+   
+ 
+```
+
+#### Bird species
+
+(levels: Cyanistes caeruleus, Sturnus unicolor, Tachycineta bicolor, Sturnus vulgaris; note that these levels reflect the list of species studied in our current database, which may increase after updating our search and/or receiving unpublished data from authors)
+
+```{r}
+MR_lnRR_birds <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + bird_species,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+# save(MR_lnRR_hypothesis, file = here::here("GNM/figures/MR_lnRR_hypothesis.Rdata"))
+```
+
+```{r Plot lnRR meta-regression on birds}
+
+MR_lnRR_birds_plot <-
+  orchard_plot(
+    mod_results(
+       MR_lnRR_birds,
+      mod = "bird_species",
+      group = "paper_ID",
+      data = dataset_lnRR
+    ), xlab ="") +
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral","grey5")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral","grey5")) +
+  labs(x = "",
+       y = "lnRR")+
+  theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+
+  ggtitle("Bird Species")
+ 
+ MR_lnRR_birds_plot
+```
+
+#### Type of trait studied
+
+(levels:physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology)
+
+```{r}
+MR_lnRR_trait <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = lnRR_variance,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + trait_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+# save(MR_lnRR_trait, file = here::here("GNM/figures/MR_lnRR_trait.Rdata"))
+```
+
+```{r}
+MR_lnRR_trait_plot <-
+  orchard_plot(
+    mod_results(
+        MR_lnRR_trait,
+      mod = "trait_type",
+      group = "paper_ID",
+      data = dataset_lnRR
+    ),
+    xlab = "")+
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral")) +
+  labs(x = "",
+       y = "lnRR")+
+   theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+
+  ggtitle("Type of trait studied")
+ 
+   MR_lnRR_trait_plot
+```
+
+# SMDH Multilevel meta-analysis
+
+```{r}
+# selecting dataset which are not flagged
+dataset_SMDH<-dataset_analysis%>%
+   filter(proxy_decision == "include"| proxy_decision == "SMDH only"|proxy_decision =="contingency table") %>% filter(SMDH_sign != "NA")
+
+
+# selecting dataset which are flagged
+SMDH_con_flagged<-dataset_analysis%>%
+   filter(SMDH_sign != "NA")
+
+# selecting dataset without those using 0 as ES because authors reported no effect
+
+SMDH_sin_missingES <- dataset_SMDH %>% 
+   filter(!proxy_comment %in% c("use 0 as ES"))
+
+SMDH_flagged_no_missingES<- SMDH_con_flagged %>% 
+   filter(!proxy_comment %in% c("use 0 as ES"))
+```
+
+### Intercept only model
+
+We are only running these analysis for the fitness proxy labelled "included". Some proxies have been flagged and we will run them in a sensitivity analysis only.
+
+their sampling variances will be fitted as variance--covariance matrices assuming a 0.5 correlation (ρs) between sampling variances from the same paper_ID (Noble et al. 2017).
+
+their sampling variances will be fitted as variance--covariance matrices assuming a 0.5 correlation (ρs) between sampling variances from the same paper_ID (Noble et al. 2017).
+
+```{r}
+
+VCV_SMDH <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+```
+
+The MLMA using SMDH as the effect size measure incorporate the imputed sampling variance
+
+```{r}
+
+intercept_SMDH<- rma.mv(yi = SMDH_sign, # specify SMDH as the effect size measure;
+                    V = VCV_SMDH, # specify SMDH's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_SMDH)
+
+# saving the model
+# saveRDS(intercept_SMDH, file = here::here("model/intercept_SMDH.rds"))
+
+
+
+```
+
+Now looking at the intercept only model
+
+```{r}
+summary(intercept_SMDH)
+predict(intercept_SMDH)
+
+# Then also:
+# # Typical sampling variance (which captures the statistical noise of the data, 
+# # but is rarely reported in the current meta-analytic practice):
+sigma2_v(intercept_SMDH)
+
+# To calculate heterogeneity, these are the functions from orchaRd:
+# # I2, CV and M
+sigma2_main_model_vector <- sum(intercept_SMDH$sigma2)
+I2_main_model_vector <- orchaRd::i2_ml(intercept_SMDH)
+CV_main_model_vector <- orchaRd::cvh1_ml(intercept_SMDH)
+M_main_model_vector <- orchaRd::m1_ml(intercept_SMDH)
+
+
+# # # Total unstandardized raw variance (i.e. total heterogeneity)
+round(sum(intercept_SMDH$sigma2), 3)
+
+```
+
+### Senstivity Analysis with flagged proxies
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_SMDH_flagged <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = SMDH_con_flagged,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+MLMA_SMDH_VCV_flagged<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_flagged, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = SMDH_con_flagged)
+
+
+# What is the effect now?
+
+summary(MLMA_SMDH_VCV_flagged)
+predict(MLMA_SMDH_VCV_flagged)
+
+```
+
+### Sensitivity Analysis without 0 ES
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_SMDH_no_missingES <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = SMDH_sin_missingES,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+MLMA_SMDH_VCV_no_missingES<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_no_missingES, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = SMDH_sin_missingES)
+
+
+# What is the effect now?
+
+summary(MLMA_SMDH_VCV_no_missingES)
+predict(MLMA_SMDH_VCV_no_missingES)
+
+```
+
+### Sensitivity Analysis with flagged proxies and no missing ES
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_SMDH_flagged_no_missingES <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = SMDH_flagged_no_missingES,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+MLMA_SMDH_flagged_no_missingES<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_flagged_no_missingES, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = SMDH_flagged_no_missingES)
+
+
+# What is the effect now?
+
+summary(MLMA_SMDH_flagged_no_missingES)
+predict(MLMA_SMDH_flagged_no_missingES)
+```
+
+[**Robust variance estimation to guard against arbitary value of sampling correlation**]{.underline} - 'robust()' function from R package 'metafor' (Viechtbauer 2010) using 'CR2' (bias reduced linearization correction) from the R package 'clubSandwich' (Pustejovsky 2024) for small-sample size adjustment.
+
+At the moment, this is not working..
+
+```{r}
+# MLMA_SMDH_RVE<- robust(MLMA_SMDH_VCV,
+#                        cluster = paper_ID,
+#                        clubSandwich = TRUE)
+
+# summary(MLMA_SMDH_RVE)
+# I2_CI <- i2_ml(MLMA_SMDH_RVE) # Relative heterogeneity
+# round(I2_CI,2) # absolute heterogeneity is reported in the summary of the model
+```
+
+### Plot
+
+```{r}
+# MLMA_SMDH
+
+MLMA_SMDH_intercept_only_plot <-
+  orchard_plot(
+    mod_results(
+      intercept_SMDH,
+      mod = "1",
+      group = "paper_ID",
+      data = dataset_lnRR
+    ),
+    xlab = "Effect Size SMDH") +
+  scale_fill_manual(values="darkgreen") +
+  scale_colour_manual(values="darkgreen")+
+  theme(legend.direction="horizontal", legend.title = element_text(size =8),
+        legend.text = element_text(size = 10), 
+        axis.title = element_text(size = 15),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_blank()) +
+  labs(
+    x = "",
+    y = "SMDH"
+  )+
+  ggtitle("Main effect of GNM on fitness using VCV Matrix")
+
+MLMA_SMDH_intercept_only_plot
+
+```
+
+## Unimoderator multilevel meta-regressions
+
+#### Hypothesis
+
+To address our secondary questions "Does the addition of green nest material by birds increase their reproductive success? (Courtship hypothesis)" and "Does the addition of green nest material have protective effects and health benefits for the nestlings? (Parental care hypothesis)", we will make use of the unimoderator multilevel meta-regressions hypothesis type (levels: CH, PCH, Both) as the moderator.
+
+```{r}
+MR_SMDH_hypothesis <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + Hypothesis,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+# save(MR_SMDH_hypothesis, file = here::here("GNM/figures/MR_lnRR_hypothesis.Rdata"))
+```
+
+```{r Plot meta-regression on hypothesis SMDH}
+
+ MR_SMDH_hypothesis_plot <-
+  orchard_plot(
+    mod_results(
+       MR_SMDH_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID",
+      data = dataset_SMDH
+    ), xlab ="") +
+  scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  labs(x = "",
+       y = "SMDH")+
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  ggtitle("Different Hypothesis")
+ 
+  MR_SMDH_hypothesis_plot
+```
+
+#### Exploratory Analysis
+
+For our exploratory analyses (see section Exploratory Analyses), we will run unimoderator multilevel meta-regressions using the following moderators:
+
+#### Type of parasites
+
+(levels: arthropods, micro-organisms) 
+
+```{r Types of parasite SMDH}
+# This analysis only includes dataset that has a proxy relating to parasite or pathogen
+dataset_SMDH_parasite <- dataset_SMDH%>%
+  filter(trait_type == "Parasitic_and_pathogenic")
+VCV_SMDH_parasite <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_parasite,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+ MR_SMDH_parasite <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_parasite,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + parasite_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                   test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_parasite)
+
+ # Warning: 4 rows with NAs omitted from model fitting.
+ # Check what rows are these.. 
+ 
+ # save( MR_lnRR_parasite, file = here::here("GNM/figures/ MR_lnRR_parasite.Rdata"))
+```
+
+```{r}
+ MR_SMDH_parasite_plot <-
+  orchard_plot(
+    mod_results(
+        MR_SMDH_parasite,
+      mod = "parasite_type",
+      group = "paper_ID",
+      data = dataset_SMDH_parasite
+    ),
+    xlab = "")+
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  labs(x = "",
+       y = "SMDH")+
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  ggtitle("Parasite_type")
+ 
+   MR_SMDH_parasite_plot
+```
+
+2\. Time of addition of green nest material (levels: before egg hatching, after egg hatching, continuously throughout the nesting phase).
+
+#### Type of experimental design
+
+(levels: 1 = non-aromatic vs. aromatic, 2 = no added material vs. aromatic, 3 = no added material vs. non-aromatic).
+
+```{r}
+# This analysis only includes dataset that has a proxy relating to comaparision type
+dataset_SMDH_design <- dataset_SMDH %>%
+  filter(!is.na(comparision_type))%>%
+  mutate(comparision_type= as.factor(comparision_type))
+
+VCV_SMDH_design <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_design,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+MR_SMDH_design <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_design ,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + comparision_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_design )
+
+# save(MR_SMDH_design, file = here::here("GNM/figures/MR_SMDH_trait.Rdata"))
+```
+
+```{r}
+ MR_SMDH_design_plot <-
+  orchard_plot(
+    mod_results(
+        MR_SMDH_design,
+      mod = "comparision_type",
+      group = "paper_ID",
+      data = dataset_SMDH_design
+    ),
+    xlab = "")+
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3")) +
+  labs(x = "",
+       y = "SMDH")+
+  theme(axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  ggtitle("Experimental Design")
+
+    MR_SMDH_design_plot
+```
+
+#### Bird species
+
+(levels: Cyanistes caeruleus, Sturnus unicolor, Tachycineta bicolor, Sturnus vulgaris; note that these levels reflect the list of species studied in our current database, which may increase after updating our search and/or receiving unpublished data from authors)
+
+```{r}
+MR_SMDH_birds <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + bird_species,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+# save(MR_SMDH_birds, file = here::here("GNM/figures/MR_SMDH_birds.Rdata"))
+```
+
+```{r Plot SMDH meta-regression on birds}
+
+MR_SMDH_birds_plot <-
+  orchard_plot(
+    mod_results(
+       MR_SMDH_birds,
+      mod = "bird_species",
+      group = "paper_ID",
+      data = dataset_SMDH
+    ), xlab ="") +
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral","grey5")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral","grey5")) +
+  labs(x = "",
+       y = "SMDH")+
+  theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+
+  ggtitle("Bird Species")
+ 
+ MR_SMDH_birds_plot
+```
+
+#### Type of trait studied
+
+(levels:physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology)
+
+```{r}
+MR_SMDH_trait <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = SMDH_variance,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + trait_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+# save(MR_SMDH_trait, file = here::here("GNM/figures/MR_SMDH_trait.Rdata"))
+```
+
+```{r}
+MR_SMDH_trait_plot <-
+  orchard_plot(
+    mod_results(
+        MR_SMDH_trait,
+      mod = "trait_type",
+      group = "paper_ID",
+      data = dataset_SMDH
+    ),
+    xlab = "")+
+     scale_colour_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral")) +
+  scale_fill_manual(values = c("darkorange", "lightgoldenrod3", "mediumpurple4", "palegreen3","brown4","lightcoral")) +
+  labs(x = "",
+       y = "SMDH")+
+   theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+
+  ggtitle("Type of trait studied")
+ 
+   MR_SMDH_trait_plot
+```
+
+
+# **Sensitivity analyses / robustness checks**
+
+We will run several sensitivity analyses using the same random effect structure as described above aimed at ensuring the robustness of our results. 
+
+1.  We will re-run all our meta-analyses and meta-regressions only using effect sizes calculated from means, SDs, and ns (i.e., excluding any effect sizes calculated from inferential statistics)
+
+2.  For the overall effect size (i.e., the meta-analytical mean), we will run the bivariate multilevel meta-analytic model suggested by Yang et al. (2024), which models both lnRR and SMD(H) simultaneously (i.e., including them both as response variables and estimating their correlation; random).
+
+```{r}
+dataset_bivariate <- data.frame(paper_ID = c(dataset_lnRR$paper_ID, dataset_SMDH$paper_ID),
+                      Observation_ID = c(dataset_lnRR$Observation_ID, dataset_SMDH$Observation_ID),
+                      ES = c(dataset_lnRR$lnRR_sign, dataset_SMDH$SMDH_sign),
+                      V_ES = c(dataset_lnRR$lnRR_variance, dataset_SMDH$SMDH_variance),
+                      ES_measure = c(rep("lnRR", nrow(dataset_lnRR)), rep("SMD", nrow(dataset_SMDH)))
+                      )
+
+VCV <- vcalc(vi = V_ES, # sampling variances of lnRR and SMD that are correlated within the same study;
+             cluster = paper_ID, # study identity;
+             type = ES_measure, # different types of effect size measures underlying the observed effect sizes;
+             data = dataset_bivariate, # the long format data frame;
+             rho = 0.5, # assuming that the effect sizes within the same study are correlated with rho = 0.5.
+             nearpd = TRUE # specify whether impose the non positive definite VCV matrix (not invertible) to the nearest positive semi-definite matrix 
+             )
+
+BMLMA <- rma.mv(yi = ES, # specify the effect size estimate (the variable ES in our case);
+                V = VCV, # specify the imputed variance-covariance matrix;
+                mods = ~ ES_measure - 1, # specify the variable "ES_measure" indicating the types of effect size measures;
+                random = list(~ ES_measure | paper_ID, 
+                              ~ ES_measure | Observation_ID), # add correlated random effects corresponding to the lnRR and SMD parameters in the same study;
+                struct = "UN", # impose an unstructured variance-covariance of the study-specific random effects;
+                test = "t", # t distribution is specified to test the overall effect against the null hypothesis and construct confidence intervals;
+                method = "REML", # restricted likelihood maximum is assigned as the estimator for variance components as suggested;
+                data = dataset_bivariate, # the long format dataset
+                sparse = T
+               )
+
+```
+
+
+3.  We will re-run our intercept-only multivariate meta-analysis (with both lnRR and SMDH as effect sizes) using 0.3 and 0.7 correlation (ρs) between sampling variances from the same paper_ID. If we find large differences in conclusions depending on ρs, we will run the corresponding sensitivity analyses for all our meta-regressions as well.
+
+4.  If during our analyses we notice the need to run additional sensitivity analyses to ensure the robustness of our results, we will label those analyses as non-pre-registered and report them in the supplementary materials of the eventual manuscript.
+
+### Risk of Bias
+
+6\. Blinding: (Levels: yes, no(
+
+7\. Random Assignment: (Levels: yes, no)
+
+8\. Missing Data: (Levels: yes, no)
+
+Note that the specific subset of data for each meta-regression may differ based on the data availability (e.g., information about the type of parasites is only available for effect sizes based on parasite/pathogen related fitness proxy). We will conduct meta-regression on suitable subsets of data for each analysis, provided we have sufficient effect sizes per moderator level (i.e., at least 5 effect sizes per moderator level).
+
+::: callout-important
+## Phylogenetic Effects
+
+Note also that if we obtain additional effect sizes for other bird species after we update our search and/or contact authors, our models may need to account for phylogenetic nonindependence via the inclusion of two additional random effects: "species" and "phylogeny" following Cinar et al. (2022).
+:::
+
+## Other Analysis
+
+### Risk of Bias Assessment
+
+-   RoB - The outcome will be presented in the form of a [**summary table**]{.underline}. We will conduct uni-moderator meta-regressions using these variables.
+
+## Heterogeneity
+
+To understand the sources of variation or heterogeneity,
+
+### For the intercept-only models
+
+we will use the pluralistic approach recently suggested by Yang et al. (2023),
+
+which consists of calculating four metrics of heterogeneity (σ2, I2, CV, M) to comprehensively understand both total and random-effect specific heterogeneity.
+
+### For the meta-regressions,
+
+we will calculate Rmarginal2 to quantify the heterogeneity explained by the moderator(s) in proportion to the total variation (Nakagawa & Schielzeth, 2013).
+
+## Publication Bias
+
+To explore evidence of publication bias, we will run multilevel meta-regressions with the same random effects structure as described above. We will follow the approach recommended in section 4.3 from Nakagawa et al. (2022) for both lnRR and SMDH, which consists of the following steps:
+
+First, run a uni-moderator meta-regression to test for evidence of small-study effects for both lnRR and SMDH separately, where the moderator is the square root of the inverse of the 'effective sample size' (see equation 27 in Nakagawa et al. 2022). The slope of this meta-regression provides information about whether funnel plot asymmetry exists, and the intercept corresponds to the overall effect size adjusted by small-study effects. However, if this intercept is statistically significantly different from zero, 
+
+```{r}
+dataset_SMDH<-dataset_SMDH%>%
+  mutate(effective_n_inv=1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control)))%>%
+  mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
+
+MR_SMDH_small_study <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = SMDH_variance,# specify lnRR's sampling variance;
+                    mods = ~sqrt_effective_n_inv,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+summary(MR_SMDH_small_study)
+
+SMDH_small_study_bubble<-orchaRd::mod_results(MR_SMDH_small_study,
+                     mod="sqrt_effective_n_inv",
+                     group="paper_ID",
+                     weights="prop")
+orchaRd::bubble_plot(SMDH_small_study_bubble,
+                      mod="sqrt_effective_n_inv",
+                     group="paper_ID")
+
+round(r2_ml(MR_SMDH_small_study)*100,2)
+```
+
+Then, run the following uni-moderator meta-regression for both lnRR and SMDH separately which provides a less biased adjusted overall effect. The moderator here is simply the inverse of the 'effective sample size' (see equation 28 in Nakagawa et al. 2022). The slope of this meta-regression provides information about whether funnel plot asymmetry exists and the intercept corresponds to a less biased overall effect size adjusted by small-study effects.
+
+Next, run a uni-moderator meta-regression to test for evidence of decline effects (also known as time-lag bias) which includes year of publication (mean-centered) as the only moderator, and whose slope would provide information about whether the overall effect size has changed (decline) over time (Nakagawa et al. 2022; Sánchez-Tójar et al. 2018).
+
+```{r}
+dataset_SMDH<-dataset_SMDH%>%
+  filter(year_publication!="Unpublished")%>%
+  mutate(year_MeanCenter=scale(as.numeric(year_publication),scale=F)[,1])
+
+MR_SMDH_decline_eff <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = SMDH_variance,# specify lnRR's sampling variance;
+                    mods = ~ year_MeanCenter,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+summary(MR_SMDH_decline_eff)
+
+round(r2_ml(MR_SMDH_decline_eff)*100,2)
+
+MR_SMDH_decline_effect_bubble<-orchaRd::mod_results(MR_SMDH_decline_eff,
+                     mod="year_MeanCenter",
+                     group="paper_ID",
+                     weights="prop")
+orchaRd::bubble_plot(MR_SMDH_decline_effect_bubble,
+                      mod="year_MeanCenter",
+                     group="paper_ID")
+```
+
+Last, run an all-in meta-regression including both the (square root of the) inverse of the 'effective sample size' and the mean-centered year of publication as well as all the other moderators tested in our study to estimate how much heterogeneity is explained by all moderators combined as well as to explore whether evidence remains similar after accounting for all the other moderators (see equation 29 in Nakagawa et al. 2022 for more information about this approach). 
