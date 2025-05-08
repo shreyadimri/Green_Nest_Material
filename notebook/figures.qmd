@@ -1,0 +1,488 @@
+---
+title: "Figures and Plots"
+---
+
+# Intercept only model
+
+Orchard plot for overall effect of green nest material on fitness using lnRR and SMDH
+
+```{r orchard plot for intercept only models}
+devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
+pacman::p_load(here,tidyverse,metafor,orchaRd,patchwork,cowplot)
+
+# Loading models for SMDH and lnRR
+
+intercept_lnRR<-readRDS(here::here("model/intercept_lnRR.rds"))
+intercept_SMDH<-readRDS(here::here("model/intercept_SMDH.rds"))
+
+# Plot for lnRR
+intercept_lnRR_plot <- orchard_plot(intercept_lnRR,
+                                    mod = "1",
+                                    group = "paper_ID",
+                                    trunk.size = 0.5,
+                                    branch.size = 2,
+                                    twig.size = 0.5,
+                                    alpha = 0.3,
+                                    xlab = "Effect size (Log Response Ratio- lnRR)",
+                                    colour = "#218833",
+                                    fill = TRUE) +
+  scale_fill_manual(values = "#218833") +
+  scale_colour_manual(values = "#218833") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0),
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+# Plot for SMDH
+intercept_SMDH_plot <- orchard_plot(intercept_SMDH,
+                                    mod = "1",
+                                    group = "paper_ID",
+                                    trunk.size = 0.5,
+                                    branch.size = 2,
+                                    twig.size = 0.5,
+                                    alpha = 0.3,
+                                    xlab = "Effect size (Standardized Mean Difference- SMDH)",
+                                    colour = "#895129",
+                                    fill = TRUE) +
+  scale_fill_manual(values = "#895129") +
+  scale_colour_manual(values = "#895129") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+
+# Combine using patchwork
+Figure_intercept <- intercept_lnRR_plot / intercept_SMDH_plot +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_overall_effect.png"), plot = Figure_intercept, height = 250, width = 400, units = "mm", dpi = 600)
+```
+
+# Hypothesis meta-regression
+
+```{r orchard plot hypothesis meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_hypothesis<-readRDS(here::here("model/lnRR_hypothesis.rds"))
+SMDH_hypothesis<-readRDS(here::here("model/SMDH_hypothesis.rds"))
+
+
+# Plot lnRR meta-regression on hypothesis
+
+lnRR_hypothesis_plot <-
+  orchard_plot(mod_results(
+      lnRR_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c("#895129", "mediumpurple4", "#218833")) +
+  scale_fill_manual(values = c("#895129", "mediumpurple4", "#218833")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.98, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+  
+# Plot SMDH meta-regression on hypothesis
+ 
+SMDH_hypothesis_plot <-
+  orchard_plot(
+    mod_results(
+      SMDH_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c("#895129", "mediumpurple4", "#218833")) +
+  scale_fill_manual(values = c("#895129", "mediumpurple4", "#218833")) +
+  labs(x = "",
+       y = "SMDH")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.98, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+# Combine using patchwork
+Figure_hypothesis <- lnRR_hypothesis_plot + SMDH_hypothesis_plot +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_hypothesis.png"), plot = Figure_hypothesis, height = 150, width = 400, units = "mm", dpi = 600)
+```
+
+# Exploratory Analysis
+
+## Parasite Type
+
+```{r orchard plot parasite type meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_parasite<-readRDS(here::here("model/lnRR_parasite.rds"))
+SMDH_parasite<-readRDS(here::here("model/SMDH_parasite.rds"))
+
+lnRR_parasite_plot <-
+  orchard_plot(mod_results(
+      lnRR_parasite,
+      mod = "parasite_type",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c("#895129", "#218833")) +
+  scale_fill_manual(values = c("#895129",  "#218833")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    # legend.title = element_text(size = 7),
+    # legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+SMDH_parasite_plot <-
+  orchard_plot(mod_results(
+      SMDH_parasite,
+      mod = "parasite_type",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c("#895129", "#218833")) +
+  scale_fill_manual(values = c("#895129",  "#218833")) +
+  labs(x = "",
+       y = "SMDH")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    # legend.title = element_text(size = 7),
+    # legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+```
+
+## Bird Species
+
+```{r orchard plot bird species meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_birds<-readRDS(here::here("model/lnRR_birds.rds"))
+SMDH_birds<-readRDS(here::here("model/SMDH_birds.rds"))
+
+lnRR_birds_plot <-
+  orchard_plot(mod_results(
+      lnRR_birds,
+      mod = "bird_species",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  scale_fill_manual(values = c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    # legend.title = element_text(size = 7),
+    # legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+SMDH_birds_plot <-
+  orchard_plot(mod_results(
+      SMDH_birds,
+      mod = "bird_species",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values =  c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  scale_fill_manual(values =  c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  labs(x = "",
+       y = "SMDH")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    # legend.title = element_text(size = 7),
+    # legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle =0, vjust = 0.5, hjust = 1)
+  )
+
+```
+
+## Trait studied
+
+```{r orchard plot trait-studied meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_trait<-readRDS(here::here("model/lnRR_trait.rds"))
+SMDH_trait<-readRDS(here::here("model/SMDH_trait.rds"))
+
+lnRR_trait_plot <-
+  orchard_plot(mod_results(
+      lnRR_trait,
+      mod = "trait_type",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  scale_fill_manual(values = c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "bottom",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+SMDH_trait_plot <-
+  orchard_plot(mod_results(
+      SMDH_trait,
+      mod = "trait_type",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values =  c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  scale_fill_manual(values =  c("darkorange2", "lightgoldenrod3", "mediumpurple4", "#218833","#895129","lightcoral","grey5")) +
+  labs(x = "",
+       y = "SMDH")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "bottom",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+```
+
+### Combined plot
+
+```{r combining meta-regression plots, no effect}
+
+## I am going to remove the y ticks from the SMDH plots to make it smaller..
+SMDH_parasite_plot <- SMDH_parasite_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_birds_plot <- SMDH_birds_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_trait_plot <- SMDH_trait_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_parasite_birds_trait <- ((lnRR_parasite_plot + SMDH_parasite_plot) / 
+                                  (lnRR_birds_plot + SMDH_birds_plot) / 
+                                  (lnRR_trait_plot + SMDH_trait_plot)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_parasite_birds_trait.png"), plot = Figure_parasite_birds_trait, height = 250, width = 400, units = "mm", dpi = 600)
+       
+```
+
+## Time of green nest material addition
+
+```{r orchard plot time of gnm addition meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_time_gnm_addition<-readRDS(here::here("model/lnRR_time_gnm_addition.rds"))
+SMDH_time_gnm_addition<-readRDS(here::here("model/SMDH_time_gnm_addition.rds"))
+
+lnRR_time_gnm_addition_plot <-
+  orchard_plot(mod_results(
+      lnRR_time_gnm_addition,
+      mod = "time_of_gnm_addition",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "bottom",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  ) + scale_x_discrete(labels = c("After egg laying", "Before egg laying", "Continous addition"))
+
+SMDH_time_gnm_addition_plot <-
+  orchard_plot(mod_results(
+      SMDH_time_gnm_addition,
+      mod = "time_of_gnm_addition",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  labs(x = "",
+       y = "SMDH")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "bottom",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+```
+
+## Experimental Design
+
+```{r orchard plot experimental design meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_design<-readRDS(here::here("model/lnRR_design.rds"))
+SMDH_design<-readRDS(here::here("model/SMDH_design.rds"))
+
+lnRR_design_plot <-
+  orchard_plot(mod_results(
+      lnRR_design,
+      mod = "comparision_type",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  ) + scale_x_discrete(labels = c("Non-aromatic Vs. Aromatic","Aromatic Vs. Blank", "Non-Aromatic Vs. Blank"))
+
+SMDH_design_plot <-
+  orchard_plot(mod_results(
+      SMDH_design,
+      mod = "comparision_type",
+      group = "paper_ID"
+    ), xlab ="") +
+  scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
+  labs(x = "",
+       y = "SMDH")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+```
+
+### Combined plot
+
+```{r combining meta-regression plots, effect}
+
+## I am going to remove the y ticks from the SMDH plots to make it smaller..
+SMDH_design_plot <- SMDH_design_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_time_gnm_addition_plot <- SMDH_time_gnm_addition_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_design_time_gnm_addition <- ((lnRR_design_plot + SMDH_design_plot) /
+                               (lnRR_time_gnm_addition_plot + SMDH_time_gnm_addition_plot)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_design_time_gnm_addition.png"), plot = Figure_design_time_gnm_addition, height = 300, width = 400, units = "mm", dpi = 600)
+       
+```
+
+## 
