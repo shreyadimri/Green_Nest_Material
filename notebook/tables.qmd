@@ -180,7 +180,7 @@ gtsave(SA_intercept_only,here::here("tables/SA_intercept_only.html"))
 
 ```{r}
 
-pacman::p_load(gt, dplyr, broom, metafor, purrr, stringr)
+pacman::p_load(gt, tidyverse, metafor, purrr, stringr)
 
 # Loading models for experimental design
 lnRR_design<-readRDS(here::here("model/lnRR_design.rds"))
@@ -201,6 +201,142 @@ SMDH_trait<-readRDS(here::here("model/SMDH_trait.rds"))
 # Loading models for the bird species studied
 lnRR_birds<-readRDS(here::here("model/lnRR_birds.rds"))
 SMDH_birds<-readRDS(here::here("model/SMDH_birds.rds"))
+```
+
+```{r}
+
+# Let's source our custom function to extract values from the meta-regressions
+source(here::here("functions/extractor_metareg.R"))
+
+## For lnRR Values
+lnRR_results <- extractor_metareg(lnRR_parasite,"parasite_type")%>%
+  bind_rows(extractor_metareg(lnRR_birds,"bird_species"))%>%
+  bind_rows(extractor_metareg(lnRR_trait,"trait_type"))%>%
+  bind_rows(extractor_metareg(lnRR_design,"comparision_type"))%>%
+  bind_rows(extractor_metareg(lnRR_time_gnm_addition,"time_of_gnm_addition"))%>%
+  mutate(effect_size = "lnRR")
+
+## For SMDH Values
+SMDH_results <- extractor_metareg(SMDH_parasite,"parasite_type")%>%
+  bind_rows(extractor_metareg(SMDH_birds,"bird_species"))%>%
+  bind_rows(extractor_metareg(SMDH_trait,"trait_type"))%>%
+  bind_rows(extractor_metareg(SMDH_design,"comparision_type"))%>%
+  bind_rows(extractor_metareg(SMDH_time_gnm_addition,"time_of_gnm_addition"))%>%
+  mutate(effect_size = "SMDH")
+
+## Now let's write the table for publication:
+# Combine both results
+combined_results <- bind_rows(lnRR_results, SMDH_results)%>%
+  pivot_wider(
+    id_cols = c(moderator, level),
+    names_from = effect_size,
+    values_from = c(estimate, p_value, CI, PI, k, n),
+    names_glue = "{.value}_{effect_size}"
+  )%>% # Prepare row labels to mimic grouping
+  arrange(moderator, level)%>%
+  mutate(row_type = "level")
+
+# Create moderator header rows for heterogeneity metrics
+  moderator_header<-bind_rows(lnRR_results, SMDH_results) %>%
+  select(moderator, effect_size, Q, Q_pval, R2_marginal) %>%
+    distinct()%>%
+    pivot_wider(
+      names_from = effect_size,
+      values_from = c(Q, Q_pval, R2_marginal),
+      names_glue = "{.value}_{effect_size}"
+    )%>%
+  mutate(level = "Heterogeneity ",
+         row_type = "moderator")
+
+# Final combined table with headers and levels
+combined_results <- bind_rows(moderator_header, combined_results) %>%
+  arrange(moderator, row_type)%>% select(-row_type)%>%
+  relocate(level, .after = moderator)%>%
+  mutate(moderator=case_when(moderator=="parasite_type"~"Parasite Type",
+                             moderator=="bird_species"~"Bird Species",
+                             moderator=="trait_type"~"Trait Type Category",
+                             moderator=="comparision_type"~"Experimental Design",
+                             moderator=="time_of_gnm_addition"~"Time of Green Nest Material Addition"))%>%
+  mutate(level = case_when(level==1 ~ "Non-aromatic vs. Aromatic",
+                           level==2 ~ "No added material vs. Aromatic",
+                           level==3 ~ "No added material vs. Non-aromatic",
+                           level=="a" ~ "After egg hatching",
+                           level=="b" ~ "Before egg hatching",
+                           level=="c" ~ "Continously through nesting phase",
+                           level=="Parasitic_and_pathogenic"~"Parasitic and Pathogen Related", .default=level))
 
 
+
+# Optional: clean up or reorder columns for display
+# Select and order columns for clarity
+MLMR_table <- combined_results %>%
+  gt(groupname_col = "moderator") %>%
+  tab_header(title = md("**Multilevel Meta-analytic Models for Exploratory Analyses**")) %>%
+  cols_label(
+    Q_lnRR = "Q",
+    Q_pval_lnRR = "Q p-val",
+    R2_marginal_lnRR = "R²_mar",
+    Q_SMDH = "Q",
+    Q_pval_SMDH = "Q p-val",
+    R2_marginal_SMDH = "R²_mar",
+    level = "Level",
+    estimate_lnRR = "Estimate",
+    CI_lnRR = "95% CI",
+    PI_lnRR = "95% PI",
+    p_value_lnRR = "P-val",
+    k_lnRR = "k",
+    n_lnRR = "n",
+    estimate_SMDH = "Estimate",
+    CI_SMDH = "95% CI",
+    PI_SMDH = "95% PI",
+    p_value_SMDH = "P-val",
+    k_SMDH = "k",
+    n_SMDH = "n"
+  ) %>%
+   sub_missing(
+    columns = everything(),
+    missing_text = ""
+  ) %>%
+  opt_table_outline() %>%
+  tab_options(
+    table.font.size = "small",
+    heading.title.font.size = 12,
+    table.border.top.width = px(2),
+    column_labels.font.weight = "medium",
+    row_group.font.weight = "bold"
+  )   %>%
+  tab_style(
+    style = cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = px(1)
+    ),
+    locations = cells_body()
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      rows = level == "Heterogeneity"
+    ))%>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_lnRR),
+      rows = p_value_lnRR < 0.05
+    )
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_SMDH),
+      rows = p_value_SMDH < 0.05
+    )
+  )%>%
+  tab_spanner(label = "lnRR", columns = contains("_lnRR")) %>%
+  tab_spanner(label = "SMDH", columns = contains("_SMDH"))
+
+
+#saving as a docx file
+gtsave(MLMR_table,here::here("tables/EA_MLMR_table.docx"))
+gtsave(MLMR_table,here::here("tables/EA_MLMR_table.html"))
 ```

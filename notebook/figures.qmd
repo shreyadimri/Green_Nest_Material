@@ -485,4 +485,95 @@ ggsave(here::here("figures/Figure_design_time_gnm_addition.png"), plot = Figure_
        
 ```
 
-## 
+# Publication Bias Tests
+
+```{r}
+
+###---Small study Effects ----###
+
+lnRR_small_study<-readRDS(here::here("model/lnRR_small_study.rds"))
+SMDH_small_study<-readRDS(here::here("model/SMDH_small_study.rds"))
+
+
+lnRR_small_study_bubble<-orchaRd::bubble_plot(mod_results(lnRR_small_study,
+                     mod="sqrt_effective_n_inv",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID") +
+  scale_colour_manual(values ="mediumpurple4") +
+  scale_fill_manual(values = "mediumpurple4") +
+  labs(y = "Effect size (lnRR)",
+       x = expression(sqrt(1 / N[effective])))+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+SMDH_small_study_bubble<-orchaRd::bubble_plot(mod_results(SMDH_small_study,
+                     mod="sqrt_effective_n_inv",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID") +
+  scale_colour_manual(values ="mediumpurple4") +
+  scale_fill_manual(values = "mediumpurple4") +
+  labs(y = "Effect size (SMDH)",
+       x = expression(sqrt(1 / N[effective])))+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+###---Decline Effects ----###
+
+lnRR_decline_eff<-readRDS(here::here("model/lnRR_decline_eff.rds"))
+SMDH_decline_eff<-readRDS(here::here("model/SMDH_decline_eff.rds"))
+
+
+lnRR_decline_eff_bubble<-orchaRd::bubble_plot(mod_results(lnRR_decline_eff,
+                     mod="year_MeanCenter",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID")+
+  scale_colour_manual(values ="#218833") +
+  scale_fill_manual(values = "#218833") +
+  labs(y = "Effect size (lnRR)",
+       x = "Publication Year (Mean Cenetered)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+SMDH_decline_effect_bubble<-orchaRd::bubble_plot(mod_results(SMDH_decline_eff,
+                     mod="year_MeanCenter",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID")+
+  scale_colour_manual(values ="#218833") +
+  scale_fill_manual(values = "#218833") +
+  labs(y = "Effect size (SMDH)",
+       x = "Publication Year (Mean Cenetered)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+
+# Combine using patchwork
+Figure_publication_bias <- ((lnRR_small_study_bubble + SMDH_small_study_bubble) /
+                               (lnRR_decline_eff_bubble + SMDH_decline_effect_bubble)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_publication_bias.png"), plot = Figure_publication_bias, height = 300, width = 400, units = "mm", dpi = 600)
+```

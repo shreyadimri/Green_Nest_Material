@@ -114,3 +114,5 @@ Table for different values of correlation
 ::: {#figsupp-MLMA-excluded}
 Model output and plot including proxies that were excluded
 :::
+
+![](figures/Figure_parasite_birds_trait.png){#figsupp-MR}

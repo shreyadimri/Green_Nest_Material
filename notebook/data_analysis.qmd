@@ -21,6 +21,8 @@ format:
 editor: visual
 ---
 
+## Loading Data for analysis
+
 ```{r setup, warning=FALSE, message=FALSE, echo=F}
 
 # Setting up workspace
@@ -135,6 +137,10 @@ dataset_lnRR<-dataset_analysis%>%
    filter(lnRR_sign != "NA" | lnRR_variance != "NA")%>%
   filter(proxy_decision == "include")
 
+# selecting only published dataset
+dataset_lnRR_published<-dataset_lnRR%>%
+  filter(!is.na(year_publication))
+
 # selecting dataset which are flagged
 lnRR_con_flagged<-dataset_analysis%>%
    filter(lnRR_sign != "NA" | lnRR_variance != "NA")%>%
@@ -152,6 +158,9 @@ lnRR_flagged_no_missingES<- lnRR_con_flagged %>%
 dataset_SMDH<-dataset_analysis%>%
    filter(proxy_decision == "include"| proxy_decision == "SMDH only"|proxy_decision =="contingency table") %>% filter(SMDH_sign != "NA")
 
+# selecting only published dataset
+dataset_SMDH_published<-dataset_SMDH%>%
+  filter(!is.na(year_publication))
 
 # selecting dataset which are flagged
 SMDH_con_flagged<-dataset_analysis%>%
@@ -412,6 +421,83 @@ pivot_wider(dataset_bivariate, names_from = ES_measure, values_from = c(ES, V_ES
 There is a very high negative correlation between the two effect sizes. This probably is an artifact of the data and not a true correlation. If you look at the model summary, the $tau^2$ for lnRR, it is extremely small 0.0008, i.e., there is very little variance. This could also be stemming from the fact that the log values in the dataset could be causing this. For SMDH on the other hand, the $tau^2$ is 0.1681 that is much larger. This difference in the variance estimate itself could be causing this artifact of the model. I will only go ahead to present this model as a senstivity analysis because I am not completely convinced by it's robustness.
 
 # Sensitivity Analysis
+
+### Sensitivity Analysis with published data only
+
+```{r}
+
+# Preparing new variance-covariance matrix
+
+VCV_lnRR_published <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_published,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+SA_lnRR_published<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_published, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_lnRR_published)
+
+
+# saving the model
+saveRDS(SA_lnRR_published, file = here::here("sensitivity_analysis/SA_lnRR_published.rds"))
+
+# What is the effect now?
+
+summary(SA_lnRR_published)
+predict(SA_lnRR_published)
+
+
+
+# Preparing new variance-covariance matrix
+
+VCV_SMDH_published <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_published,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+## Running intercept only model
+
+SA_SMDH_published<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_published, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_SMDH_published)
+
+
+# saving the model
+saveRDS(SA_SMDH_published, file = here::here("sensitivity_analysis/SA_SMDH_published.rds"))
+
+# What is the effect now?
+
+summary(SA_SMDH_published)
+predict(SA_SMDH_published)
+
+
+```
 
 ### Sensitivity Analysis with flagged proxies
 
@@ -810,7 +896,12 @@ For our exploratory analyses (see section Exploratory Analyses), we will run uni
 ```{r Types of parasite}
 # This analysis only includes dataset that has a proxy relating to parasite or pathogen
 dataset_lnRR_parasite <- dataset_lnRR%>%
-  filter(!is.na(parasite_type))
+  filter(!is.na(parasite_type))%>%
+  mutate(parasite_type=as.factor(parasite_type),
+         paper_ID=as.factor(paper_ID),
+         Observation_ID=as.factor(Observation_ID),
+         group_ID_coded=as.factor(group_ID_coded),
+         bird_species=as.factor(bird_species))
 
 VCV_lnRR_parasite <- vcalc(vi = lnRR_variance,
                   cluster = paper_ID,
@@ -1130,34 +1221,20 @@ Note also that if we obtain additional effect sizes for other bird species after
 
 -   RoB - The outcome will be presented in the form of a [**summary table**]{.underline}. We will conduct uni-moderator meta-regressions using these variables.
 
-## Heterogeneity
-
-To understand the sources of variation or heterogeneity,
-
-### For the intercept-only models
-
-we will use the pluralistic approach recently suggested by Yang et al. (2023),
-
-which consists of calculating four metrics of heterogeneity (σ2, I2, CV, M) to comprehensively understand both total and random-effect specific heterogeneity.
-
-### For the meta-regressions,
-
-we will calculate Rmarginal2 to quantify the heterogeneity explained by the moderator(s) in proportion to the total variation (Nakagawa & Schielzeth, 2013).
-
 ## Publication Bias
 
-To explore evidence of publication bias, we will run multilevel meta-regressions with the same random effects structure as described above. We will follow the approach recommended in section 4.3 from Nakagawa et al. (2022) for both lnRR and SMDH, which consists of the following steps:
-
-First, run a uni-moderator meta-regression to test for evidence of small-study effects for both lnRR and SMDH separately, where the moderator is the square root of the inverse of the 'effective sample size' (see equation 27 in Nakagawa et al. 2022). The slope of this meta-regression provides information about whether funnel plot asymmetry exists, and the intercept corresponds to the overall effect size adjusted by small-study effects. However, if this intercept is statistically significantly different from zero, 
+Small study effects:
 
 ```{r}
-dataset_SMDH<-dataset_SMDH%>%
+
+dataset_lnRR_published<-dataset_lnRR_published%>%
   mutate(effective_n_inv=1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control)))%>%
   mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
 
-MR_SMDH_small_study <-
-  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
-                    V = SMDH_variance,# specify lnRR's sampling variance;
+
+lnRR_small_study <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_published,# specify lnRR's sampling variance;
                     mods = ~sqrt_effective_n_inv,
                     random = list(~ 1 | paper_ID,
                                   ~ 1 | Observation_ID,
@@ -1167,33 +1244,62 @@ MR_SMDH_small_study <-
                     method = "REML",
                   test = "t",
                   control = list(optimizer="optim"),
-                  data = dataset_SMDH)
+                  data = dataset_lnRR_published)
 
-summary(MR_SMDH_small_study)
 
-SMDH_small_study_bubble<-orchaRd::mod_results(MR_SMDH_small_study,
-                     mod="sqrt_effective_n_inv",
-                     group="paper_ID",
-                     weights="prop")
-orchaRd::bubble_plot(SMDH_small_study_bubble,
-                      mod="sqrt_effective_n_inv",
-                     group="paper_ID")
+# saving the model
+saveRDS(lnRR_small_study, file = here::here("model/lnRR_small_study.rds"))
 
-round(r2_ml(MR_SMDH_small_study)*100,2)
+summary(lnRR_small_study)
+
+round(r2_ml(lnRR_small_study)*100,2)
+
+
+
+## Now for SMDH model
+
+dataset_SMDH_published<-dataset_SMDH_published%>%
+  mutate(effective_n_inv=1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control)))%>%
+  mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
+
+
+SMDH_small_study <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_published,# specify lnRR's sampling variance;
+                    mods = ~sqrt_effective_n_inv,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_published)
+
+# saving the model
+saveRDS(SMDH_small_study, file = here::here("model/SMDH_small_study.rds"))
+
+summary(SMDH_small_study)
+
+
+round(r2_ml(SMDH_small_study)*100,2)
+
+
+
 ```
 
-Then, run the following uni-moderator meta-regression for both lnRR and SMDH separately which provides a less biased adjusted overall effect. The moderator here is simply the inverse of the 'effective sample size' (see equation 28 in Nakagawa et al. 2022). The slope of this meta-regression provides information about whether funnel plot asymmetry exists and the intercept corresponds to a less biased overall effect size adjusted by small-study effects.
+Decline effects (Time lag bias)
 
 Next, run a uni-moderator meta-regression to test for evidence of decline effects (also known as time-lag bias) which includes year of publication (mean-centered) as the only moderator, and whose slope would provide information about whether the overall effect size has changed (decline) over time (Nakagawa et al. 2022; Sánchez-Tójar et al. 2018).
 
 ```{r}
-dataset_SMDH<-dataset_SMDH%>%
-  filter(year_publication!="Unpublished")%>%
+dataset_lnRR_published<-dataset_lnRR_published%>%
   mutate(year_MeanCenter=scale(as.numeric(year_publication),scale=F)[,1])
 
-MR_SMDH_decline_eff <-
-  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
-                    V = SMDH_variance,# specify lnRR's sampling variance;
+lnRR_decline_eff <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_published,# specify lnRR's sampling variance;
                     mods = ~ year_MeanCenter,
                     random = list(~ 1 | paper_ID,
                                   ~ 1 | Observation_ID,
@@ -1203,19 +1309,41 @@ MR_SMDH_decline_eff <-
                     method = "REML",
                   test = "t",
                   control = list(optimizer="optim"),
-                  data = dataset_SMDH)
+                  data = dataset_lnRR_published)
 
-summary(MR_SMDH_decline_eff)
+# saving the model
+saveRDS(lnRR_decline_eff, file = here::here("model/lnRR_decline_eff.rds"))
+  
+summary(lnRR_decline_eff)
 
-round(r2_ml(MR_SMDH_decline_eff)*100,2)
+round(r2_ml(lnRR_decline_eff)*100,2)
 
-MR_SMDH_decline_effect_bubble<-orchaRd::mod_results(MR_SMDH_decline_eff,
-                     mod="year_MeanCenter",
-                     group="paper_ID",
-                     weights="prop")
-orchaRd::bubble_plot(MR_SMDH_decline_effect_bubble,
-                      mod="year_MeanCenter",
-                     group="paper_ID")
+## --- Now for SMDH -----
+dataset_SMDH_published<-dataset_SMDH_published%>%
+  mutate(year_MeanCenter=scale(as.numeric(year_publication),scale=F)[,1])
+
+
+
+SMDH_decline_eff <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_published,# specify lnRR's sampling variance;
+                    mods = ~ year_MeanCenter,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_published)
+# saving the model
+saveRDS(SMDH_decline_eff, file = here::here("model/SMDH_decline_eff.rds"))
+
+summary(SMDH_decline_eff)
+
+round(r2_ml(SMDH_decline_eff)*100,2)
+
 ```
 
 Last, run an all-in meta-regression including both the (square root of the) inverse of the 'effective sample size' and the mean-centered year of publication as well as all the other moderators tested in our study to estimate how much heterogeneity is explained by all moderators combined as well as to explore whether evidence remains similar after accounting for all the other moderators (see equation 29 in Nakagawa et al. 2022 for more information about this approach). 
