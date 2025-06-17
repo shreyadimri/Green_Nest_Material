@@ -4,11 +4,13 @@ project:
   
 manuscript: 
  article: manuscript_GNM.qmd
+
  
 format: 
  html:
   comments: 
    hypothesis: true
+  bibliography: references.bib
  # docx: 
  #  fontsize: 12
  # pdf: default

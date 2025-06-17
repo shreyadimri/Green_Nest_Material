@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
     <meta name="author" content="Shreya Dimri">
-    <meta name="dcterms.date" content="2025-05-11">
+    <meta name="dcterms.date" content="2025-05-18">
 
     <title>Green Nest Material Meta-Analysis</title>
     <style>
@@ -202,7 +202,7 @@
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">May 11, 2025</p>
+              <p class="date">May 18, 2025</p>
             </div>
           </div>
           
@@ -240,6 +240,7 @@
   <ul class="collapse">
   <li><a href="#other-analysis" id="toc-other-analysis" class="nav-link" data-scroll-target="#other-analysis">Other Analysis</a></li>
   <li><a href="#publication-bias" id="toc-publication-bias" class="nav-link" data-scroll-target="#publication-bias">Publication Bias</a></li>
+  <li><a href="#all-in-model-for-heterogeneity" id="toc-all-in-model-for-heterogeneity" class="nav-link" data-scroll-target="#all-in-model-for-heterogeneity">All-in Model for heterogeneity</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1149,7 +1150,7 @@ Variance Components:
 sigma^2.1  0.0000  0.0001     28     no        paper_ID 
 sigma^2.2  0.0213  0.1458    264     no  Observation_ID 
 sigma^2.3  0.0000  0.0003     52     no  group_ID_coded 
-sigma^2.4  0.0000  0.0001     20     no   population_ID 
+sigma^2.4  0.0000  0.0001     19     no   population_ID 
 sigma^2.5  0.0000  0.0000      7     no    bird_species 
 
 Test for Heterogeneity:
@@ -1213,15 +1214,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 Multivariate Meta-Analysis Model (k = 279; method: REML)
 
    logLik   Deviance        AIC        BIC       AICc   
--348.4133   696.8266   708.8266   730.5924   709.1366   
+-348.4132   696.8265   708.8265   730.5922   709.1364   
 
 Variance Components:
 
             estim    sqrt  nlvls  fixed          factor 
-sigma^2.1  0.0000  0.0052     28     no        paper_ID 
+sigma^2.1  0.0000  0.0051     28     no        paper_ID 
 sigma^2.2  0.2428  0.4927    279     no  Observation_ID 
-sigma^2.3  0.0074  0.0862     53     no  group_ID_coded 
-sigma^2.4  0.0000  0.0056     20     no   population_ID 
+sigma^2.3  0.0074  0.0863     53     no  group_ID_coded 
+sigma^2.4  0.0000  0.0039     19     no   population_ID 
 sigma^2.5  0.0000  0.0032      7     no    bird_species 
 
 Test for Heterogeneity:
@@ -1230,7 +1231,7 @@ Q(df = 278) = 1194.9344, p-val &lt; .0001
 Model Results:
 
 estimate      se    tval   df    pval   ci.lb   ci.ub     
-  0.1877  0.0650  2.8849  278  0.0042  0.0596  0.3157  ** 
+  0.1876  0.0650  2.8850  278  0.0042  0.0596  0.3157  ** 
 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -1242,7 +1243,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    pred     se  ci.lb  ci.ub   pi.lb  pi.ub 
- 0.1877 0.0650 0.0596 0.3157 -0.8055 1.1808 </code></pre>
+ 0.1876 0.0650 0.0596 0.3157 -0.8055 1.1808 </code></pre>
 </div>
 </div></div>
 </section>
@@ -1445,7 +1446,7 @@ Variance Components:
 sigma^2.1  0.0000  0.0001     28     no        paper_ID 
 sigma^2.2  0.0224  0.1497    248     no  Observation_ID 
 sigma^2.3  0.0000  0.0003     52     no  group_ID_coded 
-sigma^2.4  0.0000  0.0000     20     no   population_ID 
+sigma^2.4  0.0000  0.0000     19     no   population_ID 
 sigma^2.5  0.0000  0.0000      7     no    bird_species 
 
 Test for Heterogeneity:
@@ -1516,10 +1517,10 @@ Multivariate Meta-Analysis Model (k = 263; method: REML)
 Variance Components:
 
             estim    sqrt  nlvls  fixed          factor 
-sigma^2.1  0.0000  0.0002     28     no        paper_ID 
+sigma^2.1  0.0000  0.0003     28     no        paper_ID 
 sigma^2.2  0.2772  0.5265    263     no  Observation_ID 
 sigma^2.3  0.0001  0.0085     53     no  group_ID_coded 
-sigma^2.4  0.0000  0.0002     20     no   population_ID 
+sigma^2.4  0.0000  0.0001     19     no   population_ID 
 sigma^2.5  0.0000  0.0000      7     no    bird_species 
 
 Test for Heterogeneity:
@@ -2408,6 +2409,73 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div></div>
 <p>Last, run an all-in meta-regression including both the (square root of the) inverse of the ‘effective sample size’ and the mean-centered year of publication as well as all the other moderators tested in our study to estimate how much heterogeneity is explained by all moderators combined as well as to explore whether evidence remains similar after accounting for all the other moderators (see equation 29 in Nakagawa et al.&nbsp;2022 for more information about this approach).&nbsp;</p>
+</section>
+<section id="all-in-model-for-heterogeneity" class="level2">
+<h2 class="anchored" data-anchor-id="all-in-model-for-heterogeneity">All-in Model for heterogeneity</h2>
+<div class="cell-container code-fold"><div class="cell-decorator"><pre>In [29]:</pre></div><div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="do">## For lnRR complete dataset</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>VCV_lnRR_published<span class="ot">&lt;-</span> <span class="fu">vcalc</span>(<span class="at">vi =</span> lnRR_variance,</span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">cluster =</span> paper_ID,</span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">obs =</span> Observation_ID,</span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> dataset_lnRR_published,</span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">rho =</span> <span class="fl">0.5</span> <span class="co"># assuming that the effect sizes within the same study are correlated with rho = 0.5</span></span>
+<span id="cb113-7"><a href="#cb113-7" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb113-8"><a href="#cb113-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-9"><a href="#cb113-9" aria-hidden="true" tabindex="-1"></a>all_in_lnRR <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> lnRR_sign, <span class="co"># specify lnRR as the effect size measure;</span></span>
+<span id="cb113-10"><a href="#cb113-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">V =</span> VCV_lnRR_published, <span class="co"># specify lnRR's sampling variance-covariance matrix;</span></span>
+<span id="cb113-11"><a href="#cb113-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">mods =</span> <span class="sc">~</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> time_of_gnm_addition <span class="sc">+</span> </span>
+<span id="cb113-12"><a href="#cb113-12" aria-hidden="true" tabindex="-1"></a>                      year_MeanCenter <span class="sc">+</span> </span>
+<span id="cb113-13"><a href="#cb113-13" aria-hidden="true" tabindex="-1"></a>                      sqrt_effective_n_inv <span class="sc">+</span> </span>
+<span id="cb113-14"><a href="#cb113-14" aria-hidden="true" tabindex="-1"></a>                      comparision_type <span class="sc">+</span> </span>
+<span id="cb113-15"><a href="#cb113-15" aria-hidden="true" tabindex="-1"></a>                      bird_species <span class="sc">+</span> </span>
+<span id="cb113-16"><a href="#cb113-16" aria-hidden="true" tabindex="-1"></a>                      trait_type,</span>
+<span id="cb113-17"><a href="#cb113-17" aria-hidden="true" tabindex="-1"></a>                    <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> paper_ID,</span>
+<span id="cb113-18"><a href="#cb113-18" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> Observation_ID,</span>
+<span id="cb113-19"><a href="#cb113-19" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> group_ID_coded,</span>
+<span id="cb113-20"><a href="#cb113-20" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> population_ID,</span>
+<span id="cb113-21"><a href="#cb113-21" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> bird_species),</span>
+<span id="cb113-22"><a href="#cb113-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb113-23"><a href="#cb113-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">optimizer=</span><span class="st">"optim"</span>),</span>
+<span id="cb113-24"><a href="#cb113-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">test =</span> <span class="st">"t"</span>,</span>
+<span id="cb113-25"><a href="#cb113-25" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> dataset_lnRR_published)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 13 rows with NAs omitted from model fitting.</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="do">## For SMDH complete published dataset</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>VCV_SMDH_published<span class="ot">&lt;-</span> <span class="fu">vcalc</span>(<span class="at">vi =</span> SMDH_variance,</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">cluster =</span> paper_ID,</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">obs =</span> Observation_ID,</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> dataset_SMDH_published,</span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">rho =</span> <span class="fl">0.5</span> <span class="co"># assuming that the effect sizes within the same study are correlated with rho = 0.5</span></span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>all_in_SMDH<span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> SMDH_sign, <span class="co"># specify lnRR as the effect size measure;</span></span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">V =</span> VCV_SMDH_published, <span class="co"># specify lnRR's sampling variance-covariance matrix;</span></span>
+<span id="cb115-11"><a href="#cb115-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">mods =</span> <span class="sc">~</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> time_of_gnm_addition <span class="sc">+</span> </span>
+<span id="cb115-12"><a href="#cb115-12" aria-hidden="true" tabindex="-1"></a>                      year_MeanCenter <span class="sc">+</span> </span>
+<span id="cb115-13"><a href="#cb115-13" aria-hidden="true" tabindex="-1"></a>                      sqrt_effective_n_inv <span class="sc">+</span> </span>
+<span id="cb115-14"><a href="#cb115-14" aria-hidden="true" tabindex="-1"></a>                      comparision_type <span class="sc">+</span> </span>
+<span id="cb115-15"><a href="#cb115-15" aria-hidden="true" tabindex="-1"></a>                      bird_species <span class="sc">+</span> </span>
+<span id="cb115-16"><a href="#cb115-16" aria-hidden="true" tabindex="-1"></a>                      trait_type,</span>
+<span id="cb115-17"><a href="#cb115-17" aria-hidden="true" tabindex="-1"></a>                    <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> paper_ID,</span>
+<span id="cb115-18"><a href="#cb115-18" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> Observation_ID,</span>
+<span id="cb115-19"><a href="#cb115-19" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> group_ID_coded,</span>
+<span id="cb115-20"><a href="#cb115-20" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> population_ID,</span>
+<span id="cb115-21"><a href="#cb115-21" aria-hidden="true" tabindex="-1"></a>                                  <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> bird_species),</span>
+<span id="cb115-22"><a href="#cb115-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb115-23"><a href="#cb115-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">optimizer=</span><span class="st">"optim"</span>),</span>
+<span id="cb115-24"><a href="#cb115-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">test =</span> <span class="st">"t"</span>,</span>
+<span id="cb115-25"><a href="#cb115-25" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> dataset_SMDH_published)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 13 rows with NAs omitted from model fitting.</code></pre>
+</div>
+</div></div>
 </section>
 </section>
      </main>

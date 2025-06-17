@@ -1347,3 +1347,61 @@ round(r2_ml(SMDH_decline_eff)*100,2)
 ```
 
 Last, run an all-in meta-regression including both the (square root of the) inverse of the 'effective sample size' and the mean-centered year of publication as well as all the other moderators tested in our study to estimate how much heterogeneity is explained by all moderators combined as well as to explore whether evidence remains similar after accounting for all the other moderators (see equation 29 in Nakagawa et al. 2022 for more information about this approach). 
+
+## All-in Model for heterogeneity
+
+```{r}
+## For lnRR complete dataset
+VCV_lnRR_published<- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_published,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+all_in_lnRR <- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_published, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ - 1 + time_of_gnm_addition + 
+                      year_MeanCenter + 
+                      sqrt_effective_n_inv + 
+                      comparision_type + 
+                      bird_species + 
+                      trait_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_lnRR_published)
+
+
+
+## For SMDH complete published dataset
+VCV_SMDH_published<- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_published,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+all_in_SMDH<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_published, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ - 1 + time_of_gnm_addition + 
+                      year_MeanCenter + 
+                      sqrt_effective_n_inv + 
+                      comparision_type + 
+                      bird_species + 
+                      trait_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_SMDH_published)
+```

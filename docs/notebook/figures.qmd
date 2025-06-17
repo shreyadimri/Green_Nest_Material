@@ -2,12 +2,217 @@
 title: "Figures and Plots"
 ---
 
+# Visualising location and bird species
+
+I am using the figure code from here and adapting it for my needs..
+
+Mentesana, L., Hau, M., D'Amelio, P.B., Adreani, N.M. and Sánchez-Tójar, A. (2025), Do Egg Hormones Have Fitness Consequences in Wild Birds? A Systematic Review and Meta-Analysis. Ecology Letters, 28: e70100. <https://doi.org/10.1111/ele.70100> \[[Code](https://github.com/ASanchez-Tojar/meta-analysis_egg_hormones_and_fitness/blob/main/code/003_figures.R)\]
+
+```{r}
+devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
+pacman::p_load(ggplot2,dplyr,stringr,readr,cowplot)
+
+# Loading cleaned dataset
+dataset_analysis<- read_csv(here::here("data/03_data_cleaning/dataset_analysis.csv"))
+
+
+# To split population_ID into location and country
+dataset_analysis[c('Location','Country')] <- str_split_fixed(dataset_analysis$population_ID, ',', 2)
+
+### For the purpose of this map, I am adding the the longitude and latitude of the study area manually. They exist in the dataset_analysis$population_location as they were extracted from the paper. I have also added some by just searching the general location since the coordinates were not provided for these..
+
+
+data_coordinates<-data.frame(Location = unique(dataset_analysis$Location),
+                             Lat_Location=c(51.50,38.41,40.45,40.75,45.40,52.39,37.18,
+                                             40.53,54,39.05,
+                                             51.57,48,42.54,39.95,
+                                             40.13,47.96,28.10,52.06,60.39),
+                             Long_Location=c(19.29,-9.02,-3.50,-3.78,-64.10,6.05,-3.11,
+                                              -4.0,-124,-76.81,
+                                              -2.26,11,8.91,-75.16,
+                                              -8.27,11.18,107.10,8.25,5.32))
+
+## Let's now merge the datasets by the location names
+
+dataset_analysis <- dataset_analysis %>%
+  left_join(data_coordinates, by = "Location")
+
+## Count how many times each Location appears in the full dataset
+location_counts <- dataset_analysis %>%
+  group_by(Location) %>%
+  summarise(size.freq = n_distinct(paper_ID), .groups = 'drop')
+
+# I will subset the data base so that I get one row per Location AND bird_species.
+# Like this, I get one point per location independently of the number of effect sizes 
+# we have per place.
+dataset_analysis_unique_rows <- dataset_analysis %>%
+  distinct(Location, bird_species, .keep_all = TRUE)
+
+# Merge the counts into the unique rows dataset
+dataset_analysis_unique_rows <- dataset_analysis_unique_rows %>%
+  left_join(location_counts, by = "Location")
+
+# create data for world coordinates using  
+# map_data() function 
+world_coordinates <- map_data("world") 
+
+# create world map using ggplot() function 
+# geom_map() function takes world coordinates as input to plot world map 
+fig_map <- ggplot() + 
+  geom_map(data = world_coordinates, map = world_coordinates, 
+    aes(long, lat, map_id = region), 
+    color = "white", fill= "#D9EAF7") + 
+  geom_point(data = dataset_analysis_unique_rows, 
+             aes(x = Long_Location, y = Lat_Location,
+                 size = size.freq, colour=bird_species), alpha = 0.6) +
+scale_size(range = c(3, 10)) +
+  scale_fill_manual(values = c("#11a3d9","#f6c800",  "#fb5158", 
+                               "#ea60e9", "#40ad28","#ef8c27","#a083e2")) +
+  
+  scale_colour_manual(values = c("#11a3d9","#f6c800",  "#fb5158", 
+                               "#ea60e9", "#40ad28","#ef8c27","#a083e2")) +
+  guides(size = "none", alpha = "none") +
+  labs(x = "Longitude",
+       y = "Latitude")+
+  theme_classic() +
+  theme(legend.position = c(0.88, 0.10),
+        legend.justification = c("right", "bottom"),
+        legend.background = element_rect(fill = "white", color = "black"),
+        axis.title = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_blank())
+  
+
+# To add the zoomed in map.. to show the points more clearly
+zoom_map <- ggplot() + 
+  geom_map(data = world_coordinates, map = world_coordinates,
+           aes(long, lat, map_id = region),
+           color = "white", fill = "lightgrey") +
+  geom_point(data = dataset_analysis_unique_rows,
+             aes(x = Long_Location, y = Lat_Location,
+                 size = size.freq, colour = bird_species),
+             alpha = 0.6) +
+  scale_size(range = c(3, 10)) +
+  scale_colour_manual(values = c("#11a3d9","#f6c800","#fb5158",
+                                 "#ea60e9","#40ad28","#ef8c27","#a083e2")) +
+  coord_cartesian(xlim = c(-120, 120), ylim = c(25, 65)) +  # Northern Hemisphere
+  theme_void() +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "white", fill="white"),
+    panel.border = element_rect(colour = "black", fill = NA, size = 1)
+  )
+
+geographic_distribution <- ggdraw() +
+  draw_plot(fig_map) +
+  draw_plot(zoom_map, x = 0.10, y = 0.12, width = 0.62, height = 0.22)
+
+
+ggsave(here::here("figures/Figure_Distribution.png"), plot = geographic_distribution, height = 250, width = 400, units = "mm", dpi = 600)
+```
+
+# Visualizing author network
+
+```{r}
+# # Loading cleaned dataset
+# dataset_analysis<- read_csv(here::here("data/03_data_cleaning/dataset_analysis.csv"))
+# 
+# library(tidyverse)
+# library(tidyr)
+# library(igraph)
+# installed.packages("ggraph")
+# library(ggraph)
+# 
+# clean_author <- function(name) {
+#   name %>%
+#     str_replace_all(",", "") %>%   # remove commas
+#     str_squish() %>%              # remove excess whitespace
+#     str_to_title()                # standardize case (optional, if needed)
+# }
+# 
+# # Apply cleaning to first and last author fields
+# author_roles <- dataset_analysis %>%
+#   distinct(paper_ID, .keep_all = TRUE) %>%
+#   select(paper_ID, authors, bird_species) %>%
+#   mutate(
+#     author_list = str_split(authors, ";\\s*"),
+#     first_author = map_chr(author_list, 1),
+#     last_author = map_chr(author_list, ~ tail(.x, 1))
+#   )%>%
+#   mutate(
+#     first_author=case_when(
+#       first_author == "Polo, V" | first_author == "Polo V" ~ "Polo V.",
+#       first_author == "Soler J J" ~ "Soler J. J.",
+#       first_author == "Glądalski, M" ~ "Gladalski M.",
+#       first_author == "Gwinner, H" | first_author == "Gwinner H" ~ "Gwinner H.",
+#       TRUE ~ as.character(first_author)
+#     ))%>%
+#   mutate(
+#     last_author=case_when(
+#       last_author == "Veiga J P" ~ "Veiga J. P.",
+#       TRUE ~ as.character(last_author)
+#     )
+#   )
+# 
+# # 2. Create Core Author Pairs (First → Last)
+# author_pairs_core <- author_roles %>%
+#   select(paper_ID, first_author, last_author) %>%
+#   rename(from = first_author, to = last_author) %>%
+#   filter(from != to) %>%
+#   count(from, to, name = "weight")
+# 
+# # 3. Build Author Graph
+# author_graph <- graph_from_data_frame(author_pairs_core, directed = TRUE)
+# 
+# # 4. Assign Dominant Bird Species to PIs (last authors)
+# author_species <- author_roles %>%
+#   select(last_author, bird_species) %>%
+#   group_by(last_author, bird_species) %>%
+#   count() %>%
+#   slice_max(n, n = 1) %>%
+#   distinct(last_author, .keep_all = TRUE)
+# 
+# # Add species as vertex attribute
+# V(author_graph)$bird_species <- author_species$bird_species[
+#   match(V(author_graph)$name, author_species$last_author)
+# ]
+# 
+# # 5. Optional: Scale node size by number of papers per author
+# author_paper_counts <- author_roles %>%
+#   pivot_longer(cols = c(first_author, last_author), names_to = "role", values_to = "author") %>%
+#   count(author, name = "paper_count")
+# 
+# # Add paper count attribute
+# V(author_graph)$paper_count <- author_paper_counts$paper_count[
+#   match(V(author_graph)$name, author_paper_counts$author)
+# ]
+# 
+# # Replace NAs with small size for isolated authors
+# V(author_graph)$paper_count[is.na(V(author_graph)$paper_count)] <- 1
+# 
+# # 6. Plot with ggraph
+# ggraph(author_graph, layout = "fr") +
+#   geom_edge_link(aes(width = weight), alpha = 0.4, color = "grey50") +
+#   geom_node_point(aes(color = bird_species, size = paper_count)) +
+#   geom_node_text(aes(label = name), repel = TRUE, size = 3) +
+#   scale_edge_width(range = c(0.3, 2)) +
+#   scale_size(range = c(3, 10)) +
+#   theme_void() +
+#   labs(title = "Author Collaboration Network by Bird Species",
+#        size = "Paper Count") +
+#   theme(legend.position = "right")
+# 
+
+
+```
+
+# 
+
 # Intercept only model
 
 Orchard plot for overall effect of green nest material on fitness using lnRR and SMDH
 
 ```{r orchard plot for intercept only models}
-devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
 pacman::p_load(here,tidyverse,metafor,orchaRd,patchwork,cowplot)
 
 # Loading models for SMDH and lnRR
@@ -16,7 +221,7 @@ intercept_lnRR<-readRDS(here::here("model/intercept_lnRR.rds"))
 intercept_SMDH<-readRDS(here::here("model/intercept_SMDH.rds"))
 
 # Plot for lnRR
-intercept_lnRR_plot <- orchard_plot(intercept_lnRR,
+intercept_lnRR_plot <- orchaRd::orchard_plot(intercept_lnRR,
                                     mod = "1",
                                     group = "paper_ID",
                                     trunk.size = 0.5,
@@ -24,10 +229,9 @@ intercept_lnRR_plot <- orchard_plot(intercept_lnRR,
                                     twig.size = 0.5,
                                     alpha = 0.3,
                                     xlab = "Effect size (Log Response Ratio- lnRR)",
-                                    colour = "#218833",
-                                    fill = TRUE) +
-  scale_fill_manual(values = "#218833") +
-  scale_colour_manual(values = "#218833") +
+                                    fill = T) +
+   scale_fill_manual(values = "#218833") +
+   scale_colour_manual(values = "#218833" ) +
   theme_minimal(base_size = 14) +
   theme(
     panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
@@ -43,7 +247,7 @@ intercept_lnRR_plot <- orchard_plot(intercept_lnRR,
   labs(x = "Intercept")
 
 # Plot for SMDH
-intercept_SMDH_plot <- orchard_plot(intercept_SMDH,
+intercept_SMDH_plot <- orchaRd::orchard_plot(intercept_SMDH,
                                     mod = "1",
                                     group = "paper_ID",
                                     trunk.size = 0.5,
@@ -51,7 +255,6 @@ intercept_SMDH_plot <- orchard_plot(intercept_SMDH,
                                     twig.size = 0.5,
                                     alpha = 0.3,
                                     xlab = "Effect size (Standardized Mean Difference- SMDH)",
-                                    colour = "#895129",
                                     fill = TRUE) +
   scale_fill_manual(values = "#895129") +
   scale_colour_manual(values = "#895129") +
