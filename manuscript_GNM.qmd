@@ -14,6 +14,20 @@ authors:
 bibliography: references.bib
 ---
 
+# Abstract
+
+According to PRISMA Checklist.. I must:
+
+-   Summarise the aims and scope of the review
+
+-   Describe the data set
+
+-   State the results of the primary outcome
+
+-   State conclusions
+
+-   State limitations
+
 # Introduction
 
 Nest and nest-building are fundamental across a diverse range of animals, including insects (e.g., termites, spiders), mammals (e.g., platypus, rodents), and perhaps more famously, birds. Nests provide structural support for eggs, parents, and offspring, and protect them against predators and environmental pressures, and are thus key to reproductive success and survival [@mainwaring2014; @deeming2023; @hansell2000]. While most birds use organic plant materials such as twigs, branches, grass, and moss, some incorporate inorganic items, including stones, feathers, snake skins and even anthropogenic materials like plastic and cigarette butts [@suárez-rodríguez2013; @sergio2011; @sheard2024]. These non-structural additions suggest that nests are more than just physical shelters; they can be complex tools shaped by both natural and sexual selection for multiple functions. Indeed, nests can play a key role in sexual display, and features such as size have been shown to act as sexually selected signals of parental quality in many bird species [@moreno1994; @hoi1996], even across species [@soler1995]. Nest-building behaviour is increasingly recognized as an expression of the extended phenotype (reviewed by @moreno2012), and phylogeny has been shown to be an important factor explaining both mean and within-species variation in nest morphology [@perez2023]. Yet, despite hundreds of scientific articles studying nests and nesting behaviour in birds being published each year, much remains unknown.
@@ -253,7 +267,7 @@ Our systematic review and meta-analysis found a small positive increase in fitne
 
 The While lnRR and SMDH differ in their measurement scale, both effect sizes suggest a small positive but non-conclusive effect of green nest material on fitness. These differences in overall effect size magnitude likely reflect the underlying biological and statistical assumptions - lnRR incorporates the mean difference at a multiplicative scale whereas SMDH expresses the difference on an additive scale. The difference in relative heterogeneity (I^2^) between the two effect sizes aligns with broader trends observed in meta-analysis in ecology and evolution (@yang2024).
 
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+-------------------------------------
 
 ## Supplementary Appendix
 
