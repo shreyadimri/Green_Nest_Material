@@ -93,7 +93,7 @@ plot(tree) #check: https://www.rdocumentation.org/packages/ape/versions/5.3/topi
 
 ```{r}
 # install.packages("devtools")
-#devtools::install_github("davidsjoberg/ggsankey")
+devtools::install_github("davidsjoberg/ggsankey")
 library(ggsankey)
 
 sankey_data <- dataset_analysis %>%
@@ -769,6 +769,104 @@ summary(SA_SMDH_no_inferential)
 predict(SA_SMDH_no_inferential)
 ```
 
+### Sensitivity Analysis excluding the parasite and pathogen load fitness proxies
+
+```{r}
+
+## For the lnRR effect size...
+dataset_lnRR_no_PCH<-dataset_lnRR%>%filter(Hypothesis!="PCH")
+
+## The dataset is reduced to almost half
+nrow(dataset_lnRR)-nrow(dataset_lnRR_no_PCH)
+
+VCV_lnRR_no_PCH <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_no_PCH,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+
+
+SA_lnRR_no_PCH<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_no_PCH, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_lnRR_no_PCH)
+
+
+## For the SMDH effect size..
+
+dataset_SMDH_no_PCH<-dataset_SMDH%>%filter(Hypothesis!="PCH")
+
+## The dataset is reduced to almost half
+nrow(dataset_SMDH)-nrow(dataset_SMDH_no_PCH)
+
+VCV_SMDH_no_PCH <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_no_PCH,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+
+
+SA_SMDH_no_PCH<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_no_PCH, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_SMDH_no_PCH)
+```
+
+### Sensitivity Analysis for excluding non-aromatic and blank (the two control group comparison)
+
+```{r}
+
+## For the lnRR effect size...
+dataset_lnRR_no_comp3<-dataset_lnRR%>%filter(comparision_type!=3)
+## Only some rows are removed... 
+nrow(dataset_lnRR)-nrow(dataset_lnRR_no_comp3)
+
+VCV_lnRR_no_comp3 <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_no_comp3,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+
+
+
+SA_lnRR_no_PCH<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_no_PCH, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ 1,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                    control = list(optimizer="optim"),
+                    test = "t",
+                    data = dataset_lnRR_no_PCH)
+```
+
 ### Different values of sampling variance correlation
 
 [**Robust variance estimation to guard against arbitary value of sampling correlation**]{.underline} - 'robust()' function from R package 'metafor' (Viechtbauer 2010) using 'CR2' (bias reduced linearization correction) from the R package 'clubSandwich' (Pustejovsky 2024) for small-sample size adjustment.
@@ -1002,8 +1100,7 @@ saveRDS(SMDH_time_gnm_addition, file = here::here("model/SMDH_time_gnm_addition.
 ```{r}
 # This analysis only includes dataset that has a proxy relating to comaparision type
 dataset_lnRR_design <- dataset_lnRR %>%
-  filter(!is.na(comparision_type))%>%
-  mutate(comparision_type= as.factor(comparision_type))
+  mutate(comparision_type= case_when(is.na(comparision_type) ~ 4, TRUE ~ comparision_type))
 
 VCV_lnRR_design <- vcalc(vi = lnRR_variance,
                   cluster = paper_ID,
@@ -1014,7 +1111,7 @@ VCV_lnRR_design <- vcalc(vi = lnRR_variance,
 lnRR_design <-
   metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
                     V = VCV_lnRR_design ,# specify lnRR's sampling variance;
-                    mods = ~ - 1 + comparision_type,
+                    mods = ~ - 1 + as.factor(comparision_type),
                     random = list(~ 1 | paper_ID,
                                   ~ 1 | Observation_ID,
                                   ~ 1 | group_ID_coded,
@@ -1029,8 +1126,7 @@ saveRDS(lnRR_design, file = here::here("model/lnRR_design.rds"))
 
 # This analysis only includes dataset that has a proxy relating to comaparision type
 dataset_SMDH_design <- dataset_SMDH %>%
-  filter(!is.na(comparision_type))%>%
-  mutate(comparision_type= as.factor(comparision_type))
+  mutate(comparision_type= case_when(is.na(comparision_type) ~ 4, TRUE ~ comparision_type))
 
 VCV_SMDH_design <- vcalc(vi = SMDH_variance,
                   cluster = paper_ID,
@@ -1041,7 +1137,7 @@ VCV_SMDH_design <- vcalc(vi = SMDH_variance,
 SMDH_design <-
   metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
                     V = VCV_SMDH_design ,# specify lnRR's sampling variance;
-                    mods = ~ - 1 + comparision_type,
+                    mods = ~ - 1 + as.factor(comparision_type),
                     random = list(~ 1 | paper_ID,
                                   ~ 1 | Observation_ID,
                                   ~ 1 | group_ID_coded,
@@ -1352,19 +1448,28 @@ Last, run an all-in meta-regression including both the (square root of the) inve
 
 ```{r}
 ## For lnRR complete dataset
-VCV_lnRR_published<- vcalc(vi = lnRR_variance,
+
+## I am changing the year of unpublished studies to 2025 which is to now, assuming that if they were to be published now, what would be the effect. I will keep in mind that in this model if I do find an evidence of publication bias over years, I should keep in mind it is non-independent of the unpublished studies
+
+dataset_lnRR_all_in<-dataset_lnRR%>%mutate(year_publication = case_when(is.na(year_publication) ~ 2025, TRUE ~ year_publication))%>%
+  mutate(year_MeanCenter=scale(as.numeric(year_publication),scale=F)[,1])%>%
+  mutate(effective_n_inv=1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control)))%>%
+  mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))%>%
+  mutate(comparision_type= case_when(is.na(comparision_type) ~ 4, TRUE ~ comparision_type))
+
+VCV_lnRR_all_in<- vcalc(vi = lnRR_variance,
                   cluster = paper_ID,
                   obs = Observation_ID,
-                  data = dataset_lnRR_published,
+                  data = dataset_lnRR_all_in,
                   rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
                   )
 
-all_in_lnRR <- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
-                    V = VCV_lnRR_published, # specify lnRR's sampling variance-covariance matrix;
-                    mods = ~ - 1 + time_of_gnm_addition + 
+lnRR_all_in <- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_all_in, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ time_of_gnm_addition + 
                       year_MeanCenter + 
                       sqrt_effective_n_inv + 
-                      comparision_type + 
+                      as.factor(comparision_type) + 
                       bird_species + 
                       trait_type,
                     random = list(~ 1 | paper_ID,
@@ -1375,24 +1480,31 @@ all_in_lnRR <- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
                     method = "REML",
                     control = list(optimizer="optim"),
                     test = "t",
-                    data = dataset_lnRR_published)
+                    data = dataset_lnRR_all_in)
 
 
 
 ## For SMDH complete published dataset
-VCV_SMDH_published<- vcalc(vi = SMDH_variance,
+
+dataset_SMDH_all_in<-dataset_SMDH%>%mutate(year_publication = case_when(is.na(year_publication) ~ 2025, TRUE ~ year_publication))%>%
+  mutate(year_MeanCenter=scale(as.numeric(year_publication),scale=F)[,1])%>%
+  mutate(effective_n_inv=1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control)))%>%
+  mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))%>%
+  mutate(comparision_type= case_when(is.na(comparision_type) ~ 4, TRUE ~ comparision_type))
+
+VCV_SMDH_all_in<- vcalc(vi = SMDH_variance,
                   cluster = paper_ID,
                   obs = Observation_ID,
-                  data = dataset_SMDH_published,
+                  data = dataset_SMDH_all_in,
                   rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
                   )
 
-all_in_SMDH<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
-                    V = VCV_SMDH_published, # specify lnRR's sampling variance-covariance matrix;
-                    mods = ~ - 1 + time_of_gnm_addition + 
+SMDH_all_in<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_all_in, # specify lnRR's sampling variance-covariance matrix;
+                    mods = ~ time_of_gnm_addition + 
                       year_MeanCenter + 
                       sqrt_effective_n_inv + 
-                      comparision_type + 
+                      as.factor(comparision_type) + 
                       bird_species + 
                       trait_type,
                     random = list(~ 1 | paper_ID,
@@ -1403,5 +1515,5 @@ all_in_SMDH<- rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
                     method = "REML",
                     control = list(optimizer="optim"),
                     test = "t",
-                    data = dataset_SMDH_published)
+                    data = dataset_SMDH_all_in)
 ```

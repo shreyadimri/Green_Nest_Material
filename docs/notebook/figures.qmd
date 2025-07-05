@@ -10,7 +10,7 @@ Mentesana, L., Hau, M., D'Amelio, P.B., Adreani, N.M. and Sánchez-Tójar, A. (2
 
 ```{r}
 devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
-pacman::p_load(ggplot2,dplyr,stringr,readr,cowplot)
+pacman::p_load(ggplot2,dplyr,stringr,readr,cowplot,maps)
 
 # Loading cleaned dataset
 dataset_analysis<- read_csv(here::here("data/03_data_cleaning/dataset_analysis.csv"))
@@ -616,51 +616,51 @@ SMDH_time_gnm_addition_plot <-
 lnRR_design<-readRDS(here::here("model/lnRR_design.rds"))
 SMDH_design<-readRDS(here::here("model/SMDH_design.rds"))
 
-lnRR_design_plot <-
-  orchard_plot(mod_results(
-      lnRR_design,
-      mod = "comparision_type",
-      group = "paper_ID"
-    ), xlab ="") +
-  scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
-  scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
-  labs(x = "",
-       y = "lnRR")+
-    theme(
-    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
-    legend.position = "none",
-    # legend.position.inside = c(0.98, 0.05),
-    # legend.justification = c(1, 0), 
-    # legend.direction = "horizontal",
-    legend.title = element_text(size = 7),
-    legend.text = element_text(size = 7),
-    axis.title = element_text(size = 12),
-    axis.text.x = element_text(size = 12),
-    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
-  ) + scale_x_discrete(labels = c("Non-aromatic Vs. Aromatic","Aromatic Vs. Blank", "Non-Aromatic Vs. Blank"))
-
-SMDH_design_plot <-
-  orchard_plot(mod_results(
-      SMDH_design,
-      mod = "comparision_type",
-      group = "paper_ID"
-    ), xlab ="") +
-  scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
-  scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
-  labs(x = "",
-       y = "SMDH")+
-    theme(
-    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
-    legend.position = "none",
-    # legend.position.inside = c(0.98, 0.05),
-    # legend.justification = c(1, 0), 
-    # legend.direction = "horizontal",
-    legend.title = element_text(size = 7),
-    legend.text = element_text(size = 7),
-    axis.title = element_text(size = 12),
-    axis.text.x = element_text(size = 12),
-    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
-  )
+# lnRR_design_plot <-
+#   orchard_plot(mod_results(
+#       lnRR_design,
+#       mod = "comparision_type",
+#       group = "paper_ID"
+#     ), xlab ="") +
+#   scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
+#   scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
+#   labs(x = "",
+#        y = "lnRR")+
+#     theme(
+#     panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+#     legend.position = "none",
+#     # legend.position.inside = c(0.98, 0.05),
+#     # legend.justification = c(1, 0), 
+#     # legend.direction = "horizontal",
+#     legend.title = element_text(size = 7),
+#     legend.text = element_text(size = 7),
+#     axis.title = element_text(size = 12),
+#     axis.text.x = element_text(size = 12),
+#     axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+#   ) + scale_x_discrete(labels = c("Non-aromatic Vs. Aromatic","Blank Vs. Aromatic", "Blank Vs. Non-Aromatic"))
+# 
+# SMDH_design_plot <-
+#   orchard_plot(mod_results(
+#       SMDH_design,
+#       mod = "comparision_type",
+#       group = "paper_ID"
+#     ), xlab ="") +
+#   scale_colour_manual(values = c( "#218833","mediumpurple4","#895129")) +
+#   scale_fill_manual(values = c( "#218833","mediumpurple4","#895129")) +
+#   labs(x = "",
+#        y = "SMDH")+
+#     theme(
+#     panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+#     legend.position = "none",
+#     # legend.position.inside = c(0.98, 0.05),
+#     # legend.justification = c(1, 0), 
+#     # legend.direction = "horizontal",
+#     legend.title = element_text(size = 7),
+#     legend.text = element_text(size = 7),
+#     axis.title = element_text(size = 12),
+#     axis.text.x = element_text(size = 12),
+#     axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+#   )
 
 ```
 
@@ -668,24 +668,24 @@ SMDH_design_plot <-
 
 ```{r combining meta-regression plots, effect}
 
-## I am going to remove the y ticks from the SMDH plots to make it smaller..
-SMDH_design_plot <- SMDH_design_plot +
-  theme(axis.text.y  = element_blank(),
-        axis.title.y = element_blank(),
-        axis.ticks.y = element_blank())
-
-SMDH_time_gnm_addition_plot <- SMDH_time_gnm_addition_plot +
-  theme(axis.text.y  = element_blank(),
-        axis.title.y = element_blank(),
-        axis.ticks.y = element_blank())
-
-# Combine using patchwork
-Figure_design_time_gnm_addition <- ((lnRR_design_plot + SMDH_design_plot) /
-                               (lnRR_time_gnm_addition_plot + SMDH_time_gnm_addition_plot)) +
-  plot_annotation(tag_levels = "A")
-
-ggsave(here::here("figures/Figure_design_time_gnm_addition.png"), plot = Figure_design_time_gnm_addition, height = 300, width = 400, units = "mm", dpi = 600)
-       
+# ## I am going to remove the y ticks from the SMDH plots to make it smaller..
+# SMDH_design_plot <- SMDH_design_plot +
+#   theme(axis.text.y  = element_blank(),
+#         axis.title.y = element_blank(),
+#         axis.ticks.y = element_blank())
+# 
+# SMDH_time_gnm_addition_plot <- SMDH_time_gnm_addition_plot +
+#   theme(axis.text.y  = element_blank(),
+#         axis.title.y = element_blank(),
+#         axis.ticks.y = element_blank())
+# 
+# # Combine using patchwork
+# Figure_design_time_gnm_addition <- ((lnRR_design_plot + SMDH_design_plot) /
+#                                (lnRR_time_gnm_addition_plot + SMDH_time_gnm_addition_plot)) +
+#   plot_annotation(tag_levels = "A")
+# 
+# ggsave(here::here("figures/Figure_design_time_gnm_addition.png"), plot = Figure_design_time_gnm_addition, height = 300, width = 400, units = "mm", dpi = 600)
+#        
 ```
 
 # Publication Bias Tests

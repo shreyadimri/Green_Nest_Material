@@ -93,7 +93,7 @@ plot(tree) #check: https://www.rdocumentation.org/packages/ape/versions/5.3/topi
 
 ```{r}
 # install.packages("devtools")
-#devtools::install_github("davidsjoberg/ggsankey")
+devtools::install_github("davidsjoberg/ggsankey")
 library(ggsankey)
 
 sankey_data <- dataset_analysis %>%

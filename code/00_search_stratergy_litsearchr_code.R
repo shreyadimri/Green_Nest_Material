@@ -3,16 +3,14 @@
 # Since it is only available through Github and not CRAN
 # Skip this part if you have already installed litsearchr 
 
-
-install.packages("remotes")
-library(remotes)
+pacman::p_load(remotes, tidyverse)
 #to install litsearchr from Github
 install_github("elizagrames/litsearchr", ref="main")
 
 #-----------------------------------------------------------------------------------------------
 
 #Loading required packaged if they are already installed
-pacman::p_load(litsearchr,igraph,ggplot2,tidyverse)
+pacman::p_load(litsearchr,igraph,ggplot2)
 
 #---------------------------------- Naive search file import and deduplication---------------------------------------------
  
@@ -64,22 +62,22 @@ rakedkeywords<-
 #--------------------counting the occurance of searched keywords across studies in our database----------------------------
 
 #create_dfm counts the occurrence of the searched keywords across the studies and produces a matrix
-naive_dfm<-litsearchr::create_dfm(elements = paste(deduplicated_naiveimport$title,
-                                                   deduplicated_naiveimport$abstract,
-                                                   deduplicated_naiveimport$keywords),
+naive_dfm<-litsearchr::create_dfm(elements = paste(deduplicated_naiveimport$keywords,
+                                                   deduplicated_naiveimport$title,
+                                                   deduplicated_naiveimport$abstracts),
                                  features = rakedkeywords)
 
 
 
 #creating the network graph showing co-occurrence between the words (note that one can change
 #the numbers of studies and minimal occurence)
-naivegraph<-litsearchr::create_network(search_dfm = naive_dfm, min_studies = 3, 
-                                        min_occ = 2)
+  naivegraph<-litsearchr:: create_network(search_dfm = naive_dfm, min_studies = 3, 
+                                         min_occ = 2)
 
 #------------------------------------plots to visualise the searched keywords----------------------------------------------
 
-#it shows the grap with the co-occurence of words
-plot(naivegraph)
+#it shows the graph with the co-occurence of words
+# plot(naivegraph)
 
 #The ‘strength’ of each term in the network is the number of other terms that it appears together with
 strengths <- strength(naivegraph)
@@ -89,7 +87,7 @@ data.frame(term=names(strengths), strength=strengths, row.names=NULL) %>%
   arrange(strength) ->
   term_strengths
 
-#term_strengths
+# term_strengths
 
 # plot to show the strength of each term to set a cutoff and include the important terms that occur multiple times
 cutoff_fig <- ggplot(term_strengths, aes(x=rank, y=strength, label=term)) +
@@ -103,17 +101,17 @@ cutoff_fig
 #... keywords (the highter the percentage the more keywords)
 cutoff_cum <- find_cutoff(naivegraph, method="cumulative", percent=0.90)
 cutoff_cum
-cutoff_fig +
+cutoff_fig<-cutoff_fig +
   geom_hline(yintercept=cutoff_cum, linetype="dashed")
 
 
 #this line simplifies the graph
-reducedgraph<- litsearchr::reduce_graph(naivegraph, 
-                                        cutoff_strength = cutoff_cum)
+ reducedgraph<- litsearchr::reduce_graph(naivegraph, 
+                                         cutoff_strength = cutoff_cum)
 #shows the simplified graph
-plot(reducedgraph)
+# plot(reducedgraph)
 
-searchterms <- litsearchr::get_keywords(reducedgraph)
+# searchterms <- litsearchr::get_keywords(reducedgraph)
 
 
-write.csv(searchterms, "data/01_systematic_search/01_search_strategy/litsearchr_search_terms.csv")
+# write.csv(searchterms, "data/01_systematic_search/01_search_strategy/litsearchr_search_terms.csv")
