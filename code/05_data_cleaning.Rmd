@@ -96,7 +96,7 @@ set_unpublished2 <-read_excel(here::here("data/02_data_extraction/data_extractio
 # Merge all datasets
 merged_data_extraction<-full_join(set_JMGS,set_SD)%>%full_join(set_TR)%>%full_join(set2_JMGS)%>%full_join(set2_SD)%>%full_join(set2_TR)%>%full_join(set_unpublished1)%>%full_join(set_unpublished2)
 
-# write.csv(merged_data_extraction,here::here("data/03_data_cleaning/merged_data_extraction.csv"),row.names=FALSE)
+write.csv(merged_data_extraction,here::here("data/03_data_cleaning/merged_data_extraction.csv"),row.names=FALSE)
 ```
 
 ### Full-text Screening

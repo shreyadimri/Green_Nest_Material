@@ -11,7 +11,7 @@ extractor_metareg <- function(model, moderator_name) {
   mod.data <- model$data
   
   summ.k_n <-  mod.data %>%
-    group_by(level= as.character(mod.data[[moderator_name]])) %>%
+    group_by(level= as.character(.data[[moderator_name]])) %>%
     summarise(
       k = n(),  # effect sizes
       n = n_distinct(paper_ID),  # unique papers
@@ -113,12 +113,13 @@ extractor_metareg <- function(model, moderator_name) {
     mutate(
       pi_lower = format(round(pi.lb,3),nsmall=3),
       pi_upper = format(round(pi.ub,3),nsmall=3),
-      CI = paste0("[", ci_lower, ",",ci_upper, "]"),
-      PI = paste0("[", pi_lower, ",",pi_upper, "]"),
+      CI = paste0("[", ci_lower, ", ",ci_upper, "]"),
+      PI = paste0("[", pi_lower, ", ",pi_upper, "]"),
     )%>%
     select(moderator,level,estimate,p_value,CI,PI,k,n,Q,Q_pval,R2_marginal)%>%
     mutate(
-      Q_pval = if_else(Q_pval<0.001, "<0.001",as.character(Q_pval))
+      Q_pval = if_else(as.numeric(Q_pval) <0.001, "<0.001",as.character(Q_pval)),
+      p_value = if_else(as.numeric(p_value) <0.001, "<0.001",as.character(p_value))
     )
   
   
