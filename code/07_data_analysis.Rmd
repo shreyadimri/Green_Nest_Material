@@ -232,10 +232,10 @@ intercept_lnRR<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measur
                     test = "t",
                     data = dataset_lnRR)
 # saving the model
-saveRDS(intercept_lnRR, file = here::here("model/intercept_lnRR.rds"))
+# saveRDS(intercept_lnRR, file = here::here("model/intercept_lnRR.rds"))
 
 # saving the dataset for this model
-write.csv(dataset_lnRR,here::here("data/04_data_analysis/intercept_lnRR.csv"))
+# write.csv(dataset_lnRR,here::here("data/04_data_analysis/intercept_lnRR.csv"))
 ```
 
 #### Exploring heterogeneity in intercept only model
@@ -355,10 +355,10 @@ intercept_SMDH<- rma.mv(yi = SMDH_sign, # specify SMDH as the effect size measur
                     data = dataset_SMDH)
 
 # saving the model
-saveRDS(intercept_SMDH, file = here::here("model/intercept_SMDH.rds"))
+# saveRDS(intercept_SMDH, file = here::here("model/intercept_SMDH.rds"))
 
 # saving the dataset for this model
-write.csv(dataset_SMDH,here::here("data/04_data_analysis/intercept_SMDH.csv"))
+# write.csv(dataset_SMDH,here::here("data/04_data_analysis/intercept_SMDH.csv"))
 ```
 
 ## SMDH-heterogeneity
@@ -1183,7 +1183,7 @@ Let me try to do a sensitivity analysis to see what happens when I remove the co
 ```{r}
 
 ## For the lnRR effect size...
-dataset_lnRR_no_comp3<-dataset_lnRR%>%filter(comparision_type!=3)
+dataset_lnRR_no_comp3<-dataset_lnRR%>%filter(comparision_type!=3 | is.na(comparision_type))
 ## Only some rows are removed... 
 nrow(dataset_lnRR)-nrow(dataset_lnRR_no_comp3)
 
@@ -1220,7 +1220,7 @@ write.csv(dataset_lnRR_no_comp3,here::here("data/05_data_sensitivity_analysis/da
 # for  SMDH  as Effect Size
 #----------------------------------------------------------------------------
 
-dataset_SMDH_no_comp3<-dataset_SMDH%>%filter(comparision_type!=3)
+dataset_SMDH_no_comp3<-dataset_SMDH%>%filter(comparision_type!=3 | is.na(comparision_type))
 ## Only some rows are removed... 
 nrow(dataset_SMDH)-nrow(dataset_SMDH_no_comp3)
 
@@ -1253,7 +1253,57 @@ saveRDS(SA_SMDH_no_comp3, file = here::here("model/sensitivity_analysis/SA_SMDH_
 write.csv(dataset_SMDH_no_comp3,here::here("data/05_data_sensitivity_analysis/dataset_SMDH_no_comp3.csv"))
 ```
 
-Results remain practically the same irrespective..
+Overall conclusions remain practically the same irrespective.. now what about the meta-regression using Type of Experiment Design
+
+```{r}
+
+dataset_lnRR_design_SA <- dataset_lnRR %>% filter(comparision_type!=3)
+
+VCV_lnRR_design_SA <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_design_SA,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+lnRR_design_SA <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_design_SA ,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + comparision_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR_design_SA )
+
+
+## Now for SMDH
+
+dataset_SMDH_design_SA <- dataset_SMDH %>% filter(comparision_type!=3)
+
+VCV_SMDH_design_SA <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_design_SA,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+SMDH_design_SA <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_design_SA ,# specify lnRR's sampling variance;
+                    mods = ~ - 1 + comparision_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_design_SA)
+```
 
 ## Time of addition of green nest material
 
@@ -1708,23 +1758,318 @@ For this I have to run all the meta-regressions again without removing the inter
 #----------------------------------------------------------------------------------
 # For Different hypothesis
 #----------------------------------------------------------------------------------
+## For lnRR
+VCV_lnRR<- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
 
-# lnRR_hypothesis_pc <-
-#   metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
-#                     V = VCV_lnRR,# specify lnRR's sampling variance;
-#                     mods = ~ Hypothesis,
-#                     random = list(~ 1 | paper_ID,
-#                                   ~ 1 | Observation_ID,
-#                                   ~ 1 | group_ID_coded,
-#                                   ~ 1 | population_ID,
-#                                   ~ 1 | bird_species),
-#                     method = "REML",
-#                   test = "t",
-#                   control = list(optimizer="optim"),
-#                   data = dataset_lnRR)
-# 
-# # I now want to test for statistical differences between groups. Male and fem
-# # information for androgens can be obtained from the outcome of the table. For thyroid
-# # hormones I need to do Post-hoc Wald tests: 
-# car::linearHypothesis(lnRR_hypothesis_pc, rbind(c(0,1,-1)))
+lnRR_hypothesis_pc <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR,# specify lnRR's sampling variance;
+                    mods = ~ Hypothesis,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+# I now want to test for statistical differences between groups. Male and fem
+# information for androgens can be obtained from the outcome of the table. For thyroid
+# hormones I need to do Post-hoc Wald tests:
+car::linearHypothesis(lnRR_hypothesis_pc, rbind(c(0,1,-1)))
+
+# saving the model
+saveRDS(lnRR_hypothesis_pc, file = here::here("model/lnRR_hypothesis_pc.rds"))
+
+# For SMDH
+
+VCV_SMDH <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+SMDH_hypothesis_pc <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH,# specify lnRR's sampling variance;
+                    mods = ~ Hypothesis,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+# I now want to test for statistical differences between groups. Male and fem
+# information for androgens can be obtained from the outcome of the table. For thyroid
+# hormones I need to do Post-hoc Wald tests:
+car::linearHypothesis(SMDH_hypothesis_pc, rbind(c(0,1,-1)))
+# saving the model
+saveRDS(SMDH_hypothesis_pc, file = here::here("model/SMDH_hypothesis_pc.rds"))
+
+
+#----------------------------------------------------------------------------------
+# For Type of experimental design
+#----------------------------------------------------------------------------------
+
+
+# This analysis only includes dataset that has a proxy relating to comaparision type
+dataset_lnRR_design <- dataset_lnRR %>% filter(!is.na(comparision_type))
+
+VCV_lnRR_design <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_design,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+lnRR_design_pc <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_design ,# specify lnRR's sampling variance;
+                    mods = ~ comparision_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR_design )
+
+# Saving the model
+saveRDS(lnRR_design_pc, file = here::here("model/lnRR_design_pc.rds"))
+
+
+# This analysis only includes dataset that has a proxy relating to comaparision type
+dataset_SMDH_design <- dataset_SMDH %>% filter(!is.na(comparision_type))
+
+VCV_SMDH_design <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_design,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+SMDH_design_pc <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_design ,# specify lnRR's sampling variance;
+                    mods = ~ comparision_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_design )
+
+# Saving the model
+saveRDS(SMDH_design_pc, file = here::here("model/SMDH_design_pc.rds"))
+
+
+#----------------------------------------------------------------------------------
+# For Time of addition of GNM
+#----------------------------------------------------------------------------------
+
+## We use the complete dataset in this case
+lnRR_time_gnm_addition_pc <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR,# specify lnRR's sampling variance using the variance-covariance matrix we created for the intercept-only model since the whole dataset is being used in this case as well
+                    mods = ~ time_of_gnm_addition,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+## Saving the model
+saveRDS(lnRR_time_gnm_addition_pc, file = here::here("model/lnRR_time_gnm_addition_pc.rds"))
+
+
+## Now similarly for the SMDH effect size using the complete dataset
+SMDH_time_gnm_addition_pc <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH,# specify lnRR's sampling variance using the variance-covariance matrix we created for the intercept-only model since the whole dataset is being used in this case as well
+                    mods = ~ time_of_gnm_addition,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+## Saving the model
+saveRDS(SMDH_time_gnm_addition_pc, file = here::here("model/SMDH_time_gnm_addition_pc.rds"))
+
+#----------------------------------------------------------------------------------
+# Parasite Type
+#----------------------------------------------------------------------------------
+
+# This analysis only includes dataset that has a proxy relating to parasite or pathogen
+dataset_lnRR_parasite <- dataset_lnRR%>%
+  filter(!is.na(parasite_type))%>%
+  mutate(parasite_type=as.factor(parasite_type),
+         paper_ID=as.factor(paper_ID),
+         Observation_ID=as.factor(Observation_ID),
+         group_ID_coded=as.factor(group_ID_coded),
+         bird_species=as.factor(bird_species))
+
+VCV_lnRR_parasite <- vcalc(vi = lnRR_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_lnRR_parasite,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+lnRR_parasite_pc <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR_parasite,# specify lnRR's sampling variance;
+                    mods = ~ parasite_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                   test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR_parasite)
+
+
+# Saving the model
+saveRDS(lnRR_parasite_pc, file = here::here("model/lnRR_parasite_pc.rds"))
+
+### Similiarly for SMDH as well selecting the dataset with parasite type
+# This analysis only includes dataset that has a proxy relating to parasite or pathogen
+dataset_SMDH_parasite <- dataset_SMDH%>%
+  filter(!is.na(parasite_type))
+VCV_SMDH_parasite <- vcalc(vi = SMDH_variance,
+                  cluster = paper_ID,
+                  obs = Observation_ID,
+                  data = dataset_SMDH_parasite,
+                  rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
+                  )
+
+SMDH_parasite_pc <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_parasite,# specify lnRR's sampling variance;
+                    mods =  parasite_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                   test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH_parasite)
+
+# Save the model
+saveRDS(SMDH_parasite_pc, file = here::here("model/SMDH_parasite_pc.rds"))
+
+#----------------------------------------------------------------------------------
+# Bird Species
+#----------------------------------------------------------------------------------
+
+lnRR_birds_pc <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR,# specify lnRR's sampling variance;
+                    mods = ~ bird_species,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+# Saving the model
+saveRDS(lnRR_birds_pc, file = here::here("model/lnRR_birds_pc.rds"))
+
+
+## Now doing this for SMDH
+
+SMDH_birds_pc <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH,# specify lnRR's sampling variance;
+                    mods = ~  bird_species,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+# Saving the model
+saveRDS(SMDH_birds_pc, file = here::here("model/SMDH_birds_pc.rds"))
+
+
+#----------------------------------------------------------------------------------
+# Type of trait studied
+#----------------------------------------------------------------------------------
+
+
+
+lnRR_trait_pc <-
+  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
+                    V = VCV_lnRR,# specify lnRR's sampling variance;
+                    mods = ~ trait_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_lnRR)
+
+# Saving the model
+saveRDS(lnRR_trait_pc, file = here::here("model/lnRR_trait_pc.rds"))
+
+## Now similarly for SMDH
+
+SMDH_trait_pc <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH,# specify lnRR's sampling variance;
+                    mods = ~ trait_type,
+                    random = list(~ 1 | paper_ID,
+                                  ~ 1 | Observation_ID,
+                                  ~ 1 | group_ID_coded,
+                                  ~ 1 | population_ID,
+                                  ~ 1 | bird_species),
+                    method = "REML",
+                  test = "t",
+                  control = list(optimizer="optim"),
+                  data = dataset_SMDH)
+
+# Saving the model
+saveRDS(SMDH_trait_pc, file = here::here("model/SMDH_trait_pc.rds"))
+
+
 ```
+
+\

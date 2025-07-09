@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# ---- FIGURES ————–
+# ---- FIGURES --------------
 
 # Visualising location and bird species
 
@@ -117,11 +117,11 @@ zoom_map <- ggplot() +
   geom_point(data = dataset_analysis_unique_rows,
              aes(x = Long_Location, y = Lat_Location,
                  size = size.freq, colour = bird_species),
-             alpha = 0.6) +
-  scale_size(range = c(1, 2)) +
+             alpha = 0.9) +
+  scale_size(range = c(2, 4)) +
   scale_colour_manual(values = c("#00B0BE","#FFB255",  "#FF8CAE", 
                                  "#F47A00", "#98C127","#003A7D","#7E4794")) +
-  coord_cartesian(xlim = c(-120, 120), ylim = c(25, 65)) +  # Northern Hemisphere
+  coord_cartesian(xlim = c(-10, 20), ylim = c(25, 65)) +  # Northern Hemisphere
   theme_void() +
   theme(
     legend.position = "none",
@@ -131,7 +131,7 @@ zoom_map <- ggplot() +
 
 geographic_distribution <- ggdraw() +
   draw_plot(fig_map) +
-  draw_plot(zoom_map, x = 0.10, y = 0.12, width = 0.52, height = 0.22) + theme(panel.border = element_rect(colour = "black", fill=NA, size=1.5))
+  draw_plot(zoom_map, x = 0.05, y = 0.15, width = 0.28, height = 0.38) + theme(panel.border = element_rect(colour = "black", fill=NA, size=1.5))
 
 ggsave(here::here("figures/Figure_Distribution.png"), plot = geographic_distribution, height = 100, width = 170, units= 'mm', dpi = 600)
 ```
@@ -244,18 +244,19 @@ intercept_lnRR<-readRDS(here::here("model/intercept_lnRR.rds"))
 intercept_SMDH<-readRDS(here::here("model/intercept_SMDH.rds"))
 
 # Plot for lnRR
-intercept_lnRR_plot <- orchaRd::orchard_plot(intercept_lnRR,
-                                    mod = "1",
-                                    group = "paper_ID",
-                                    trunk.size = 0.25,
-                                    branch.size = 2,
-                                    twig.size = 0.5,
-                                    alpha = 0.2,
-                                    xlab = "Effect size (Log Response Ratio- lnRR)",
-                                    fill = T) +
-   scale_fill_manual(values = "#98C127") +
-   scale_colour_manual(values = "#98C127" ) +
-  theme_minimal(base_size = 14) +
+
+intercept_lnRR_plot<- orchaRd::orchard_plot(intercept_lnRR,
+                                             mod = "1",
+                                             group = "paper_ID",
+                                             trunk.size = 0.3,
+                                             branch.size = 2,
+                                             twig.size = 0.5,
+                                             alpha = 0.2,
+                                             xlab = "Effect size (lnRR)", 
+                                             fill =  T) +
+  scale_fill_manual(values = "#98C127") +
+  scale_colour_manual(values = "#98C127" ) +
+theme_minimal(base_size = 14) +
   theme(
     panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
     legend.position = c(0.98, 0.05),
@@ -273,11 +274,11 @@ intercept_lnRR_plot <- orchaRd::orchard_plot(intercept_lnRR,
 intercept_SMDH_plot <- orchaRd::orchard_plot(intercept_SMDH,
                                     mod = "1",
                                     group = "paper_ID",
-                                    trunk.size = 0.25,
+                                    trunk.size = 0.3,
                                     branch.size = 2,
                                     twig.size = 0.5,
                                     alpha = 0.2,
-                                    xlab = "Effect size (Standardized Mean Difference- SMD(H))",
+                                    xlab = "Effect size (SMDH)",
                                     fill = TRUE) +
   scale_fill_manual(values = "#F47A00") +
   scale_colour_manual(values = "#F47A00") +
@@ -295,12 +296,79 @@ intercept_SMDH_plot <- orchaRd::orchard_plot(intercept_SMDH,
   ) +
   labs(x = "Intercept")
 
-
 # Combine using patchwork
 Figure_intercept <- intercept_lnRR_plot / intercept_SMDH_plot +
   plot_annotation(tag_level = c("A","B"))
 
 ggsave(here::here("figures/Figure_overall_effect.png"), plot = Figure_intercept, height = 150, width = 170, units = "mm", dpi = 600)
+
+###----------------------------------------------------------------------------------
+
+## Now the cropped versions presented in the main manuscript..
+
+###----------------------------------------------------------------------------------
+
+
+
+intercept_lnRR_plot_crop <- orchaRd::orchard_plot(intercept_lnRR,
+                                             mod = "1",
+                                             group = "paper_ID",
+                                             trunk.size = 0.5,
+                                             branch.size = 2,
+                                             twig.size = 0.5,
+                                             alpha = 0.2,
+                                             xlab = "Effect size (lnRR)", 
+                                             fill =  T) +
+  scale_fill_manual(values = "#98C127") +
+  scale_colour_manual(values = "#98C127" ) +
+    scale_y_continuous(limits = c(-0.7, 0.7)) +
+theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0),
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+# Plot for SMDH
+intercept_SMDH_plot_crop <- orchaRd::orchard_plot(intercept_SMDH,
+                                    mod = "1",
+                                    group = "paper_ID",
+                                    trunk.size = 0.5,
+                                    branch.size = 2,
+                                    twig.size = 0.5,
+                                    alpha = 0.2,
+                                    xlab = "Effect size (SMDH)",
+                                    fill = TRUE) +
+  scale_fill_manual(values = "#F47A00") +
+  scale_colour_manual(values = "#F47A00") +
+  scale_y_continuous(limits = c(-2.7, 2.7)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+
+# Combine using patchwork
+Figure_intercept_crop <- intercept_lnRR_plot_crop / intercept_SMDH_plot_crop +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_overall_effect_crop.png"), plot = Figure_intercept_crop, height = 150, width = 170, units = "mm", dpi = 600)
 ```
 
 # Hypothesis meta-regression
@@ -327,7 +395,7 @@ lnRR_hypothesis_plot <-
   scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
   scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
   labs(x = "",
-       y = "lnRR")+
+       y = "Effect size (lnRR)")+
   theme(
     panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
     legend.position.inside = c(0.99, 0.05),
@@ -337,9 +405,8 @@ lnRR_hypothesis_plot <-
     legend.text = element_text(size = 6),
     axis.title = element_text(size = 10),
     axis.text.x = element_text(size = 10),
-    axis.text.y = element_text(angle = 90, vjust = 0.01, hjust = 0.5)
-  )+ scale_x_discrete(labels = c("Both","Courtship","Parental Care"))
-
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental Care"))
   
 # Plot SMDH meta-regression on hypothesis
  
@@ -358,7 +425,7 @@ SMDH_hypothesis_plot <-
   scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
   scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
   labs(x = "",
-       y = "SMD(H)")+
+       y = "Effect size (SMDH)")+
     theme(
     panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
     legend.position.inside = c(0.99, 0.05),
@@ -368,8 +435,8 @@ SMDH_hypothesis_plot <-
     legend.text = element_text(size = 6),
     axis.title = element_text(size = 10),
     axis.text.x = element_text(size = 10),
-    axis.text.y = element_text(angle = 90, vjust = 0.8, hjust = 1)
-  )+ scale_x_discrete(labels = c("Both","Courtship","Parental Care"))
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental Care"))
 
 SMDH_hypothesis_plot <- SMDH_hypothesis_plot +
   theme(axis.text.y  = element_blank(),
@@ -381,6 +448,87 @@ Figure_hypothesis <- lnRR_hypothesis_plot + SMDH_hypothesis_plot +
   plot_annotation(tag_level = c("A","B"))
 
 ggsave(here::here("figures/Figure_hypothesis.png"), plot = Figure_hypothesis, height = 120, width = 250, units = "mm", dpi = 600)
+
+
+##-----------------------------------------------------------------------------
+
+# Now the cropped figures for the main manuscript
+
+##-----------------------------------------------------------------------------
+
+
+# Plot lnRR meta-regression on hypothesis
+
+lnRR_hypothesis_plot_crop <-
+  orchard_plot(mod_results(lnRR_hypothesis,
+                           mod = "Hypothesis",
+                           group = "paper_ID"),
+               trunk.size = 0.5,
+               branch.size = 1.3,
+               twig.size = 0.5,
+               alpha = 0.4,
+               fill = T,
+               xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+    scale_y_continuous(limits = c(-0.7, 0.7)) +
+  labs(x = "",
+       y = "Effect size (lnRR)")+
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental\nCare"))
+
+  
+# Plot SMDH meta-regression on hypothesis
+ 
+SMDH_hypothesis_plot_crop <-
+  orchard_plot(
+    mod_results(
+      SMDH_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.5,
+    branch.size = 1.3,
+    twig.size = 0.5,
+    alpha = 0.4,
+    fill = T,
+    xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_y_continuous(limits = c(-2.7, 2.7)) +
+  labs(x = "",
+       y = "Effect size (SMDH)")+
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental\nCare"))
+
+SMDH_hypothesis_plot_crop <- SMDH_hypothesis_plot_crop +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_hypothesis_crop <- lnRR_hypothesis_plot_crop + SMDH_hypothesis_plot_crop +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_hypothesis_crop.png"), plot = Figure_hypothesis_crop, height = 120, width = 250, units = "mm", dpi = 600)
 ```
 
 # Other meta-regressions
@@ -877,7 +1025,7 @@ Figure_publication_bias <- ((lnRR_small_study_bubble + SMDH_small_study_bubble) 
 ggsave(here::here("figures/Figure_publication_bias.png"), plot = Figure_publication_bias, height = 300, width = 400, units = "mm", dpi = 600)
 ```
 
-# -------- TABLES ———-
+# -------- TABLES ----------
 
 ## Table: Sensitivity analysis for intercept only model
 
