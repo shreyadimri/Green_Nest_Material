@@ -23,6 +23,24 @@ crossref:
       reference-prefix: Figure S
       space-before-numbering: false
       latex-list-of-description: Supplementary Figure
+    - kind: float
+      key: tabsupp
+      latex-env: tabsupp
+      reference-prefix: Table S
+      space-before-numbering: false
+      latex-list-of-description: Supplementary Tables
+    - kind: float
+      key: figmain
+      latex-env: figmain
+      reference-prefix: "Figure "
+      space-before-numbering: false
+      latex-list-of-description: Article Figures
+    - kind: float
+      key: tabmain
+      latex-env: tabmain
+      reference-prefix: "Table "
+      space-before-numbering: false
+      latex-list-of-description: Article Tables
 
       
 execute:

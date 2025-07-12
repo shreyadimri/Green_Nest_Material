@@ -22,7 +22,9 @@ data/03_data_cleaning/dataset_after_cleaning.csv
 ```{r setup, warning=FALSE, message=FALSE, echo=F}
 
 # Setting up workspace
-
+if (!requireNamespace("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
 pacman::p_load(here, tidyverse, dplyr, stringr, metafor, orchaRd,ggpubr,ggrepel) #Packages needed
 
 rm(list=ls()) ## cleaning up
@@ -187,7 +189,7 @@ dataset_analysis <- dataset_analysis %>%
       str_detect(population_ID, regex("montijo|tagus estuary|air force base", ignore_case = TRUE)) ~ "Montijo, Portugal",
       
       # Madrid Region
-      str_detect(population_ID, regex("madrid|manzanares|villalba|soto del real|central spain", ignore_case = TRUE)) ~ "Madrid Province, Spain",
+      str_detect(population_ID, regex("madrid|manzanares|villalba|soto del real", ignore_case = TRUE)) ~ "Madrid Province, Spain",
       
       # Nova Scotia / New Brunswick
       str_detect(population_ID, regex("nova scotia|new brunswick", ignore_case = TRUE)) ~ "Nova Scotia and New Brunswick, Canada",
@@ -878,7 +880,14 @@ dataset_analysis<-dataset_analysis%>%
 
 ```{r}
 # 9 from GNM_355 where repeated estimates over days for haemoglobin are present and I cannot combine them as I did for chick mass over months.. since the sample is the same and these are the repeated measures of the same sample.
-noSMDH=dataset_analysis%>%filter(is.na(SMDH))
+low_sample=dataset_analysis%>%filter(is.na(SMDH))
+write.csv(low_sample,file=here::here("data/03_data_cleaning/low_sample.csv"),row.names = FALSE)
+```
+
+This is very very low sample size, it makes no sense to keep them. I will exclude them from all the further analysis.
+
+```{r}
+dataset_analysis<-dataset_analysis%>%anti_join(low_sample,by="Observation_ID")
 ```
 
 ## Saving all output files

@@ -53,47 +53,47 @@ dataset_SMDH<-read_csv(here::here("data/04_data_analysis/dataset_SMDH.csv"))
 ### Creating Phylogeny for the plot
 
 ```{r}
-# install.packages("pacman")
-# load packages
-
-pacman::p_load(rotl,
-               ape,
-               ggtree)
-
-
-# We have 7 bird species in the dataset
-bird_species <- unique(dataset_analysis$bird_species)
-
-# extracting taxonomic information
-taxa <- rotl::tnrs_match_names(names = bird_species)
-taxa
-
-# check approximate matches
-taxa[taxa$approximate_match==TRUE & !(is.na(taxa$approximate_match)),]
-
-# phylogenetic information for our species from the Open Tree of Life
-
-tree <- rotl::tol_induced_subtree(ott_ids = taxa[["ott_id"]], label_format = "name")
-ape::is.binary(tree)
-
-# here are the species included in the tree
-sort(tree$tip.label)
-
-# removing the underscore "_" from the tree tip.label
-tree$tip.label <- gsub("_"," ", tree$tip.label)
-sort(tree$tip.label)
-
-# compute branch lengths of tree
-phylo_branch <- compute.brlen(tree, method = "Grafen", power = 1)
-
-# check tree is ultrametric
-is.ultrametric(phylo_branch) # TRUE
-
-# matrix to be included in the models
-bird_phylo <- vcv(phylo_branch, cor = T)
-bird_phylo
-
-plot(tree) #check: https://www.rdocumentation.org/packages/ape/versions/5.3/topics/plot.phylo
+# # install.packages("pacman")
+# # load packages
+# 
+# pacman::p_load(rotl,
+#                ape,
+#                ggtree)
+# 
+# 
+# # We have 7 bird species in the dataset
+# bird_species <- unique(dataset_analysis$bird_species)
+# 
+# # extracting taxonomic information
+# taxa <- rotl::tnrs_match_names(names = bird_species)
+# taxa
+# 
+# # check approximate matches
+# taxa[taxa$approximate_match==TRUE & !(is.na(taxa$approximate_match)),]
+# 
+# # phylogenetic information for our species from the Open Tree of Life
+# 
+# tree <- rotl::tol_induced_subtree(ott_ids = taxa[["ott_id"]], label_format = "name")
+# ape::is.binary(tree)
+# 
+# # here are the species included in the tree
+# sort(tree$tip.label)
+# 
+# # removing the underscore "_" from the tree tip.label
+# tree$tip.label <- gsub("_"," ", tree$tip.label)
+# sort(tree$tip.label)
+# 
+# # compute branch lengths of tree
+# phylo_branch <- compute.brlen(tree, method = "Grafen", power = 1)
+# 
+# # check tree is ultrametric
+# is.ultrametric(phylo_branch) # TRUE
+# 
+# # matrix to be included in the models
+# bird_phylo <- vcv(phylo_branch, cor = T)
+# bird_phylo
+# 
+# plot(tree) #check: https://www.rdocumentation.org/packages/ape/versions/5.3/topics/plot.phylo
 ```
 
 ### Visualizing random effects structure
@@ -152,8 +152,8 @@ dataset_SMDH<- dataset_SMDH%>%mutate(across(c(paper_ID, Observation_ID, repeated
 ```{r seperating datasets for analysis}
 
 ## For lnRR (or simply load dataset as provided)
-# dataset_lnRR<-dataset_analysis%>%
-# filter(lnRR_sign != "NA" | lnRR_variance != "NA")
+dataset_lnRR<-dataset_analysis%>%
+filter(lnRR_sign != "NA" | lnRR_variance != "NA")
 
 # selecting dataset which are not flagged
 dataset_lnRR<-dataset_lnRR%>%
@@ -181,7 +181,7 @@ lnRR_geary_passed<-dataset_lnRR%>%filter(geary_test=="pass")
 ## For SMDH
 # selecting dataset which are not flagged
 dataset_SMDH<-dataset_analysis%>%
-   filter(proxy_decision == "include"| proxy_decision == "SMDH only"|proxy_decision =="contingency table") %>% filter(SMDH_sign != "NA")
+   filter(proxy_decision != "sensitivity-analysis" | is.na(proxy_decision))
 
 # selecting only published dataset
 dataset_SMDH_published<-dataset_SMDH%>%
@@ -232,10 +232,10 @@ intercept_lnRR<- rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measur
                     test = "t",
                     data = dataset_lnRR)
 # saving the model
-# saveRDS(intercept_lnRR, file = here::here("model/intercept_lnRR.rds"))
+ saveRDS(intercept_lnRR, file = here::here("model/intercept_lnRR.rds"))
 
 # saving the dataset for this model
-# write.csv(dataset_lnRR,here::here("data/04_data_analysis/intercept_lnRR.csv"))
+ write.csv(dataset_lnRR,here::here("data/04_data_analysis/intercept_lnRR.csv"))
 ```
 
 #### Exploring heterogeneity in intercept only model
@@ -355,10 +355,10 @@ intercept_SMDH<- rma.mv(yi = SMDH_sign, # specify SMDH as the effect size measur
                     data = dataset_SMDH)
 
 # saving the model
-# saveRDS(intercept_SMDH, file = here::here("model/intercept_SMDH.rds"))
+ saveRDS(intercept_SMDH, file = here::here("model/intercept_SMDH.rds"))
 
 # saving the dataset for this model
-# write.csv(dataset_SMDH,here::here("data/04_data_analysis/intercept_SMDH.csv"))
+ write.csv(dataset_SMDH,here::here("data/04_data_analysis/intercept_SMDH.csv"))
 ```
 
 ## SMDH-heterogeneity
@@ -985,76 +985,68 @@ write.csv(dataset_SMDH_no_para,here::here("data/05_data_sensitivity_analysis/dat
 
 ## Different values of sampling variance correlation
 
-[**Robust variance estimation to guard against arbitary value of sampling correlation**]{.underline} - 'robust()' function from R package 'metafor' (Viechtbauer 2010) using 'CR2' (bias reduced linearization correction) from the R package 'clubSandwich' (Pustejovsky 2024) for small-sample size adjustment.
-
-At the moment, this is not working..
-
-```{r}
-#MLMA_lnRR_RVE<- robust(MLMA_lnRR_VCV,
-#                        cluster = paper_ID,
-#                        clubSandwich = TRUE,
-#                        verbose=T)
-
-# # summary(MLMA_lnRR_RVE)
-# I2_CI <- i2_ml(MLMA_lnRR_RVE) # Relative heterogeneity
-# round(I2_CI,2) # absolute heterogeneity is reported in the summary of the model
-```
-
 ::: callout-important
-Sensitivity Analysis
-
-We will also perform a sensitivity analysis using 0.3 and 0.7 correlation between the sampling variances from the same paper_ID and report it in the supplementary materials. If this sensitivity analysis shows large differences in conclusions for the intercept-only model, we will proceed to perform such sensitivity analysis for the meta-regressions.
+**Pre-registered**: We will also perform a sensitivity analysis using 0.3 and 0.7 correlation between the sampling variances from the same paper_ID and report it in the supplementary materials. If this sensitivity analysis shows large differences in conclusions for the intercept-only model, we will proceed to perform such sensitivity analysis for the meta-regressions.
 :::
 
 First, set a series of ρs (i.e., 0.3, 0.5, 0.7) (we assume these values arbitrarily):
 
 ```{r lnRR rho sensitivity analysis}
-# rho_range <- c(0.3, 0.5, 0.7)
+
+
+
+
+# rho_range <- c(0.2,0.3, 0.5, 0.7,0.8)
 # 
-# MLMAlnRR_VCV_range <- list() # repeatedly run the specified model with varying rho
-# for (i in 1:length(rho_range))
-# {VCV_range <- vcalc(vi = lnRR_variance,
-#                   cluster = paper_ID,
-#                   subgroup = group_ID,
-#                   obs = Observation_ID,
-#                   data = dataset_lnRR,
-#                    rho = rho_range[i],
-#                     ) # impute sampling variance covariance matrix with varying rho
+# SA_lnRR_VCV_range <- list() # repeatedly run the specified model with varying rho
+# for (i in 1:length(rho_range)){
+#   VCV_range <- vcalc(vi = lnRR_variance,
+#                      cluster = paper_ID,
+#                      obs = Observation_ID,
+#                      data = dataset_lnRR,
+#                      rho = rho_range[i])
 # 
-# MLMAlnRR_VCV_range[[i]] <- rma.mv(yi = lnRR_sign,
-#                                   V = VCV_range, # sampling variance covariance matrix with varying values of rho.
-#                                  random = list(~ 1 | paper_ID,
-#                                   ~ 1 | Observation_ID,
-#                                   ~ 1 | experiment_ID,
-#                                   ~ 1 | group_ID,
-#                                   ~ 1 | repeated_trait_ID),
-#                                   method = "REML",
-#                                   data = dataset_lnRR # run the model with varying rho
-# )
+#   lnRR_VCV_range[[i]] <- rma.mv(yi = lnRR_sign,
+#                                 V = VCV_range,
+#                                 random = list(~ 1 | paper_ID,
+#                                               ~ 1 | Observation_ID,
+#                                               ~ 1 | group_ID_coded,
+#                                               ~ 1 | population_ID,
+#                                               ~ 1 | bird_species),
+#                                 method = "REML",
+#                                 data = dataset_lnRR)
 # }
 # 
-# save(VCV_range, file = here::here("GNM/figures/VCV_range.Rdata"))
-# save(MLMAlnRR_VCV_range, file = here::here("GNM/figures/MLMAlnRR_VCV_range.Rdata"))
-
-
-```
-
-```{r Table for lnRR rho sensitivity analysis}
-
-# t4 <- data.frame(rho  = rho_range,
-#                  "overall effect"  = sapply(MLMAlnRR_VCV_range, function(x) coef(x)),
-#                  "standard error" = sapply(MLMAlnRR_VCV_range, function(x) x$se),
-#                  "p-value" = sapply(MLMAlnRR_VCV_range, function(x) x$pval),
-#                  "Lower CI" = sapply(MLMAlnRR_VCV_range, function(x) x$ci.lb),
-#                  "Upper CI" = sapply(MLMAlnRR_VCV_range, function(x) x$ci.ub),
-#                  "Log-likehood" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[1,1]),
-#                  "AIC" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[3,1]),
-#                  "BIC" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[4,1]),
-#                  "AICc" = sapply(MLMAlnRR_VCV_range, function(x) fitstats(x)[5,1]))
 # 
-# colnames(t4) <- c("Sampling correlation", "Overall effect (lnRR)", "Standard error", "p-value", "Lower CI", "Upper CI", "Log-likehood", "AIC", "BIC", "AICc")
+# save(SA_lnRR_VCV_range, file = here::here("model/sensitivity_analysis/SA_lnRR_VCV_range.rds"))
 # 
-# t4 %>% dfround(4) %>% DT::datatable()
+# 
+# #------------------------------------------------------------------
+# #-------------Now for SMDH the same SA with diff Rho---------------
+# #------------------------------------------------------------------
+# 
+# SA_SMDH_VCV_range <- list()
+# 
+# for (i in 1:length(rho_range)){
+#   VCV_range <- vcalc(vi = SMDH_variance,
+#                      cluster = paper_ID,
+#                      obs = Observation_ID,
+#                      data = dataset_SMDH,
+#                      rho = rho_range[i])
+#   SA_SMDH_VCV_range[[i]] <- rma.mv(yi = SMDH_sign,
+#                                 V = VCV_range,
+#                                 random = list(~ 1 | paper_ID,
+#                                               ~ 1 | Observation_ID,
+#                                               ~ 1 | group_ID_coded,
+#                                               ~ 1 | population_ID,
+#                                               ~ 1 | bird_species),
+#                                 method = "REML",
+#                                 data = dataset_SMDH)
+# }
+# 
+# 
+# save(SA_SMDH_VCV_range, file = here::here("model/sensitivity_analysis/SA_SMDH_VCV_range.rds"))
+
 ```
 
 # Mechanistic Hypothesis

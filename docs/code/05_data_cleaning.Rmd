@@ -9,6 +9,14 @@ email: shreya.dimri@uni-bielefeld.de
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,eval = TRUE)
+
+if (!requireNamespace("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+pacman::p_load(here, dplyr, readxl, purrr, stringr, knitr, tidyverse)
+
+rm(list=ls()) ## clearing up any previously present variable
 ```
 
 # Data Cleaning
@@ -51,15 +59,6 @@ You can find all the data that is needed for this analysis.. in folder **data/02
 -   data_extraction_MO_checkedSD.xlsx
 
 -   data_extraction_UnpublishedThesis.xlsx
-
-#### Setting up the space
-
-```{r load_packages, message=FALSE, warning=FALSE}
-
-pacman::p_load(here, dplyr, readxl, purrr, stringr, knitr, tidyverse)
-
-rm(list=ls()) ## clearing up any previously present variable
-```
 
 ```{r import, warning=FALSE, message=FALSE}
 
