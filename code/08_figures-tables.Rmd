@@ -732,7 +732,7 @@ labs(x = "",
     axis.title = element_text(size = 10),
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
-  scale_x_discrete(labels = c("Non-aromatic\nVs. Aromatic","No material\nVs. Aromatic", "No material\nVs. Non-Aromatic"))
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. non-Aromatic"))
 
 SMDH_design_plot <-
   orchard_plot(mod_results(
@@ -762,7 +762,7 @@ labs(x = "",
     axis.title = element_text(size = 10),
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
-  scale_x_discrete(labels = c("Non-aromatic\nVs. Aromatic","No material\nVs. Aromatic", "No material\nVs. Non-Aromatic"))
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. Non-aromatic"))
 
 
 ##-----------------------------------------------------------------------------
@@ -800,7 +800,7 @@ labs(x = "",
     axis.title = element_text(size = 10),
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
-  scale_x_discrete(labels = c("Non-aromatic\nVs. Aromatic","No material\nVs. Aromatic", "No material\nVs. Non-Aromatic"))
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. Non-aromatic"))
 
 SMDH_design_plot_cropped <-
   orchard_plot(mod_results(
@@ -831,7 +831,7 @@ labs(x = "",
     axis.title = element_text(size = 10),
     axis.text.x = element_text(size = 10),
     axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
-  scale_x_discrete(labels = c("Non-aromatic\nVs. Aromatic","No material\nVs. Aromatic", "No material\nVs. Non-Aromatic"))
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. non-Aromatic"))
 
 ```
 
