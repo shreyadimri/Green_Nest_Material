@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
     <meta name="author" content="Shreya D.">
-    <meta name="dcterms.date" content="2025-07-10">
+    <meta name="dcterms.date" content="2025-07-28">
 
     <title>Data cleaning</title>
     <style>
@@ -230,7 +230,7 @@
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 10, 2025</p>
+      <p class="date">July 28, 2025</p>
     </div>
   </div>
   
@@ -8265,7 +8265,6 @@ blinding, random_assignment, missing_data, shared_experiment, shared_control)`</
 <span id="cb2273-7"><a href="#cb2273-7" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(bird_species)</span>
 <span id="cb2273-8"><a href="#cb2273-8" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
-<p>Whichever between Cyanistes caeruleus and Parus major is higher.. assign that..</p>
 </section>
 </section>
 <section id="some-quick-checks-to-make-sure-all-names-are-clean" class="level2">
@@ -8290,11 +8289,67 @@ blinding, random_assignment, missing_data, shared_experiment, shared_control)`</
 <pre><code>[1] "include"              "sensitivity-analysis" "SMDH only"           
 [4] "contingency table"   </code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb2278"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2278-1"><a href="#cb2278-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Ensuring all names for risk of bias meta-regression are clean</span></span>
+<span id="cb2278-2"><a href="#cb2278-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2278-3"><a href="#cb2278-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(dataset_after_cleaning<span class="sc">$</span>blinding)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "no" "n"  "y" </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2280"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2280-1"><a href="#cb2280-1" aria-hidden="true" tabindex="-1"></a>dataset_after_cleaning <span class="ot">&lt;-</span> dataset_after_cleaning <span class="sc">%&gt;%</span></span>
+<span id="cb2280-2"><a href="#cb2280-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">blinding =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2280-3"><a href="#cb2280-3" aria-hidden="true" tabindex="-1"></a>    blinding <span class="sc">==</span> <span class="st">"no"</span> <span class="sc">~</span> <span class="st">"n"</span>,</span>
+<span id="cb2280-4"><a href="#cb2280-4" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> blinding</span>
+<span id="cb2280-5"><a href="#cb2280-5" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb2280-6"><a href="#cb2280-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2280-7"><a href="#cb2280-7" aria-hidden="true" tabindex="-1"></a><span class="do">## And now</span></span>
+<span id="cb2280-8"><a href="#cb2280-8" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(dataset_after_cleaning<span class="sc">$</span>blinding)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "n" "y"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2282"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2282-1"><a href="#cb2282-1" aria-hidden="true" tabindex="-1"></a><span class="do">## all good, works!</span></span>
+<span id="cb2282-2"><a href="#cb2282-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2282-3"><a href="#cb2282-3" aria-hidden="true" tabindex="-1"></a><span class="do">## And now for missing data</span></span>
+<span id="cb2282-4"><a href="#cb2282-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(dataset_after_cleaning<span class="sc">$</span>missing_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "yes" "no"  "y"   "n"  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2284"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2284-1"><a href="#cb2284-1" aria-hidden="true" tabindex="-1"></a>dataset_after_cleaning <span class="ot">&lt;-</span> dataset_after_cleaning <span class="sc">%&gt;%</span></span>
+<span id="cb2284-2"><a href="#cb2284-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">missing_data =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2284-3"><a href="#cb2284-3" aria-hidden="true" tabindex="-1"></a>    missing_data <span class="sc">==</span> <span class="st">"no"</span> <span class="sc">~</span> <span class="st">"n"</span>,</span>
+<span id="cb2284-4"><a href="#cb2284-4" aria-hidden="true" tabindex="-1"></a>    missing_data <span class="sc">==</span> <span class="st">"yes"</span> <span class="sc">~</span> <span class="st">"y"</span>,</span>
+<span id="cb2284-5"><a href="#cb2284-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> missing_data</span>
+<span id="cb2284-6"><a href="#cb2284-6" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb2284-7"><a href="#cb2284-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2284-8"><a href="#cb2284-8" aria-hidden="true" tabindex="-1"></a><span class="do">## And now</span></span>
+<span id="cb2284-9"><a href="#cb2284-9" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(dataset_after_cleaning<span class="sc">$</span>missing_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "y" "n"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2286"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2286-1"><a href="#cb2286-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gooood!</span></span>
+<span id="cb2286-2"><a href="#cb2286-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2286-3"><a href="#cb2286-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Last one is </span></span>
+<span id="cb2286-4"><a href="#cb2286-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(dataset_after_cleaning<span class="sc">$</span>random_assignment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "yes" "no"  "y"   "n"  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2288"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2288-1"><a href="#cb2288-1" aria-hidden="true" tabindex="-1"></a>dataset_after_cleaning <span class="ot">&lt;-</span> dataset_after_cleaning <span class="sc">%&gt;%</span></span>
+<span id="cb2288-2"><a href="#cb2288-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">random_assignment =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2288-3"><a href="#cb2288-3" aria-hidden="true" tabindex="-1"></a>    random_assignment <span class="sc">==</span> <span class="st">"no"</span> <span class="sc">~</span> <span class="st">"n"</span>,</span>
+<span id="cb2288-4"><a href="#cb2288-4" aria-hidden="true" tabindex="-1"></a>    random_assignment <span class="sc">==</span> <span class="st">"yes"</span> <span class="sc">~</span> <span class="st">"y"</span>,</span>
+<span id="cb2288-5"><a href="#cb2288-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> random_assignment</span>
+<span id="cb2288-6"><a href="#cb2288-6" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb2288-7"><a href="#cb2288-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2288-8"><a href="#cb2288-8" aria-hidden="true" tabindex="-1"></a><span class="co"># And now?</span></span>
+<span id="cb2288-9"><a href="#cb2288-9" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(dataset_after_cleaning<span class="sc">$</span>random_assignment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "y" "n"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2290"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2290-1"><a href="#cb2290-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Good good, all looks well now!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 <section id="saving-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="saving-dataset">Saving dataset</h3>
 <div class="cell-container"><div class="cell-decorator"><pre>In [67]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb2278"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2278-1"><a href="#cb2278-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dataset_after_cleaning,<span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/03_data_cleaning/dataset_after_cleaning.csv"</span>),<span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2291"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2291-1"><a href="#cb2291-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dataset_after_cleaning,<span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/03_data_cleaning/dataset_after_cleaning.csv"</span>),<span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 </section>
 </section>

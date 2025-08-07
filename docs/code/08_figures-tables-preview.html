@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
     <meta name="author" content="Shreya D.">
-    <meta name="dcterms.date" content="2025-07-11">
+    <meta name="dcterms.date" content="2025-07-28">
 
     <title>Figures</title>
     <style>
@@ -207,9 +207,10 @@
   </ul></li>
   </ul></li>
   <li><a href="#publication-bias-tests" id="toc-publication-bias-tests" class="nav-link" data-scroll-target="#publication-bias-tests">Publication Bias Tests</a></li>
-  <li><a href="#supplementary-material-table--" id="toc-supplementary-material-table--" class="nav-link" data-scroll-target="#supplementary-material-table--">——– Supplementary Material Table ———-</a>
+  <li><a href="#supplementary-material-table--" id="toc-supplementary-material-table--" class="nav-link" data-scroll-target="#supplementary-material-table--">—– Supplementary Material Table ——-</a>
   <ul class="collapse">
   <li><a href="#table-sensitivity-analysis-for-intercept-only-model" id="toc-table-sensitivity-analysis-for-intercept-only-model" class="nav-link" data-scroll-target="#table-sensitivity-analysis-for-intercept-only-model">Table: Sensitivity analysis for intercept only model</a></li>
+  <li><a href="#table-rob-meta-regressions" id="toc-table-rob-meta-regressions" class="nav-link" data-scroll-target="#table-rob-meta-regressions">Table: RoB Meta-regressions</a></li>
   </ul></li>
   <li><a href="#tables--" id="toc-tables--" class="nav-link" data-scroll-target="#tables--">——– TABLES ———-</a>
   <ul class="collapse">
@@ -239,7 +240,7 @@
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 11, 2025</p>
+      <p class="date">July 28, 2025</p>
     </div>
   </div>
   
@@ -1097,7 +1098,7 @@ Adding another scale for fill, which will replace the existing scale.</code></pr
 <span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>))<span class="sc">+</span> </span>
-<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Non-Aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. non-Aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in mod_results(lnRR_design, mod = "comparision_type", group =
 "paper_ID"): It is recommended that you fit the model with an intercept.
@@ -1137,7 +1138,7 @@ Adding another scale for fill, which will replace the existing scale.</code></pr
 <span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>))<span class="sc">+</span> </span>
-<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Non-Aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Non-aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in mod_results(SMDH_design, mod = "comparision_type", group =
 "paper_ID"): It is recommended that you fit the model with an intercept.
@@ -1184,7 +1185,7 @@ Adding another scale for fill, which will replace the existing scale.</code></pr
 <span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>))<span class="sc">+</span> </span>
-<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Non-Aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Non-aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in mod_results(lnRR_design, mod = "comparision_type", group =
 "paper_ID"): It is recommended that you fit the model with an intercept.
@@ -1225,7 +1226,7 @@ Adding another scale for fill, which will replace the existing scale.</code></pr
 <span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb59-28"><a href="#cb59-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb59-29"><a href="#cb59-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>))<span class="sc">+</span> </span>
-<span id="cb59-30"><a href="#cb59-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. Non-Aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb59-30"><a href="#cb59-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>,<span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. aromatic"</span>, <span class="st">"No material</span><span class="sc">\n</span><span class="st">Vs. non-Aromatic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in mod_results(SMDH_design, mod = "comparision_type", group =
 "paper_ID"): It is recommended that you fit the model with an intercept.
@@ -1708,7 +1709,7 @@ Adding another scale for fill, which will replace the existing scale.</code></pr
 </div></div>
 </section>
 <section id="supplementary-material-table--" class="level1">
-<h1>——– Supplementary Material Table ———-</h1>
+<h1>—– Supplementary Material Table ——-</h1>
 <div class="cell-container"><div class="cell-decorator"><pre>In [15]:</pre></div><div class="cell">
 <div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading packages</span></span>
 <span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -2018,14 +2019,12 @@ This warning is displayed once every 8 hours.</code></pre>
 <span id="cb100-217"><a href="#cb100-217" aria-hidden="true" tabindex="-1"></a><span class="co"># Saving as an image</span></span>
 <span id="cb100-218"><a href="#cb100-218" aria-hidden="true" tabindex="-1"></a><span class="fu">gtsave</span>(SA_intercept_only, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"tables/SA_intercept_only.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>file:////var/folders/sp/jlskm_817d78dg8nvdk72l0c0000gn/T//Rtmppq9oN0/file47876eb681c.html screenshot completed</code></pre>
+<pre><code>file:////var/folders/sp/jlskm_817d78dg8nvdk72l0c0000gn/T//RtmpPxCk8r/file11559643ca36.html screenshot completed</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For saving as a docx file</span></span>
 <span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(SA_intercept_only,here::here("tables/SA_intercept_only.docx"))</span></span>
 <span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(SA_intercept_only,here::here("tables/SA_intercept_only.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
-<p><br>
-</p>
 <div class="cell-container"><div class="cell-decorator"><pre>In [18]:</pre></div><div class="cell">
 <div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t4 &lt;- data.frame(rho  = rho_range,</span></span>
 <span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                  "overall effect"  = sapply(lnRR_VCV_range, function(x) coef(x)),</span></span>
@@ -2043,185 +2042,325 @@ This warning is displayed once every 8 hours.</code></pre>
 <span id="cb103-14"><a href="#cb103-14" aria-hidden="true" tabindex="-1"></a><span class="co"># t4 %&gt;% dfround(4) %&gt;% DT::datatable()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 </section>
+<section id="table-rob-meta-regressions" class="level2">
+<h2 class="anchored" data-anchor-id="table-rob-meta-regressions">Table: RoB Meta-regressions</h2>
+<div class="cell-container"><div class="cell-decorator"><pre>In [19]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for blinding performed or not</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>lnRR_blinding<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_blinding.rds"</span>))</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>SMDH_blinding<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_blinding.rds"</span>))</span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for random sampling assignment performed or not</span></span>
+<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a>lnRR_random_assignment<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_random_assignment.rds"</span>))</span>
+<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a>SMDH_random_assignment<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_random_assignment.rds"</span>))</span>
+<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-9"><a href="#cb104-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for missing data present or not</span></span>
+<span id="cb104-10"><a href="#cb104-10" aria-hidden="true" tabindex="-1"></a>lnRR_missing_data<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_missing_data.rds"</span>))</span>
+<span id="cb104-11"><a href="#cb104-11" aria-hidden="true" tabindex="-1"></a>SMDH_missing_data<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_missing_data.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [20]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(gt, tidyverse, metafor, purrr, stringr)</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's source our custom function to extract values from the meta-regressions</span></span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"functions/extractor_metareg.R"</span>))</span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a><span class="do">## For lnRR Values</span></span>
+<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a>lnRR_results_RoB <span class="ot">&lt;-</span> <span class="fu">extractor_metareg</span>(lnRR_blinding,<span class="st">"blinding"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb105-8"><a href="#cb105-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_random_assignment,<span class="st">"random_assignment"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb105-9"><a href="#cb105-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_missing_data,<span class="st">"missing_data"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb105-10"><a href="#cb105-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">effect_size =</span> <span class="st">"lnRR"</span>)</span>
+<span id="cb105-11"><a href="#cb105-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-12"><a href="#cb105-12" aria-hidden="true" tabindex="-1"></a><span class="do">## For SMDH Values</span></span>
+<span id="cb105-13"><a href="#cb105-13" aria-hidden="true" tabindex="-1"></a>SMDH_results_RoB <span class="ot">&lt;-</span> <span class="fu">extractor_metareg</span>(SMDH_blinding,<span class="st">"blinding"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb105-14"><a href="#cb105-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_random_assignment,<span class="st">"random_assignment"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb105-15"><a href="#cb105-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_missing_data,<span class="st">"missing_data"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb105-16"><a href="#cb105-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">effect_size =</span> <span class="st">"SMDH"</span>)</span>
+<span id="cb105-17"><a href="#cb105-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-18"><a href="#cb105-18" aria-hidden="true" tabindex="-1"></a><span class="do">## Now let's write the table for publication:</span></span>
+<span id="cb105-19"><a href="#cb105-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine both results</span></span>
+<span id="cb105-20"><a href="#cb105-20" aria-hidden="true" tabindex="-1"></a>combined_results_RoB <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lnRR_results_RoB, SMDH_results_RoB)<span class="sc">%&gt;%</span></span>
+<span id="cb105-21"><a href="#cb105-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb105-22"><a href="#cb105-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(moderator, level),</span>
+<span id="cb105-23"><a href="#cb105-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> effect_size,</span>
+<span id="cb105-24"><a href="#cb105-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(estimate, p_value, CI, PI, k, n),</span>
+<span id="cb105-25"><a href="#cb105-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{effect_size}"</span></span>
+<span id="cb105-26"><a href="#cb105-26" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span> <span class="co"># Prepare row labels to mimic grouping</span></span>
+<span id="cb105-27"><a href="#cb105-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator, level)<span class="sc">%&gt;%</span></span>
+<span id="cb105-28"><a href="#cb105-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row_type =</span> <span class="st">"level"</span>)</span>
+<span id="cb105-29"><a href="#cb105-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-30"><a href="#cb105-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Final combined table with headers and levels</span></span>
+<span id="cb105-31"><a href="#cb105-31" aria-hidden="true" tabindex="-1"></a> combined_results_RoB <span class="ot">&lt;-</span> combined_results_RoB <span class="sc">%&gt;%</span></span>
+<span id="cb105-32"><a href="#cb105-32" aria-hidden="true" tabindex="-1"></a>   <span class="co"># bind_rows(moderator_header ,combined_results) %&gt;%</span></span>
+<span id="cb105-33"><a href="#cb105-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator, row_type)<span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>row_type)<span class="sc">%&gt;%</span></span>
+<span id="cb105-34"><a href="#cb105-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(level, <span class="at">.after =</span> moderator)<span class="sc">%&gt;%</span></span>
+<span id="cb105-35"><a href="#cb105-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">moderator =</span> <span class="fu">case_when</span>(</span>
+<span id="cb105-36"><a href="#cb105-36" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"blinding"</span> <span class="sc">~</span> <span class="st">"1. Blinding"</span>,</span>
+<span id="cb105-37"><a href="#cb105-37" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"random_assignment"</span> <span class="sc">~</span> <span class="st">"2. Random assignment to treatment"</span>,</span>
+<span id="cb105-38"><a href="#cb105-38" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"missing_data"</span> <span class="sc">~</span> <span class="st">"3. Partial Reporting"</span></span>
+<span id="cb105-39"><a href="#cb105-39" aria-hidden="true" tabindex="-1"></a>  ))<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">moderator =</span> <span class="fu">factor</span>(</span>
+<span id="cb105-40"><a href="#cb105-40" aria-hidden="true" tabindex="-1"></a>    moderator,</span>
+<span id="cb105-41"><a href="#cb105-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(</span>
+<span id="cb105-42"><a href="#cb105-42" aria-hidden="true" tabindex="-1"></a>      <span class="st">"1. Blinding"</span>,</span>
+<span id="cb105-43"><a href="#cb105-43" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2. Random assignment to treatment"</span>,</span>
+<span id="cb105-44"><a href="#cb105-44" aria-hidden="true" tabindex="-1"></a>      <span class="st">"3. Partial Reporting"</span></span>
+<span id="cb105-45"><a href="#cb105-45" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb105-46"><a href="#cb105-46" aria-hidden="true" tabindex="-1"></a>  ))<span class="sc">%&gt;%</span></span>
+<span id="cb105-47"><a href="#cb105-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator)<span class="sc">%&gt;%</span></span>
+<span id="cb105-48"><a href="#cb105-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">case_when</span>(level<span class="sc">==</span><span class="st">"y"</span> <span class="sc">~</span> <span class="st">"Yes"</span>,</span>
+<span id="cb105-49"><a href="#cb105-49" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"n"</span> <span class="sc">~</span> <span class="st">"No"</span>, <span class="at">.default=</span>level))</span>
+<span id="cb105-50"><a href="#cb105-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-51"><a href="#cb105-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-52"><a href="#cb105-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up or reorder columns for display</span></span>
+<span id="cb105-53"><a href="#cb105-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Select and order columns for clarity</span></span>
+<span id="cb105-54"><a href="#cb105-54" aria-hidden="true" tabindex="-1"></a>RoB_table <span class="ot">&lt;-</span> combined_results_RoB <span class="sc">%&gt;%</span></span>
+<span id="cb105-55"><a href="#cb105-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">groupname_col =</span> <span class="st">"moderator"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb105-56"><a href="#cb105-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**Multilevel Meta Regressions for Risk of Bias**"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb105-57"><a href="#cb105-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb105-58"><a href="#cb105-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># R2_marginal_lnRR = "R²_mar",</span></span>
+<span id="cb105-59"><a href="#cb105-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># R2_marginal_SMDH = "R²_mar",</span></span>
+<span id="cb105-60"><a href="#cb105-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="st">"Level"</span>,</span>
+<span id="cb105-61"><a href="#cb105-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_lnRR =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb105-62"><a href="#cb105-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_lnRR =</span> <span class="st">"95% CI"</span>,</span>
+<span id="cb105-63"><a href="#cb105-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">PI_lnRR =</span> <span class="st">"95% PI"</span>,</span>
+<span id="cb105-64"><a href="#cb105-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_value_lnRR =</span> <span class="st">"P-val"</span>,</span>
+<span id="cb105-65"><a href="#cb105-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_lnRR =</span> <span class="st">"k"</span>,</span>
+<span id="cb105-66"><a href="#cb105-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_lnRR =</span> <span class="st">"n"</span>,</span>
+<span id="cb105-67"><a href="#cb105-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_SMDH =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb105-68"><a href="#cb105-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_SMDH =</span> <span class="st">"95% CI"</span>,</span>
+<span id="cb105-69"><a href="#cb105-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">PI_SMDH =</span> <span class="st">"95% PI"</span>,</span>
+<span id="cb105-70"><a href="#cb105-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_value_SMDH =</span> <span class="st">"P-val"</span>,</span>
+<span id="cb105-71"><a href="#cb105-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_SMDH =</span> <span class="st">"k"</span>,</span>
+<span id="cb105-72"><a href="#cb105-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_SMDH =</span> <span class="st">"n"</span></span>
+<span id="cb105-73"><a href="#cb105-73" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb105-74"><a href="#cb105-74" aria-hidden="true" tabindex="-1"></a>   <span class="fu">sub_missing</span>(</span>
+<span id="cb105-75"><a href="#cb105-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">everything</span>(),</span>
+<span id="cb105-76"><a href="#cb105-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_text =</span> <span class="st">""</span></span>
+<span id="cb105-77"><a href="#cb105-77" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb105-78"><a href="#cb105-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_outline</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb105-79"><a href="#cb105-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb105-80"><a href="#cb105-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="st">"small"</span>,</span>
+<span id="cb105-81"><a href="#cb105-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.title.font.size =</span> <span class="dv">12</span>,</span>
+<span id="cb105-82"><a href="#cb105-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.border.top.width =</span> <span class="fu">px</span>(<span class="dv">2</span>),</span>
+<span id="cb105-83"><a href="#cb105-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"medium"</span>,</span>
+<span id="cb105-84"><a href="#cb105-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">row_group.font.weight =</span> <span class="st">"bold"</span></span>
+<span id="cb105-85"><a href="#cb105-85" aria-hidden="true" tabindex="-1"></a>  )   <span class="sc">%&gt;%</span></span>
+<span id="cb105-86"><a href="#cb105-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb105-87"><a href="#cb105-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_borders</span>(</span>
+<span id="cb105-88"><a href="#cb105-88" aria-hidden="true" tabindex="-1"></a>      <span class="at">sides =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb105-89"><a href="#cb105-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb105-90"><a href="#cb105-90" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> <span class="fu">px</span>(<span class="dv">1</span>)</span>
+<span id="cb105-91"><a href="#cb105-91" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb105-92"><a href="#cb105-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>()</span>
+<span id="cb105-93"><a href="#cb105-93" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb105-94"><a href="#cb105-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb105-95"><a href="#cb105-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb105-96"><a href="#cb105-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(</span>
+<span id="cb105-97"><a href="#cb105-97" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> <span class="fu">c</span>(p_value_lnRR),</span>
+<span id="cb105-98"><a href="#cb105-98" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> p_value_lnRR <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb105-99"><a href="#cb105-99" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb105-100"><a href="#cb105-100" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb105-101"><a href="#cb105-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb105-102"><a href="#cb105-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb105-103"><a href="#cb105-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(</span>
+<span id="cb105-104"><a href="#cb105-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> <span class="fu">c</span>(p_value_SMDH),</span>
+<span id="cb105-105"><a href="#cb105-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> p_value_SMDH <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb105-106"><a href="#cb105-106" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb105-107"><a href="#cb105-107" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span></span>
+<span id="cb105-108"><a href="#cb105-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"lnRR"</span>, <span class="at">columns =</span> <span class="fu">contains</span>(<span class="st">"_lnRR"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb105-109"><a href="#cb105-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"SMDH"</span>, <span class="at">columns =</span> <span class="fu">contains</span>(<span class="st">"_SMDH"</span>))  <span class="sc">%&gt;%</span></span>
+<span id="cb105-110"><a href="#cb105-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb105-111"><a href="#cb105-111" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">whitespace =</span> <span class="st">"nowrap"</span>),</span>
+<span id="cb105-112"><a href="#cb105-112" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="fu">c</span>(CI_lnRR, PI_lnRR, CI_SMDH, PI_SMDH))</span>
+<span id="cb105-113"><a href="#cb105-113" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb105-114"><a href="#cb105-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-115"><a href="#cb105-115" aria-hidden="true" tabindex="-1"></a><span class="co"># saving the image</span></span>
+<span id="cb105-116"><a href="#cb105-116" aria-hidden="true" tabindex="-1"></a><span class="fu">gtsave</span>(RoB_table,here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"tables/SA_RoB_table.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>file:////var/folders/sp/jlskm_817d78dg8nvdk72l0c0000gn/T//RtmpPxCk8r/file11559594fd4d1.html screenshot completed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #saving as a docx file or html</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(RoB_table,here::here("tables/SA_RoB_table.docx"))</span></span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(RoB_table,here::here("tables/SA_RoB_table.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
+</section>
 </section>
 <section id="tables--" class="level1">
 <h1>——– TABLES ———-</h1>
 <section id="table-output-from-meta-regressions" class="level2">
 <h2 class="anchored" data-anchor-id="table-output-from-meta-regressions">Table: Output from meta-regressions</h2>
-<div class="cell-container"><div class="cell-decorator"><pre>In [19]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(gt, tidyverse, metafor, purrr, stringr)</span>
-<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for experimental design</span></span>
-<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>lnRR_design<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_design.rds"</span>))</span>
-<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>SMDH_design<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_design.rds"</span>))</span>
-<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for parasite type</span></span>
-<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a>lnRR_parasite<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_parasite.rds"</span>))</span>
-<span id="cb104-9"><a href="#cb104-9" aria-hidden="true" tabindex="-1"></a>SMDH_parasite<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_parasite.rds"</span>))</span>
-<span id="cb104-10"><a href="#cb104-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-11"><a href="#cb104-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for time of green nest material addition</span></span>
-<span id="cb104-12"><a href="#cb104-12" aria-hidden="true" tabindex="-1"></a>lnRR_time_gnm_addition<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_time_gnm_addition.rds"</span>))</span>
-<span id="cb104-13"><a href="#cb104-13" aria-hidden="true" tabindex="-1"></a>SMDH_time_gnm_addition<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_time_gnm_addition.rds"</span>))</span>
-<span id="cb104-14"><a href="#cb104-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-15"><a href="#cb104-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for the type of trait studied</span></span>
-<span id="cb104-16"><a href="#cb104-16" aria-hidden="true" tabindex="-1"></a>lnRR_trait<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_trait.rds"</span>))</span>
-<span id="cb104-17"><a href="#cb104-17" aria-hidden="true" tabindex="-1"></a>SMDH_trait<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_trait.rds"</span>))</span>
-<span id="cb104-18"><a href="#cb104-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-19"><a href="#cb104-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for the bird species studied</span></span>
-<span id="cb104-20"><a href="#cb104-20" aria-hidden="true" tabindex="-1"></a>lnRR_birds<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_birds.rds"</span>))</span>
-<span id="cb104-21"><a href="#cb104-21" aria-hidden="true" tabindex="-1"></a>SMDH_birds<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_birds.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [21]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(gt, tidyverse, metafor, purrr, stringr)</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for experimental design</span></span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>lnRR_design<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_design.rds"</span>))</span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>SMDH_design<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_design.rds"</span>))</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for parasite type</span></span>
+<span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a>lnRR_parasite<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_parasite.rds"</span>))</span>
+<span id="cb108-9"><a href="#cb108-9" aria-hidden="true" tabindex="-1"></a>SMDH_parasite<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_parasite.rds"</span>))</span>
+<span id="cb108-10"><a href="#cb108-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-11"><a href="#cb108-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for time of green nest material addition</span></span>
+<span id="cb108-12"><a href="#cb108-12" aria-hidden="true" tabindex="-1"></a>lnRR_time_gnm_addition<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_time_gnm_addition.rds"</span>))</span>
+<span id="cb108-13"><a href="#cb108-13" aria-hidden="true" tabindex="-1"></a>SMDH_time_gnm_addition<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_time_gnm_addition.rds"</span>))</span>
+<span id="cb108-14"><a href="#cb108-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-15"><a href="#cb108-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for the type of trait studied</span></span>
+<span id="cb108-16"><a href="#cb108-16" aria-hidden="true" tabindex="-1"></a>lnRR_trait<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_trait.rds"</span>))</span>
+<span id="cb108-17"><a href="#cb108-17" aria-hidden="true" tabindex="-1"></a>SMDH_trait<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_trait.rds"</span>))</span>
+<span id="cb108-18"><a href="#cb108-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-19"><a href="#cb108-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading models for the bird species studied</span></span>
+<span id="cb108-20"><a href="#cb108-20" aria-hidden="true" tabindex="-1"></a>lnRR_birds<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/lnRR_birds.rds"</span>))</span>
+<span id="cb108-21"><a href="#cb108-21" aria-hidden="true" tabindex="-1"></a>SMDH_birds<span class="ot">&lt;-</span><span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"model/SMDH_birds.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
-<div class="cell-container"><div class="cell-decorator"><pre>In [20]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's source our custom function to extract values from the meta-regressions</span></span>
-<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"functions/extractor_metareg.R"</span>))</span>
-<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="do">## For lnRR Values</span></span>
-<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>lnRR_results <span class="ot">&lt;-</span> <span class="fu">extractor_metareg</span>(lnRR_parasite,<span class="st">"parasite_type"</span>)<span class="sc">%&gt;%</span></span>
-<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_birds,<span class="st">"bird_species"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_trait,<span class="st">"trait_type"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-8"><a href="#cb105-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_design,<span class="st">"comparision_type"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-9"><a href="#cb105-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_time_gnm_addition,<span class="st">"time_of_gnm_addition"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-10"><a href="#cb105-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">effect_size =</span> <span class="st">"lnRR"</span>)</span>
-<span id="cb105-11"><a href="#cb105-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-12"><a href="#cb105-12" aria-hidden="true" tabindex="-1"></a><span class="do">## For SMDH Values</span></span>
-<span id="cb105-13"><a href="#cb105-13" aria-hidden="true" tabindex="-1"></a>SMDH_results <span class="ot">&lt;-</span> <span class="fu">extractor_metareg</span>(SMDH_parasite,<span class="st">"parasite_type"</span>)<span class="sc">%&gt;%</span></span>
-<span id="cb105-14"><a href="#cb105-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_birds,<span class="st">"bird_species"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-15"><a href="#cb105-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_trait,<span class="st">"trait_type"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-16"><a href="#cb105-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_design,<span class="st">"comparision_type"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-17"><a href="#cb105-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_time_gnm_addition,<span class="st">"time_of_gnm_addition"</span>))<span class="sc">%&gt;%</span></span>
-<span id="cb105-18"><a href="#cb105-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">effect_size =</span> <span class="st">"SMDH"</span>)</span>
-<span id="cb105-19"><a href="#cb105-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-20"><a href="#cb105-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Now let's write the table for publication:</span></span>
-<span id="cb105-21"><a href="#cb105-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine both results</span></span>
-<span id="cb105-22"><a href="#cb105-22" aria-hidden="true" tabindex="-1"></a>combined_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lnRR_results, SMDH_results)<span class="sc">%&gt;%</span></span>
-<span id="cb105-23"><a href="#cb105-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb105-24"><a href="#cb105-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(moderator, level),</span>
-<span id="cb105-25"><a href="#cb105-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> effect_size,</span>
-<span id="cb105-26"><a href="#cb105-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(estimate, p_value, CI, PI, k, n),</span>
-<span id="cb105-27"><a href="#cb105-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{effect_size}"</span></span>
-<span id="cb105-28"><a href="#cb105-28" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span> <span class="co"># Prepare row labels to mimic grouping</span></span>
-<span id="cb105-29"><a href="#cb105-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator, level)<span class="sc">%&gt;%</span></span>
-<span id="cb105-30"><a href="#cb105-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row_type =</span> <span class="st">"level"</span>)</span>
-<span id="cb105-31"><a href="#cb105-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-32"><a href="#cb105-32" aria-hidden="true" tabindex="-1"></a><span class="co"># # Create moderator header rows for heterogeneity metrics</span></span>
-<span id="cb105-33"><a href="#cb105-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   moderator_header&lt;-bind_rows(lnRR_results, SMDH_results) %&gt;%</span></span>
-<span id="cb105-34"><a href="#cb105-34" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(moderator, effect_size, R2_marginal) %&gt;%</span></span>
-<span id="cb105-35"><a href="#cb105-35" aria-hidden="true" tabindex="-1"></a><span class="co">#     distinct()%&gt;%</span></span>
-<span id="cb105-36"><a href="#cb105-36" aria-hidden="true" tabindex="-1"></a><span class="co">#     pivot_wider(</span></span>
-<span id="cb105-37"><a href="#cb105-37" aria-hidden="true" tabindex="-1"></a><span class="co">#       names_from = effect_size,</span></span>
-<span id="cb105-38"><a href="#cb105-38" aria-hidden="true" tabindex="-1"></a><span class="co">#       values_from = c( R2_marginal),</span></span>
-<span id="cb105-39"><a href="#cb105-39" aria-hidden="true" tabindex="-1"></a><span class="co">#       names_glue = "{.value}_{effect_size}"</span></span>
-<span id="cb105-40"><a href="#cb105-40" aria-hidden="true" tabindex="-1"></a><span class="co">#     )%&gt;%</span></span>
-<span id="cb105-41"><a href="#cb105-41" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(level = "Heterogeneity ",</span></span>
-<span id="cb105-42"><a href="#cb105-42" aria-hidden="true" tabindex="-1"></a><span class="co">#          row_type = "moderator")</span></span>
-<span id="cb105-43"><a href="#cb105-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-44"><a href="#cb105-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Final combined table with headers and levels</span></span>
-<span id="cb105-45"><a href="#cb105-45" aria-hidden="true" tabindex="-1"></a> combined_results <span class="ot">&lt;-</span> combined_results <span class="sc">%&gt;%</span></span>
-<span id="cb105-46"><a href="#cb105-46" aria-hidden="true" tabindex="-1"></a>   <span class="co"># bind_rows(moderator_header ,combined_results) %&gt;%</span></span>
-<span id="cb105-47"><a href="#cb105-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator, row_type)<span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>row_type)<span class="sc">%&gt;%</span></span>
-<span id="cb105-48"><a href="#cb105-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(level, <span class="at">.after =</span> moderator)<span class="sc">%&gt;%</span></span>
-<span id="cb105-49"><a href="#cb105-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">moderator =</span> <span class="fu">case_when</span>(</span>
-<span id="cb105-50"><a href="#cb105-50" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"parasite_type"</span> <span class="sc">~</span> <span class="st">"5. Parasite</span><span class="sc">\n</span><span class="st">Type"</span>,</span>
-<span id="cb105-51"><a href="#cb105-51" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"bird_species"</span> <span class="sc">~</span> <span class="st">"3. Bird</span><span class="sc">\n</span><span class="st">Species"</span>,</span>
-<span id="cb105-52"><a href="#cb105-52" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"trait_type"</span> <span class="sc">~</span> <span class="st">"4. Trait</span><span class="sc">\n</span><span class="st">Category"</span>,</span>
-<span id="cb105-53"><a href="#cb105-53" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"comparision_type"</span> <span class="sc">~</span> <span class="st">"1. Experimental</span><span class="sc">\n</span><span class="st">Design"</span>,</span>
-<span id="cb105-54"><a href="#cb105-54" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"time_of_gnm_addition"</span> <span class="sc">~</span> <span class="st">"2. Time of</span><span class="sc">\n</span><span class="st">GNM Addition"</span></span>
-<span id="cb105-55"><a href="#cb105-55" aria-hidden="true" tabindex="-1"></a>  ))<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">moderator =</span> <span class="fu">factor</span>(</span>
-<span id="cb105-56"><a href="#cb105-56" aria-hidden="true" tabindex="-1"></a>    moderator,</span>
-<span id="cb105-57"><a href="#cb105-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(</span>
-<span id="cb105-58"><a href="#cb105-58" aria-hidden="true" tabindex="-1"></a>      <span class="st">"1. Experimental</span><span class="sc">\n</span><span class="st">Design"</span>,</span>
-<span id="cb105-59"><a href="#cb105-59" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2. Time of</span><span class="sc">\n</span><span class="st">GNM Addition"</span>,</span>
-<span id="cb105-60"><a href="#cb105-60" aria-hidden="true" tabindex="-1"></a>      <span class="st">"3. Bird</span><span class="sc">\n</span><span class="st">Species"</span>,</span>
-<span id="cb105-61"><a href="#cb105-61" aria-hidden="true" tabindex="-1"></a>      <span class="st">"4. Trait</span><span class="sc">\n</span><span class="st">Category"</span>,</span>
-<span id="cb105-62"><a href="#cb105-62" aria-hidden="true" tabindex="-1"></a>      <span class="st">"5. Parasite</span><span class="sc">\n</span><span class="st">Type"</span></span>
-<span id="cb105-63"><a href="#cb105-63" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb105-64"><a href="#cb105-64" aria-hidden="true" tabindex="-1"></a>  ))<span class="sc">%&gt;%</span></span>
-<span id="cb105-65"><a href="#cb105-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator)<span class="sc">%&gt;%</span></span>
-<span id="cb105-66"><a href="#cb105-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">case_when</span>(level<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">vs. Aromatic"</span>,</span>
-<span id="cb105-67"><a href="#cb105-67" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"No added material</span><span class="sc">\n</span><span class="st">vs. Aromatic"</span>,</span>
-<span id="cb105-68"><a href="#cb105-68" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"No added material</span><span class="sc">\n</span><span class="st">vs. Non-aromatic"</span>,</span>
-<span id="cb105-69"><a href="#cb105-69" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"a"</span> <span class="sc">~</span> <span class="st">"After egg</span><span class="sc">\n</span><span class="st">hatching"</span>,</span>
-<span id="cb105-70"><a href="#cb105-70" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"b"</span> <span class="sc">~</span> <span class="st">"Before egg</span><span class="sc">\n</span><span class="st">hatching"</span>,</span>
-<span id="cb105-71"><a href="#cb105-71" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"c"</span> <span class="sc">~</span> <span class="st">"Continously through</span><span class="sc">\n</span><span class="st">nesting phase"</span>,</span>
-<span id="cb105-72"><a href="#cb105-72" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"Parasitic_and_pathogenic"</span><span class="sc">~</span><span class="st">"Parasitic and</span><span class="sc">\n</span><span class="st">Pathogen Related"</span>, <span class="at">.default=</span>level))</span>
-<span id="cb105-73"><a href="#cb105-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-74"><a href="#cb105-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-75"><a href="#cb105-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional: clean up or reorder columns for display</span></span>
-<span id="cb105-76"><a href="#cb105-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Select and order columns for clarity</span></span>
-<span id="cb105-77"><a href="#cb105-77" aria-hidden="true" tabindex="-1"></a>MLMR_table <span class="ot">&lt;-</span> combined_results <span class="sc">%&gt;%</span></span>
-<span id="cb105-78"><a href="#cb105-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">groupname_col =</span> <span class="st">"moderator"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb105-79"><a href="#cb105-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**Multilevel Meta Regressions for Exploratory Analyses**"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb105-80"><a href="#cb105-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb105-81"><a href="#cb105-81" aria-hidden="true" tabindex="-1"></a>    <span class="co"># R2_marginal_lnRR = "R²_mar",</span></span>
-<span id="cb105-82"><a href="#cb105-82" aria-hidden="true" tabindex="-1"></a>    <span class="co"># R2_marginal_SMDH = "R²_mar",</span></span>
-<span id="cb105-83"><a href="#cb105-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="st">"Level"</span>,</span>
-<span id="cb105-84"><a href="#cb105-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_lnRR =</span> <span class="st">"Estimate"</span>,</span>
-<span id="cb105-85"><a href="#cb105-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_lnRR =</span> <span class="st">"95% CI"</span>,</span>
-<span id="cb105-86"><a href="#cb105-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">PI_lnRR =</span> <span class="st">"95% PI"</span>,</span>
-<span id="cb105-87"><a href="#cb105-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_value_lnRR =</span> <span class="st">"P-val"</span>,</span>
-<span id="cb105-88"><a href="#cb105-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_lnRR =</span> <span class="st">"k"</span>,</span>
-<span id="cb105-89"><a href="#cb105-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_lnRR =</span> <span class="st">"n"</span>,</span>
-<span id="cb105-90"><a href="#cb105-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_SMDH =</span> <span class="st">"Estimate"</span>,</span>
-<span id="cb105-91"><a href="#cb105-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_SMDH =</span> <span class="st">"95% CI"</span>,</span>
-<span id="cb105-92"><a href="#cb105-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">PI_SMDH =</span> <span class="st">"95% PI"</span>,</span>
-<span id="cb105-93"><a href="#cb105-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_value_SMDH =</span> <span class="st">"P-val"</span>,</span>
-<span id="cb105-94"><a href="#cb105-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_SMDH =</span> <span class="st">"k"</span>,</span>
-<span id="cb105-95"><a href="#cb105-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_SMDH =</span> <span class="st">"n"</span></span>
-<span id="cb105-96"><a href="#cb105-96" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb105-97"><a href="#cb105-97" aria-hidden="true" tabindex="-1"></a>   <span class="fu">sub_missing</span>(</span>
-<span id="cb105-98"><a href="#cb105-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">everything</span>(),</span>
-<span id="cb105-99"><a href="#cb105-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_text =</span> <span class="st">""</span></span>
-<span id="cb105-100"><a href="#cb105-100" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb105-101"><a href="#cb105-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_outline</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb105-102"><a href="#cb105-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb105-103"><a href="#cb105-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="st">"small"</span>,</span>
-<span id="cb105-104"><a href="#cb105-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.title.font.size =</span> <span class="dv">12</span>,</span>
-<span id="cb105-105"><a href="#cb105-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.border.top.width =</span> <span class="fu">px</span>(<span class="dv">2</span>),</span>
-<span id="cb105-106"><a href="#cb105-106" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"medium"</span>,</span>
-<span id="cb105-107"><a href="#cb105-107" aria-hidden="true" tabindex="-1"></a>    <span class="at">row_group.font.weight =</span> <span class="st">"bold"</span></span>
-<span id="cb105-108"><a href="#cb105-108" aria-hidden="true" tabindex="-1"></a>  )   <span class="sc">%&gt;%</span></span>
-<span id="cb105-109"><a href="#cb105-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb105-110"><a href="#cb105-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_borders</span>(</span>
-<span id="cb105-111"><a href="#cb105-111" aria-hidden="true" tabindex="-1"></a>      <span class="at">sides =</span> <span class="st">"bottom"</span>,</span>
-<span id="cb105-112"><a href="#cb105-112" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb105-113"><a href="#cb105-113" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> <span class="fu">px</span>(<span class="dv">1</span>)</span>
-<span id="cb105-114"><a href="#cb105-114" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb105-115"><a href="#cb105-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>()</span>
-<span id="cb105-116"><a href="#cb105-116" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb105-117"><a href="#cb105-117" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tab_style(</span></span>
-<span id="cb105-118"><a href="#cb105-118" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   style = cell_text(weight = "bold"),</span></span>
-<span id="cb105-119"><a href="#cb105-119" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   locations = cells_body(</span></span>
-<span id="cb105-120"><a href="#cb105-120" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     rows = level == "Heterogeneity"</span></span>
-<span id="cb105-121"><a href="#cb105-121" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ))%&gt;%</span></span>
-<span id="cb105-122"><a href="#cb105-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb105-123"><a href="#cb105-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb105-124"><a href="#cb105-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(</span>
-<span id="cb105-125"><a href="#cb105-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> <span class="fu">c</span>(p_value_lnRR),</span>
-<span id="cb105-126"><a href="#cb105-126" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> p_value_lnRR <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
-<span id="cb105-127"><a href="#cb105-127" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb105-128"><a href="#cb105-128" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb105-129"><a href="#cb105-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb105-130"><a href="#cb105-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb105-131"><a href="#cb105-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(</span>
-<span id="cb105-132"><a href="#cb105-132" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> <span class="fu">c</span>(p_value_SMDH),</span>
-<span id="cb105-133"><a href="#cb105-133" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> p_value_SMDH <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
-<span id="cb105-134"><a href="#cb105-134" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb105-135"><a href="#cb105-135" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span></span>
-<span id="cb105-136"><a href="#cb105-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"lnRR"</span>, <span class="at">columns =</span> <span class="fu">contains</span>(<span class="st">"_lnRR"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb105-137"><a href="#cb105-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"SMDH"</span>, <span class="at">columns =</span> <span class="fu">contains</span>(<span class="st">"_SMDH"</span>))  <span class="sc">%&gt;%</span></span>
-<span id="cb105-138"><a href="#cb105-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb105-139"><a href="#cb105-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">whitespace =</span> <span class="st">"nowrap"</span>),</span>
-<span id="cb105-140"><a href="#cb105-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="fu">c</span>(CI_lnRR, PI_lnRR, CI_SMDH, PI_SMDH))</span>
-<span id="cb105-141"><a href="#cb105-141" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb105-142"><a href="#cb105-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-143"><a href="#cb105-143" aria-hidden="true" tabindex="-1"></a><span class="co"># saving the image</span></span>
-<span id="cb105-144"><a href="#cb105-144" aria-hidden="true" tabindex="-1"></a><span class="fu">gtsave</span>(MLMR_table,here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"tables/MLMR_table.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [22]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's source our custom function to extract values from the meta-regressions</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"functions/extractor_metareg.R"</span>))</span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a><span class="do">## For lnRR Values</span></span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>lnRR_results <span class="ot">&lt;-</span> <span class="fu">extractor_metareg</span>(lnRR_parasite,<span class="st">"parasite_type"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_birds,<span class="st">"bird_species"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_trait,<span class="st">"trait_type"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_design,<span class="st">"comparision_type"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(lnRR_time_gnm_addition,<span class="st">"time_of_gnm_addition"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-10"><a href="#cb109-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">effect_size =</span> <span class="st">"lnRR"</span>)</span>
+<span id="cb109-11"><a href="#cb109-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-12"><a href="#cb109-12" aria-hidden="true" tabindex="-1"></a><span class="do">## For SMDH Values</span></span>
+<span id="cb109-13"><a href="#cb109-13" aria-hidden="true" tabindex="-1"></a>SMDH_results <span class="ot">&lt;-</span> <span class="fu">extractor_metareg</span>(SMDH_parasite,<span class="st">"parasite_type"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb109-14"><a href="#cb109-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_birds,<span class="st">"bird_species"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-15"><a href="#cb109-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_trait,<span class="st">"trait_type"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-16"><a href="#cb109-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_design,<span class="st">"comparision_type"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-17"><a href="#cb109-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">extractor_metareg</span>(SMDH_time_gnm_addition,<span class="st">"time_of_gnm_addition"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb109-18"><a href="#cb109-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">effect_size =</span> <span class="st">"SMDH"</span>)</span>
+<span id="cb109-19"><a href="#cb109-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-20"><a href="#cb109-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Now let's write the table for publication:</span></span>
+<span id="cb109-21"><a href="#cb109-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine both results</span></span>
+<span id="cb109-22"><a href="#cb109-22" aria-hidden="true" tabindex="-1"></a>combined_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lnRR_results, SMDH_results)<span class="sc">%&gt;%</span></span>
+<span id="cb109-23"><a href="#cb109-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb109-24"><a href="#cb109-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(moderator, level),</span>
+<span id="cb109-25"><a href="#cb109-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> effect_size,</span>
+<span id="cb109-26"><a href="#cb109-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(estimate, p_value, CI, PI, k, n),</span>
+<span id="cb109-27"><a href="#cb109-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{effect_size}"</span></span>
+<span id="cb109-28"><a href="#cb109-28" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span> <span class="co"># Prepare row labels to mimic grouping</span></span>
+<span id="cb109-29"><a href="#cb109-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator, level)<span class="sc">%&gt;%</span></span>
+<span id="cb109-30"><a href="#cb109-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">row_type =</span> <span class="st">"level"</span>)</span>
+<span id="cb109-31"><a href="#cb109-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-32"><a href="#cb109-32" aria-hidden="true" tabindex="-1"></a><span class="co"># # Create moderator header rows for heterogeneity metrics</span></span>
+<span id="cb109-33"><a href="#cb109-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   moderator_header&lt;-bind_rows(lnRR_results, SMDH_results) %&gt;%</span></span>
+<span id="cb109-34"><a href="#cb109-34" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(moderator, effect_size, R2_marginal) %&gt;%</span></span>
+<span id="cb109-35"><a href="#cb109-35" aria-hidden="true" tabindex="-1"></a><span class="co">#     distinct()%&gt;%</span></span>
+<span id="cb109-36"><a href="#cb109-36" aria-hidden="true" tabindex="-1"></a><span class="co">#     pivot_wider(</span></span>
+<span id="cb109-37"><a href="#cb109-37" aria-hidden="true" tabindex="-1"></a><span class="co">#       names_from = effect_size,</span></span>
+<span id="cb109-38"><a href="#cb109-38" aria-hidden="true" tabindex="-1"></a><span class="co">#       values_from = c( R2_marginal),</span></span>
+<span id="cb109-39"><a href="#cb109-39" aria-hidden="true" tabindex="-1"></a><span class="co">#       names_glue = "{.value}_{effect_size}"</span></span>
+<span id="cb109-40"><a href="#cb109-40" aria-hidden="true" tabindex="-1"></a><span class="co">#     )%&gt;%</span></span>
+<span id="cb109-41"><a href="#cb109-41" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(level = "Heterogeneity ",</span></span>
+<span id="cb109-42"><a href="#cb109-42" aria-hidden="true" tabindex="-1"></a><span class="co">#          row_type = "moderator")</span></span>
+<span id="cb109-43"><a href="#cb109-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-44"><a href="#cb109-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Final combined table with headers and levels</span></span>
+<span id="cb109-45"><a href="#cb109-45" aria-hidden="true" tabindex="-1"></a> combined_results <span class="ot">&lt;-</span> combined_results <span class="sc">%&gt;%</span></span>
+<span id="cb109-46"><a href="#cb109-46" aria-hidden="true" tabindex="-1"></a>   <span class="co"># bind_rows(moderator_header ,combined_results) %&gt;%</span></span>
+<span id="cb109-47"><a href="#cb109-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator, row_type)<span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>row_type)<span class="sc">%&gt;%</span></span>
+<span id="cb109-48"><a href="#cb109-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(level, <span class="at">.after =</span> moderator)<span class="sc">%&gt;%</span></span>
+<span id="cb109-49"><a href="#cb109-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">moderator =</span> <span class="fu">case_when</span>(</span>
+<span id="cb109-50"><a href="#cb109-50" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"parasite_type"</span> <span class="sc">~</span> <span class="st">"5. Parasite</span><span class="sc">\n</span><span class="st">Type"</span>,</span>
+<span id="cb109-51"><a href="#cb109-51" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"bird_species"</span> <span class="sc">~</span> <span class="st">"3. Bird</span><span class="sc">\n</span><span class="st">Species"</span>,</span>
+<span id="cb109-52"><a href="#cb109-52" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"trait_type"</span> <span class="sc">~</span> <span class="st">"4. Trait</span><span class="sc">\n</span><span class="st">Category"</span>,</span>
+<span id="cb109-53"><a href="#cb109-53" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"comparision_type"</span> <span class="sc">~</span> <span class="st">"1. Experimental</span><span class="sc">\n</span><span class="st">Design"</span>,</span>
+<span id="cb109-54"><a href="#cb109-54" aria-hidden="true" tabindex="-1"></a>    moderator <span class="sc">==</span> <span class="st">"time_of_gnm_addition"</span> <span class="sc">~</span> <span class="st">"2. Time of</span><span class="sc">\n</span><span class="st">GNM Addition"</span></span>
+<span id="cb109-55"><a href="#cb109-55" aria-hidden="true" tabindex="-1"></a>  ))<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">moderator =</span> <span class="fu">factor</span>(</span>
+<span id="cb109-56"><a href="#cb109-56" aria-hidden="true" tabindex="-1"></a>    moderator,</span>
+<span id="cb109-57"><a href="#cb109-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(</span>
+<span id="cb109-58"><a href="#cb109-58" aria-hidden="true" tabindex="-1"></a>      <span class="st">"1. Experimental</span><span class="sc">\n</span><span class="st">Design"</span>,</span>
+<span id="cb109-59"><a href="#cb109-59" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2. Time of</span><span class="sc">\n</span><span class="st">GNM Addition"</span>,</span>
+<span id="cb109-60"><a href="#cb109-60" aria-hidden="true" tabindex="-1"></a>      <span class="st">"3. Bird</span><span class="sc">\n</span><span class="st">Species"</span>,</span>
+<span id="cb109-61"><a href="#cb109-61" aria-hidden="true" tabindex="-1"></a>      <span class="st">"4. Trait</span><span class="sc">\n</span><span class="st">Category"</span>,</span>
+<span id="cb109-62"><a href="#cb109-62" aria-hidden="true" tabindex="-1"></a>      <span class="st">"5. Parasite</span><span class="sc">\n</span><span class="st">Type"</span></span>
+<span id="cb109-63"><a href="#cb109-63" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb109-64"><a href="#cb109-64" aria-hidden="true" tabindex="-1"></a>  ))<span class="sc">%&gt;%</span></span>
+<span id="cb109-65"><a href="#cb109-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(moderator)<span class="sc">%&gt;%</span></span>
+<span id="cb109-66"><a href="#cb109-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">level =</span> <span class="fu">case_when</span>(level<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"Non-aromatic</span><span class="sc">\n</span><span class="st">vs. Aromatic"</span>,</span>
+<span id="cb109-67"><a href="#cb109-67" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"No added material</span><span class="sc">\n</span><span class="st">vs. Aromatic"</span>,</span>
+<span id="cb109-68"><a href="#cb109-68" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"No added material</span><span class="sc">\n</span><span class="st">vs. Non-aromatic"</span>,</span>
+<span id="cb109-69"><a href="#cb109-69" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"a"</span> <span class="sc">~</span> <span class="st">"After egg</span><span class="sc">\n</span><span class="st">hatching"</span>,</span>
+<span id="cb109-70"><a href="#cb109-70" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"b"</span> <span class="sc">~</span> <span class="st">"Before egg</span><span class="sc">\n</span><span class="st">hatching"</span>,</span>
+<span id="cb109-71"><a href="#cb109-71" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"c"</span> <span class="sc">~</span> <span class="st">"Continously through</span><span class="sc">\n</span><span class="st">nesting phase"</span>,</span>
+<span id="cb109-72"><a href="#cb109-72" aria-hidden="true" tabindex="-1"></a>                           level<span class="sc">==</span><span class="st">"Parasitic_and_pathogenic"</span><span class="sc">~</span><span class="st">"Parasitic and</span><span class="sc">\n</span><span class="st">Pathogen Related"</span>, <span class="at">.default=</span>level))</span>
+<span id="cb109-73"><a href="#cb109-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-74"><a href="#cb109-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-75"><a href="#cb109-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional: clean up or reorder columns for display</span></span>
+<span id="cb109-76"><a href="#cb109-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Select and order columns for clarity</span></span>
+<span id="cb109-77"><a href="#cb109-77" aria-hidden="true" tabindex="-1"></a>MLMR_table <span class="ot">&lt;-</span> combined_results <span class="sc">%&gt;%</span></span>
+<span id="cb109-78"><a href="#cb109-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">groupname_col =</span> <span class="st">"moderator"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb109-79"><a href="#cb109-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**Multilevel Meta Regressions for Exploratory Analyses**"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb109-80"><a href="#cb109-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb109-81"><a href="#cb109-81" aria-hidden="true" tabindex="-1"></a>    <span class="co"># R2_marginal_lnRR = "R²_mar",</span></span>
+<span id="cb109-82"><a href="#cb109-82" aria-hidden="true" tabindex="-1"></a>    <span class="co"># R2_marginal_SMDH = "R²_mar",</span></span>
+<span id="cb109-83"><a href="#cb109-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="st">"Level"</span>,</span>
+<span id="cb109-84"><a href="#cb109-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_lnRR =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb109-85"><a href="#cb109-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_lnRR =</span> <span class="st">"95% CI"</span>,</span>
+<span id="cb109-86"><a href="#cb109-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">PI_lnRR =</span> <span class="st">"95% PI"</span>,</span>
+<span id="cb109-87"><a href="#cb109-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_value_lnRR =</span> <span class="st">"P-val"</span>,</span>
+<span id="cb109-88"><a href="#cb109-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_lnRR =</span> <span class="st">"k"</span>,</span>
+<span id="cb109-89"><a href="#cb109-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_lnRR =</span> <span class="st">"n"</span>,</span>
+<span id="cb109-90"><a href="#cb109-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_SMDH =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb109-91"><a href="#cb109-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">CI_SMDH =</span> <span class="st">"95% CI"</span>,</span>
+<span id="cb109-92"><a href="#cb109-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">PI_SMDH =</span> <span class="st">"95% PI"</span>,</span>
+<span id="cb109-93"><a href="#cb109-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_value_SMDH =</span> <span class="st">"P-val"</span>,</span>
+<span id="cb109-94"><a href="#cb109-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_SMDH =</span> <span class="st">"k"</span>,</span>
+<span id="cb109-95"><a href="#cb109-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_SMDH =</span> <span class="st">"n"</span></span>
+<span id="cb109-96"><a href="#cb109-96" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb109-97"><a href="#cb109-97" aria-hidden="true" tabindex="-1"></a>   <span class="fu">sub_missing</span>(</span>
+<span id="cb109-98"><a href="#cb109-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">everything</span>(),</span>
+<span id="cb109-99"><a href="#cb109-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_text =</span> <span class="st">""</span></span>
+<span id="cb109-100"><a href="#cb109-100" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb109-101"><a href="#cb109-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_outline</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb109-102"><a href="#cb109-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb109-103"><a href="#cb109-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="st">"small"</span>,</span>
+<span id="cb109-104"><a href="#cb109-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.title.font.size =</span> <span class="dv">12</span>,</span>
+<span id="cb109-105"><a href="#cb109-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.border.top.width =</span> <span class="fu">px</span>(<span class="dv">2</span>),</span>
+<span id="cb109-106"><a href="#cb109-106" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_labels.font.weight =</span> <span class="st">"medium"</span>,</span>
+<span id="cb109-107"><a href="#cb109-107" aria-hidden="true" tabindex="-1"></a>    <span class="at">row_group.font.weight =</span> <span class="st">"bold"</span></span>
+<span id="cb109-108"><a href="#cb109-108" aria-hidden="true" tabindex="-1"></a>  )   <span class="sc">%&gt;%</span></span>
+<span id="cb109-109"><a href="#cb109-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb109-110"><a href="#cb109-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_borders</span>(</span>
+<span id="cb109-111"><a href="#cb109-111" aria-hidden="true" tabindex="-1"></a>      <span class="at">sides =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb109-112"><a href="#cb109-112" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb109-113"><a href="#cb109-113" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> <span class="fu">px</span>(<span class="dv">1</span>)</span>
+<span id="cb109-114"><a href="#cb109-114" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb109-115"><a href="#cb109-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>()</span>
+<span id="cb109-116"><a href="#cb109-116" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb109-117"><a href="#cb109-117" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tab_style(</span></span>
+<span id="cb109-118"><a href="#cb109-118" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   style = cell_text(weight = "bold"),</span></span>
+<span id="cb109-119"><a href="#cb109-119" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   locations = cells_body(</span></span>
+<span id="cb109-120"><a href="#cb109-120" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     rows = level == "Heterogeneity"</span></span>
+<span id="cb109-121"><a href="#cb109-121" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ))%&gt;%</span></span>
+<span id="cb109-122"><a href="#cb109-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb109-123"><a href="#cb109-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb109-124"><a href="#cb109-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(</span>
+<span id="cb109-125"><a href="#cb109-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> <span class="fu">c</span>(p_value_lnRR),</span>
+<span id="cb109-126"><a href="#cb109-126" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> p_value_lnRR <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb109-127"><a href="#cb109-127" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb109-128"><a href="#cb109-128" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb109-129"><a href="#cb109-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb109-130"><a href="#cb109-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb109-131"><a href="#cb109-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(</span>
+<span id="cb109-132"><a href="#cb109-132" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns =</span> <span class="fu">c</span>(p_value_SMDH),</span>
+<span id="cb109-133"><a href="#cb109-133" aria-hidden="true" tabindex="-1"></a>      <span class="at">rows =</span> p_value_SMDH <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb109-134"><a href="#cb109-134" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb109-135"><a href="#cb109-135" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span></span>
+<span id="cb109-136"><a href="#cb109-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"lnRR"</span>, <span class="at">columns =</span> <span class="fu">contains</span>(<span class="st">"_lnRR"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb109-137"><a href="#cb109-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_spanner</span>(<span class="at">label =</span> <span class="st">"SMDH"</span>, <span class="at">columns =</span> <span class="fu">contains</span>(<span class="st">"_SMDH"</span>))  <span class="sc">%&gt;%</span></span>
+<span id="cb109-138"><a href="#cb109-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb109-139"><a href="#cb109-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">whitespace =</span> <span class="st">"nowrap"</span>),</span>
+<span id="cb109-140"><a href="#cb109-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="fu">c</span>(CI_lnRR, PI_lnRR, CI_SMDH, PI_SMDH))</span>
+<span id="cb109-141"><a href="#cb109-141" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb109-142"><a href="#cb109-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-143"><a href="#cb109-143" aria-hidden="true" tabindex="-1"></a><span class="co"># saving the image</span></span>
+<span id="cb109-144"><a href="#cb109-144" aria-hidden="true" tabindex="-1"></a><span class="fu">gtsave</span>(MLMR_table,here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"tables/MLMR_table.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>file:////var/folders/sp/jlskm_817d78dg8nvdk72l0c0000gn/T//Rtmppq9oN0/file478be4ef15.html screenshot completed</code></pre>
+<pre><code>file:////var/folders/sp/jlskm_817d78dg8nvdk72l0c0000gn/T//RtmpPxCk8r/file115595b4192cb.html screenshot completed</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #saving as a docx file or html</span></span>
-<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(MLMR_table,here::here("tables/MLMR_table.docx"))</span></span>
-<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(MLMR_table,here::here("tables/MLMR_table.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #saving as a docx file or html</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(MLMR_table,here::here("tables/MLMR_table.docx"))</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gtsave(MLMR_table,here::here("tables/MLMR_table.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 </section>
 </section>

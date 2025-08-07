@@ -1039,8 +1039,6 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
   ))
 ```
 
-Whichever between Cyanistes caeruleus and Parus major is higher.. assign that..
-
 ## Some quick checks to make sure all names are clean
 
 ```{r}
@@ -1056,6 +1054,49 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
 
 ## And now
 unique(dataset_after_cleaning$proxy_decision)
+
+## Ensuring all names for risk of bias meta-regression are clean
+
+unique(dataset_after_cleaning$blinding)
+
+dataset_after_cleaning <- dataset_after_cleaning %>%
+  mutate(blinding = case_when(
+    blinding == "no" ~ "n",
+    TRUE ~ blinding
+  ))
+
+## And now
+unique(dataset_after_cleaning$blinding)
+## all good, works!
+
+## And now for missing data
+unique(dataset_after_cleaning$missing_data)
+
+dataset_after_cleaning <- dataset_after_cleaning %>%
+  mutate(missing_data = case_when(
+    missing_data == "no" ~ "n",
+    missing_data == "yes" ~ "y",
+    TRUE ~ missing_data
+  ))
+
+## And now
+unique(dataset_after_cleaning$missing_data)
+# Gooood!
+
+## Last one is 
+unique(dataset_after_cleaning$random_assignment)
+
+dataset_after_cleaning <- dataset_after_cleaning %>%
+  mutate(random_assignment = case_when(
+    random_assignment == "no" ~ "n",
+    random_assignment == "yes" ~ "y",
+    TRUE ~ random_assignment
+  ))
+
+# And now?
+unique(dataset_after_cleaning$random_assignment)
+
+## Good good, all looks well now!
 ```
 
 ### Saving dataset

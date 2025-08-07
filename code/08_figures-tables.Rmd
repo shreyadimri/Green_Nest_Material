@@ -1140,6 +1140,7 @@ lnRR_small_study_bubble<-orchaRd::bubble_plot(mod_results(lnRR_small_study,
                      group="paper_ID") +
   scale_colour_manual(values ="mediumpurple4") +
   scale_fill_manual(values = "mediumpurple4") +
+  coord_cartesian(ylim = c(-2.5, 2.5)) +
   labs(y = "Effect size (lnRR)",
        x = expression(sqrt(1 / N[effective])))+
     theme(
@@ -1157,6 +1158,7 @@ SMDH_small_study_bubble<-orchaRd::bubble_plot(mod_results(SMDH_small_study,
                      group="paper_ID") +
   scale_colour_manual(values ="mediumpurple4") +
   scale_fill_manual(values = "mediumpurple4") +
+  coord_cartesian(ylim = c(-10, 7)) +
   labs(y = "Effect size (SMDH)",
        x = expression(sqrt(1 / N[effective])))+
     theme(
@@ -1180,8 +1182,9 @@ lnRR_decline_eff_bubble<-orchaRd::bubble_plot(mod_results(lnRR_decline_eff,
                      group="paper_ID")+
   scale_colour_manual(values ="#218833") +
   scale_fill_manual(values = "#218833") +
+  coord_cartesian(ylim = c(-2.5, 2.5)) +
   labs(y = "Effect size (lnRR)",
-       x = "Publication Year (Mean Cenetered)")+
+       x = "Publication Year (Mean Centered)")+
     theme(
     panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
     legend.title = element_text(size = 10),
@@ -1197,8 +1200,9 @@ SMDH_decline_effect_bubble<-orchaRd::bubble_plot(mod_results(SMDH_decline_eff,
                      group="paper_ID")+
   scale_colour_manual(values ="#218833") +
   scale_fill_manual(values = "#218833") +
+  coord_cartesian(ylim = c(-10, 7)) +
   labs(y = "Effect size (SMDH)",
-       x = "Publication Year (Mean Cenetered)")+
+       x = "Publication Year (Mean Centered)")+
     theme(
     panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
     legend.title = element_text(size = 10),
@@ -1216,7 +1220,7 @@ Figure_publication_bias <- ((lnRR_small_study_bubble + SMDH_small_study_bubble) 
 ggsave(here::here("figures/Figure_publication_bias.png"), plot = Figure_publication_bias, height = 300, width = 400, units = "mm", dpi = 600)
 ```
 
-# -------- Supplementary Material Table ----------
+# ----- Supplementary Material Table -------
 
 ```{r}
 
@@ -1535,8 +1539,6 @@ gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.png"))
 # gtsave(SA_intercept_only,here::here("tables/SA_intercept_only.html"))
 ```
 
-\
-
 ```{r Table for lnRR rho sensitivity analysis}
 
 # t4 <- data.frame(rho  = rho_range,
@@ -1555,12 +1557,152 @@ gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.png"))
 # t4 %>% dfround(4) %>% DT::datatable()
 ```
 
+## Table: RoB Meta-regressions
+
+```{r}
+
+# Loading models for blinding performed or not
+lnRR_blinding<-readRDS(here::here("model/lnRR_blinding.rds"))
+SMDH_blinding<-readRDS(here::here("model/SMDH_blinding.rds"))
+
+# Loading models for random sampling assignment performed or not
+lnRR_random_assignment<-readRDS(here::here("model/lnRR_random_assignment.rds"))
+SMDH_random_assignment<-readRDS(here::here("model/SMDH_random_assignment.rds"))
+
+# Loading models for missing data present or not
+lnRR_missing_data<-readRDS(here::here("model/lnRR_missing_data.rds"))
+SMDH_missing_data<-readRDS(here::here("model/SMDH_missing_data.rds"))
+
+```
+
+```{r}
+pacman::p_load(gt, tidyverse, metafor, purrr, stringr)
+
+# Let's source our custom function to extract values from the meta-regressions
+source(here::here("functions/extractor_metareg.R"))
+
+## For lnRR Values
+lnRR_results_RoB <- extractor_metareg(lnRR_blinding,"blinding")%>%
+  bind_rows(extractor_metareg(lnRR_random_assignment,"random_assignment"))%>%
+  bind_rows(extractor_metareg(lnRR_missing_data,"missing_data"))%>%
+  mutate(effect_size = "lnRR")
+
+## For SMDH Values
+SMDH_results_RoB <- extractor_metareg(SMDH_blinding,"blinding")%>%
+  bind_rows(extractor_metareg(SMDH_random_assignment,"random_assignment"))%>%
+  bind_rows(extractor_metareg(SMDH_missing_data,"missing_data"))%>%
+  mutate(effect_size = "SMDH")
+
+## Now let's write the table for publication:
+# Combine both results
+combined_results_RoB <- bind_rows(lnRR_results_RoB, SMDH_results_RoB)%>%
+  pivot_wider(
+    id_cols = c(moderator, level),
+    names_from = effect_size,
+    values_from = c(estimate, p_value, CI, PI, k, n),
+    names_glue = "{.value}_{effect_size}"
+  )%>% # Prepare row labels to mimic grouping
+  arrange(moderator, level)%>%
+  mutate(row_type = "level")
+
+# Final combined table with headers and levels
+ combined_results_RoB <- combined_results_RoB %>%
+   # bind_rows(moderator_header ,combined_results) %>%
+  arrange(moderator, row_type)%>% select(-row_type)%>%
+  relocate(level, .after = moderator)%>%
+  mutate(moderator = case_when(
+    moderator == "blinding" ~ "1. Blinding",
+    moderator == "random_assignment" ~ "2. Random assignment to treatment",
+    moderator == "missing_data" ~ "3. Partial Reporting"
+  ))%>%mutate(moderator = factor(
+    moderator,
+    levels = c(
+      "1. Blinding",
+      "2. Random assignment to treatment",
+      "3. Partial Reporting"
+    )
+  ))%>%
+  arrange(moderator)%>%
+  mutate(level = case_when(level=="y" ~ "Yes",
+                           level=="n" ~ "No", .default=level))
+
+
+# Clean up or reorder columns for display
+# Select and order columns for clarity
+RoB_table <- combined_results_RoB %>%
+  gt(groupname_col = "moderator") %>%
+  tab_header(title = md("**Multilevel Meta Regressions for Risk of Bias**")) %>%
+  cols_label(
+    # R2_marginal_lnRR = "R²_mar",
+    # R2_marginal_SMDH = "R²_mar",
+    level = "Level",
+    estimate_lnRR = "Estimate",
+    CI_lnRR = "95% CI",
+    PI_lnRR = "95% PI",
+    p_value_lnRR = "P-val",
+    k_lnRR = "k",
+    n_lnRR = "n",
+    estimate_SMDH = "Estimate",
+    CI_SMDH = "95% CI",
+    PI_SMDH = "95% PI",
+    p_value_SMDH = "P-val",
+    k_SMDH = "k",
+    n_SMDH = "n"
+  ) %>%
+   sub_missing(
+    columns = everything(),
+    missing_text = ""
+  ) %>%
+  opt_table_outline() %>%
+  tab_options(
+    table.font.size = "small",
+    heading.title.font.size = 12,
+    table.border.top.width = px(2),
+    column_labels.font.weight = "medium",
+    row_group.font.weight = "bold"
+  )   %>%
+  tab_style(
+    style = cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = px(1)
+    ),
+    locations = cells_body()
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_lnRR),
+      rows = p_value_lnRR < 0.05
+    )
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_SMDH),
+      rows = p_value_SMDH < 0.05
+    )
+  )%>%
+  tab_spanner(label = "lnRR", columns = contains("_lnRR")) %>%
+  tab_spanner(label = "SMDH", columns = contains("_SMDH"))  %>%
+  tab_style(
+    style = cell_text(whitespace = "nowrap"),
+    locations = cells_body(columns = c(CI_lnRR, PI_lnRR, CI_SMDH, PI_SMDH))
+  )
+
+# saving the image
+gtsave(RoB_table,here::here("tables/SA_RoB_table.png"))
+
+# #saving as a docx file or html
+# gtsave(RoB_table,here::here("tables/SA_RoB_table.docx"))
+# gtsave(RoB_table,here::here("tables/SA_RoB_table.html"))
+```
+
 # -------- TABLES ----------
 
 ## Table: Output from meta-regressions
 
 ```{r}
-
 pacman::p_load(gt, tidyverse, metafor, purrr, stringr)
 
 # Loading models for experimental design
