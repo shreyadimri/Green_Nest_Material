@@ -20,7 +20,7 @@ if (!require("orchaRd", quietly = TRUE))
 devtools::install_github("daniel1noble/orchaRd", ref = "main", force = TRUE)
  
  
-pacman::p_load(here,tidyverse,metafor,ggpubr,orchaRd,ggpubfigs)
+pacman::p_load(here,tidyverse,metafor,ggpubr,orchaRd,ggpubfigs,readr)
 
 #Packages needed
 
@@ -1719,12 +1719,12 @@ dataset_SMDH_design_no_comp1 <- dataset_SMDH_no_comp1 %>% filter(!is.na(comparis
 VCV_SMDH_design_no_comp1 <- vcalc(vi = SMDH_variance,
                   cluster = paper_ID,
                   obs = Observation_ID,
-                  data = dataset_lnRR_design_no_comp1,
+                  data = dataset_SMDH_design_no_comp1,
                   rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
                   )
-lnRR_design_no_comp1 <-
-  metafor::rma.mv(yi = lnRR_sign, # specify lnRR as the effect size measure;
-                    V = VCV_lnRR_design_no_comp1 ,# specify lnRR's sampling variance;
+SMDH_design_no_comp1 <-
+  metafor::rma.mv(yi = SMDH_sign, # specify lnRR as the effect size measure;
+                    V = VCV_SMDH_design_no_comp1 ,# specify lnRR's sampling variance;
                     mods = ~ - 1 + comparision_type,
                     random = list(~ 1 | paper_ID,
                                   ~ 1 | Observation_ID,
@@ -1734,10 +1734,10 @@ lnRR_design_no_comp1 <-
                     method = "REML",
                   test = "t",
                   control = list(optimizer="optim"),
-                  data = dataset_lnRR_design_no_comp1 )
+                  data = dataset_SMDH_design_no_comp1 )
 
 # Saving the model
-saveRDS(lnRR_design_no_comp1, file = here::here("model/lnRR_design_no_comp1.rds"))
+saveRDS(SMDH_design_no_comp1, file = here::here("model/SMDH_design_no_comp1.rds"))
 ```
 
 \
