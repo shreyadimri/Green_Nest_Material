@@ -12,14 +12,18 @@
 # INPUT files: 
 # GNM_wos.bib
 # GNM_scopus.bib
+# full_reference_before_deduplication.csv should be read to see the exact data we 
+# used before de-duplication.Error in loading with revtools::read_bibliography
+# function when re-checked the code now added lines of code to read bib files with synthesisr
 
 # OUTPUT files:
 # full_reference_before_deduplication.csv
 # unique_reference_list.csv
-# Packages used: dplyr , revtools
+
+# Packages used: dplyr , revtools , synthesisr
 
 
-# created on 12.09.22 for green nest material project 
+# created on 12.09.22 for green nest material project and updated on 02.06.2025
 # Code written by: SD and revised by: NA
 
 ##############################################################
@@ -39,16 +43,32 @@ rm(list=ls())
 
 # importing the .bib files from WEB OF SCIENCE and SCOPUS
 
-reference_data_wos <- read_bibliography("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
-reference_data_scopus <- read_bibliography("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
+## Initially this code used revtools::read_bibliography to read the .bib files from
+## WOS and Scopus. On re-running the code during check, this gives loading error. 
+## A good fix is to use synthesisr package so I am switching to that now even though 
+## in the project I used revtools (and report the same)..
+
+pacman::p_load(synthesisr)
+
+# reference_data_wos <- read_bibliography("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
+# reference_data_scopus <- read_bibliography("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
+
+
+reference_data_wos <- synthesisr::read_ref("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
+reference_data_scopus <- synthesisr::read_ref("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
 
 # reducing fields to the minimum number of fields
 # so that all databases have the same columns. Also, these fields
 # are the important ones for the screening.
-reducing_fields <- c("label","title","author","journal",
-                         "volume","number","pages","year",
-                         "doi","abstract") 
+# reducing_fields <- c("label","title","author","journal",
+#                          "volume","number","pages","year",
+#                          "doi","abstract") 
 
+# I have to exclude the label field which I had selected earlier when 
+# I used revtools for this merge. In synthesisr, I do not get the label column.
+reducing_fields <- c("title","author","journal",
+                     "volume","number","pages","year",
+                     "doi","abstract")
 
 reference_data_wos_reduced <- reference_data_wos[,reducing_fields]
 reference_data_scopus_reduced <- reference_data_scopus[,reducing_fields]
@@ -58,12 +78,12 @@ reference_data_scopus_reduced <- reference_data_scopus[,reducing_fields]
 ##############################################################
 
 # building the full reference list before de-duplication
-full_reference_data <- rbind(reference_data_wos_reduced,
-                             reference_data_scopus_reduced)
+# full_reference_data <- rbind(reference_data_wos_reduced,
+# reference_data_scopus_reduced)
 
 #write.csv(full_reference_data,"data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv",row.names=FALSE, fileEncoding = "UTF-16LE")
-#full_reference_data <- read.table("data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv",
-#                           header=T,sep=",",fileEncoding = "UTF-16LE")
+full_reference_data <- read.table("data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv",
+                                  header=T,sep=",",fileEncoding = "UTF-16LE")
 
 
 ##############################################################
@@ -75,12 +95,12 @@ full_reference_data <- rbind(reference_data_wos_reduced,
 #using fuzzy matching with threshold default(0.1) = 383, 0.2= 379 
 #we decided to go with fuzzy match at default of 0.1 to be on the conservative side 
 #and not lose any papers that might not be duplicates
-search_duplicated <- find_duplicates(data = full_reference_data,
-match_variable = "title",
-group_variable = NULL,
-match_function = "fuzzdist",
-method = "fuzz_m_ratio",
-remove_punctuation = T) 
+search_duplicated <- revtools::find_duplicates(data = full_reference_data,
+                                               match_variable = "title",
+                                               group_variable = NULL,
+                                               match_function = "fuzzdist",
+                                               method = "fuzz_m_ratio",
+                                               remove_punctuation = T) 
 # extracting duplicates
 unique_reference_list <- extract_unique_references(full_reference_data,search_duplicated)
 

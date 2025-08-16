@@ -1,0 +1,1879 @@
+---
+title: "Figures"
+author: "Shreya D."
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ---- FIGURES --------------
+
+# Visualising location and bird species
+
+I am using the figure code from here and adapting it for my needs..
+
+Mentesana, L., Hau, M., D'Amelio, P.B., Adreani, N.M. and Sánchez-Tójar, A. (2025), Do Egg Hormones Have Fitness Consequences in Wild Birds? A Systematic Review and Meta-Analysis. Ecology Letters, 28: e70100. <https://doi.org/10.1111/ele.70100>
+
+Code here: `https://github.com/ASanchez-Tojar/meta-analysis_egg_hormones_and_fitness/blob/main/code/003_figures.R`
+
+```{r message=FALSE, warning=FALSE}
+## Let's get the needed packages
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+
+if (!requireNamespace("orchaRd", quietly = TRUE))
+    devtools::install_github("daniel1noble/orchaRd", ref = "main")
+
+pacman::p_load(ggplot2,dplyr,stringr,readr,cowplot,maps)
+
+## Let's first get the data in for this plot
+
+# Loading cleaned dataset
+dataset_analysis<- read_csv(here::here("data/04_data_analysis/dataset_analysis.csv"))
+
+```
+
+```{r location-map}
+
+# To split population_ID into location and country
+dataset_analysis[c('Location','Country')] <- str_split_fixed(dataset_analysis$population_ID, ',', 2)
+
+### For the purpose of this map, I am adding the the longitude and latitude of the study area manually. They exist in the dataset_analysis$population_location as they were extracted from the paper. I have also added some by just searching the general location since the coordinates were not provided for these..
+
+
+data_coordinates<-data.frame(Location = unique(dataset_analysis$Location),
+                             Lat_Location=c(51.50,38.41,40.45,
+                                            45.40,52.39, 37.18,40.53,
+                                            54,39.05,
+                                            51.57,48,42.54,39.95,
+                                            40.13,28.10,52.06,60.39),
+                             Long_Location=c(19.29,-9.02,-3.50,
+                                             -64.10,6.05,-3.11,-4.01,
+                                             -124,-76.81,
+                                             -2.26,11,8.91,-75.16,
+                                             -8.27,107.10,8.25,5.32))
+
+## Let's now merge the datasets by the location names
+
+dataset_analysis <- dataset_analysis %>%
+  left_join(data_coordinates, by = "Location")
+
+## Count how many times each Location appears in the full dataset
+location_counts <- dataset_analysis %>%
+  group_by(Location, bird_species) %>%
+  summarise(
+    size.freq = n(),
+  )
+
+# I will subset the data base so that I get one row per Location AND bird_species.
+# Like this, I get one point per location independently of the number of effect sizes
+# we have per place.
+dataset_analysis_unique_rows <- dataset_analysis %>%
+  distinct(Location, bird_species, .keep_all = TRUE)
+
+# Merge the counts into the unique rows dataset
+dataset_analysis_unique_rows <- dataset_analysis_unique_rows %>%
+  left_join(location_counts, by = c("Location", "bird_species"))
+
+# create data for world coordinates using  
+# map_data() function 
+world_coordinates <- map_data("world") 
+
+# create world map using ggplot() function 
+# geom_map() function takes world coordinates as input to plot world map 
+fig_map <- ggplot(world_coordinates, aes(x = long, y = lat)) + 
+  geom_map(map = world_coordinates, 
+    aes(map_id = region), 
+    color = "white", fill= "#D9EAF7") + 
+  geom_point(data = dataset_analysis_unique_rows, 
+             aes(x = Long_Location, y = Lat_Location,
+                 size = size.freq, colour=bird_species),
+             alpha = 0.6) +
+ scale_size(range = c(1, 2.5)) +
+  scale_fill_manual(values = c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  
+  scale_colour_manual(values = c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  guides(size = "none", alpha = "none",
+         colour = guide_legend(override.aes = list(size = 1.5), keywidth = 0.4,
+                               keyheight = 0.4))+
+  labs(x = "Longitude",
+       y = "Latitude",
+       col = "Bird Species")+
+  theme_classic() +
+  theme(plot.margin = margin(t =15, r = 15, b = 5, l = 5),  
+        legend.position = c(1.02, 0.42),
+        legend.justification = c("right", "bottom"),
+        legend.background = element_rect(fill = "white", color = "black"),
+        legend.text = element_text(size=6),
+        legend.title = element_text(size=7),
+        axis.title = element_text(size = 8),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10))
+  
+
+# To add the zoomed in map.. to show the points more clearly
+zoom_map <- ggplot() + 
+  geom_map(data = world_coordinates, map = world_coordinates,
+           aes(map_id = region),
+           color = "white", fill = "#D4D4D4") +
+  geom_point(data = dataset_analysis_unique_rows,
+             aes(x = Long_Location, y = Lat_Location,
+                 size = size.freq, colour = bird_species),
+             position = position_jitter(width = 0.2, height = 0.2),
+             alpha = 0.7) +
+  scale_size(range = c(1, 2)) +
+  scale_colour_manual(values = c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  coord_cartesian(xlim = c(-10, 20), ylim = c(25, 65)) +  # Northern Hemisphere
+  theme_void() +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "white", fill="white"),
+    panel.border = element_rect(colour = "black", fill = NA, size = 1)
+  )
+
+geographic_distribution <- ggdraw() +
+  draw_plot(fig_map) +
+  draw_plot(zoom_map, x = 0.11, y = 0.21, width = 0.20, height = 0.28) + theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2))
+
+ggsave(here::here("figures/Figure_Distribution.png"), plot = geographic_distribution, height = 100, width = 170, units= 'mm', dpi = 600)
+```
+
+# Visualizing author network
+
+```{r}
+# # Loading cleaned dataset
+# dataset_analysis<- read_csv(here::here("data/03_data_cleaning/dataset_analysis.csv"))
+# 
+# library(tidyverse)
+# library(tidyr)
+# library(igraph)
+# installed.packages("ggraph")
+# library(ggraph)
+# 
+# clean_author <- function(name) {
+#   name %>%
+#     str_replace_all(",", "") %>%   # remove commas
+#     str_squish() %>%              # remove excess whitespace
+#     str_to_title()                # standardize case (optional, if needed)
+# }
+# 
+# # Apply cleaning to first and last author fields
+# author_roles <- dataset_analysis %>%
+#   distinct(paper_ID, .keep_all = TRUE) %>%
+#   select(paper_ID, authors, bird_species) %>%
+#   mutate(
+#     author_list = str_split(authors, ";\\s*"),
+#     first_author = map_chr(author_list, 1),
+#     last_author = map_chr(author_list, ~ tail(.x, 1))
+#   )%>%
+#   mutate(
+#     first_author=case_when(
+#       first_author == "Polo, V" | first_author == "Polo V" ~ "Polo V.",
+#       first_author == "Soler J J" ~ "Soler J. J.",
+#       first_author == "Glądalski, M" ~ "Gladalski M.",
+#       first_author == "Gwinner, H" | first_author == "Gwinner H" ~ "Gwinner H.",
+#       TRUE ~ as.character(first_author)
+#     ))%>%
+#   mutate(
+#     last_author=case_when(
+#       last_author == "Veiga J P" ~ "Veiga J. P.",
+#       TRUE ~ as.character(last_author)
+#     )
+#   )
+# 
+# # 2. Create Core Author Pairs (First → Last)
+# author_pairs_core <- author_roles %>%
+#   select(paper_ID, first_author, last_author) %>%
+#   rename(from = first_author, to = last_author) %>%
+#   filter(from != to) %>%
+#   count(from, to, name = "weight")
+# 
+# # 3. Build Author Graph
+# author_graph <- graph_from_data_frame(author_pairs_core, directed = TRUE)
+# 
+# # 4. Assign Dominant Bird Species to PIs (last authors)
+# author_species <- author_roles %>%
+#   select(last_author, bird_species) %>%
+#   group_by(last_author, bird_species) %>%
+#   count() %>%
+#   slice_max(n, n = 1) %>%
+#   distinct(last_author, .keep_all = TRUE)
+# 
+# # Add species as vertex attribute
+# V(author_graph)$bird_species <- author_species$bird_species[
+#   match(V(author_graph)$name, author_species$last_author)
+# ]
+# 
+# # 5. Optional: Scale node size by number of papers per author
+# author_paper_counts <- author_roles %>%
+#   pivot_longer(cols = c(first_author, last_author), names_to = "role", values_to = "author") %>%
+#   count(author, name = "paper_count")
+# 
+# # Add paper count attribute
+# V(author_graph)$paper_count <- author_paper_counts$paper_count[
+#   match(V(author_graph)$name, author_paper_counts$author)
+# ]
+# 
+# # Replace NAs with small size for isolated authors
+# V(author_graph)$paper_count[is.na(V(author_graph)$paper_count)] <- 1
+# 
+# # 6. Plot with ggraph
+# ggraph(author_graph, layout = "fr") +
+#   geom_edge_link(aes(width = weight), alpha = 0.4, color = "grey50") +
+#   geom_node_point(aes(color = bird_species, size = paper_count)) +
+#   geom_node_text(aes(label = name), repel = TRUE, size = 3) +
+#   scale_edge_width(range = c(0.3, 2)) +
+#   scale_size(range = c(3, 10)) +
+#   theme_void() +
+#   labs(title = "Author Collaboration Network by Bird Species",
+#        size = "Paper Count") +
+#   theme(legend.position = "right")
+# 
+
+
+```
+
+# Intercept only model
+
+Orchard plot for overall effect of green nest material on fitness using lnRR and SMDH
+
+```{r orchard plot for intercept only models}
+pacman::p_load(here,tidyverse,metafor,orchaRd,patchwork,cowplot)
+
+# Loading models for SMDH and lnRR
+
+intercept_lnRR<-readRDS(here::here("model/intercept_lnRR.rds"))
+intercept_SMDH<-readRDS(here::here("model/intercept_SMDH.rds"))
+
+# Plot for lnRR
+
+intercept_lnRR_plot<- orchaRd::orchard_plot(intercept_lnRR,
+                                             mod = "1",
+                                             group = "paper_ID",
+                                             trunk.size = 0.3,
+                                             branch.size = 2,
+                                             twig.size = 0.5,
+                                             alpha = 0.2,
+                                             xlab = "Effect size (lnRR)", 
+                                             fill =  T,
+                                             k.pos = c(0.53,0.6,0.6)) +
+  scale_fill_manual(values = "#98C127") +
+  scale_colour_manual(values = "#98C127" ) +
+theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0),
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+# Plot for SMDH
+intercept_SMDH_plot <- orchaRd::orchard_plot(intercept_SMDH,
+                                    mod = "1",
+                                    group = "paper_ID",
+                                    trunk.size = 0.3,
+                                    branch.size = 2,
+                                    twig.size = 0.5,
+                                    alpha = 0.2,
+                                    xlab = "Effect size (SMDH)",
+                                    fill = TRUE,
+                                    k.pos = c(2,0.6,0.6)) +
+  scale_fill_manual(values = "#F47A00") +
+  scale_colour_manual(values = "#F47A00") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+# Combine using patchwork
+Figure_intercept <- intercept_lnRR_plot / intercept_SMDH_plot +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_overall_effect.png"), plot = Figure_intercept, height = 150, width = 170, units = "mm", dpi = 600)
+
+###----------------------------------------------------------------------------------
+
+## Now the cropped versions presented in the main manuscript..
+
+###----------------------------------------------------------------------------------
+
+
+
+intercept_lnRR_plot_crop <- orchaRd::orchard_plot(intercept_lnRR,
+                                             mod = "1",
+                                             group = "paper_ID",
+                                             trunk.size = 0.5,
+                                             branch.size = 2,
+                                             twig.size = 0.5,
+                                             alpha = 0.2,
+                                             xlab = "Effect size (lnRR)", 
+                                             fill =  T,
+                                             k.pos = c(0.53,0.6,0.6)) +
+  scale_fill_manual(values = "#98C127") +
+  scale_colour_manual(values = "#98C127" ) +
+    scale_y_continuous(limits = c(-0.6, 0.6)) +
+theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0),
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+# Plot for SMDH
+intercept_SMDH_plot_crop <- orchaRd::orchard_plot(intercept_SMDH,
+                                    mod = "1",
+                                    group = "paper_ID",
+                                    trunk.size = 0.5,
+                                    branch.size = 2,
+                                    twig.size = 0.5,
+                                    alpha = 0.2,
+                                    xlab = "Effect size (SMDH)",
+                                    fill = TRUE,
+                                    k.pos = c(2,0.6,0.6)) +
+  scale_fill_manual(values = "#F47A00") +
+  scale_colour_manual(values = "#F47A00") +
+  scale_y_continuous(limits = c(-2.3, 2.3)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, size = 0.8),
+    legend.position = c(0.98, 0.05),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_blank()
+  ) +
+  labs(x = "Intercept")
+
+
+# Combine using patchwork
+Figure_intercept_crop <- intercept_lnRR_plot_crop / intercept_SMDH_plot_crop +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_overall_effect_crop.png"), plot = Figure_intercept_crop, height = 150, width = 170, units = "mm", dpi = 600)
+```
+
+# Hypothesis meta-regression
+
+```{r orchard plot hypothesis meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_hypothesis<-readRDS(here::here("model/lnRR_hypothesis.rds"))
+SMDH_hypothesis<-readRDS(here::here("model/SMDH_hypothesis.rds"))
+
+
+# Plot lnRR meta-regression on hypothesis
+
+lnRR_hypothesis_plot <-
+  orchard_plot(mod_results(lnRR_hypothesis,
+                           mod = "Hypothesis",
+                           group = "paper_ID"),
+               trunk.size = 0.25,
+               branch.size = 1,
+               twig.size = 0.5,
+               alpha = 0.4,
+               xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  labs(x = "",
+       y = "Effect size (lnRR)")+
+  theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental Care"))
+  
+# Plot SMDH meta-regression on hypothesis
+ 
+SMDH_hypothesis_plot <-
+  orchard_plot(
+    mod_results(
+      SMDH_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.4,
+    xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  labs(x = "",
+       y = "Effect size (SMDH)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental Care"))
+
+SMDH_hypothesis_plot <- SMDH_hypothesis_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_hypothesis <- lnRR_hypothesis_plot + SMDH_hypothesis_plot +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_hypothesis.png"), plot = Figure_hypothesis, height = 120, width = 250, units = "mm", dpi = 600)
+
+
+##-----------------------------------------------------------------------------
+
+# Now the cropped figures for the main manuscript
+
+##-----------------------------------------------------------------------------
+
+
+# Plot lnRR meta-regression on hypothesis
+
+lnRR_hypothesis_plot_crop <-
+  orchard_plot(mod_results(lnRR_hypothesis,
+                           mod = "Hypothesis",
+                           group = "paper_ID"),
+               trunk.size = 0.5,
+               branch.size = 1.3,
+               twig.size = 0.5,
+               alpha = 0.4,
+               fill = T,
+               k.pos = c(0.4,0.6,0.6),
+               xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+    scale_y_continuous(limits = c(-0.6, 0.6)) +
+  labs(x = "",
+       y = "Effect size (lnRR)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 5),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental\nCare"))
+
+  
+# Plot SMDH meta-regression on hypothesis
+ 
+SMDH_hypothesis_plot_crop <-
+  orchard_plot(
+    mod_results(
+      SMDH_hypothesis,
+      mod = "Hypothesis",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.5,
+    branch.size = 1.3,
+    twig.size = 0.5,
+    alpha = 0.4,
+    fill = T,
+    k.pos = c(1.9,0.6,0.6),
+    xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_y_continuous(limits = c(-2.3, 2.3)) +
+  labs(x = "",
+       y = "Effect size (SMDH)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 5),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Both","Courtship","Parental\nCare"))
+
+SMDH_hypothesis_plot_crop <- SMDH_hypothesis_plot_crop +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_hypothesis_crop <- lnRR_hypothesis_plot_crop + SMDH_hypothesis_plot_crop +
+  plot_annotation(tag_level = c("A","B"))
+
+ggsave(here::here("figures/Figure_hypothesis_crop.png"), plot = Figure_hypothesis_crop, height = 120, width = 250, units = "mm", dpi = 600)
+```
+
+# Other meta-regressions
+
+# A. Combined Plot
+
+## Time of green nest material addition
+
+```{r orchard plot time of gnm addition meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_time_gnm_addition<-readRDS(here::here("model/lnRR_time_gnm_addition.rds"))
+SMDH_time_gnm_addition<-readRDS(here::here("model/SMDH_time_gnm_addition.rds"))
+
+lnRR_time_gnm_addition_plot <-
+  orchard_plot(mod_results(
+    lnRR_time_gnm_addition,
+    mod = "time_of_gnm_addition",
+    group = "paper_ID"
+  ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+  k.pos = c(0.4,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  labs(x = "",
+       y = "Effect Size (lnRR)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+        legend.position.inside = c(0.99, 0.01),
+        legend.justification = c(1, 0), 
+        legend.direction = "horizontal",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        axis.title = element_text(size = 10),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  ) + scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+
+SMDH_time_gnm_addition_plot <-
+  orchard_plot(mod_results(
+    SMDH_time_gnm_addition,
+    mod = "time_of_gnm_addition",
+    group = "paper_ID"
+  ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+  k.pos = c(0.4,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794"))+
+  labs(x = "",
+       y = "Effect Size (SMDH)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+        legend.position.inside = c(0.99, 0.01),
+        legend.justification = c(1, 0), 
+        legend.direction = "horizontal",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        axis.title = element_text(size = 10),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  ) + scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+
+
+##-----------------------------------------------------------------------------
+
+# Now the cropped figures for the main manuscript
+
+##-----------------------------------------------------------------------------
+
+lnRR_time_gnm_addition_plot_cropped <-
+  orchard_plot(mod_results(
+    lnRR_time_gnm_addition,
+    mod = "time_of_gnm_addition",
+    group = "paper_ID"
+  ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+  k.pos = c(0.4,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_y_continuous(limits = c(-0.6, 0.6)) +
+  labs(x = "",
+       y = "Effect Size (lnRR)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+        legend.position.inside = c(0.99, 0.01),
+        legend.justification = c(1, 0), 
+        legend.direction = "horizontal",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        axis.title = element_text(size = 10),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  ) + scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+
+SMDH_time_gnm_addition_plot_cropped <-
+  orchard_plot(mod_results(
+      SMDH_time_gnm_addition,
+      mod = "time_of_gnm_addition",
+      group = "paper_ID"
+    ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+    k.pos = c(1.9,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_y_continuous(limits = c(-2.3, 2.3)) +
+labs(x = "",
+     y = "Effect Size (SMDH)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)
+  ) + scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+
+```
+
+## Experimental Design
+
+```{r orchard plot experimental design meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_design<-readRDS(here::here("model/lnRR_design.rds"))
+SMDH_design<-readRDS(here::here("model/SMDH_design.rds"))
+
+lnRR_design_plot <-
+  orchard_plot(mod_results(
+      lnRR_design,
+      mod = "comparision_type",
+      group = "paper_ID"
+    ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+  k.pos = c(1,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+labs(x = "",
+     y = "Effect Size (lnRR)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. non-Aromatic"))
+
+SMDH_design_plot <-
+  orchard_plot(mod_results(
+      SMDH_design,
+      mod = "comparision_type",
+      group = "paper_ID"
+    ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+  k.pos = c(1.5,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794"))+
+labs(x = "",
+     y = "Effect Size (SMDH)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. Non-aromatic"))
+
+
+##-----------------------------------------------------------------------------
+
+# Now the cropped figures for the main manuscript
+
+##-----------------------------------------------------------------------------
+
+lnRR_design_plot_cropped <-
+  orchard_plot(mod_results(
+      lnRR_design,
+      mod = "comparision_type",
+      group = "paper_ID"
+    ),
+  trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+  k.pos = c(0.4,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_y_continuous(limits = c(-0.6, 0.6)) +
+labs(x = "",
+     y = "Effect Size (lnRR)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. Non-aromatic"))
+
+SMDH_design_plot_cropped <-
+  orchard_plot(mod_results(
+      SMDH_design,
+      mod = "comparision_type",
+      group = "paper_ID"
+    ),
+   trunk.size = 0.5,
+  branch.size = 1.3,
+  twig.size = 0.5,
+  alpha = 0.4,
+  fill = T,
+    k.pos = c(1.9,0.6,0.6),
+  xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D", "#7E4794")) +
+  scale_y_continuous(limits = c(-2.3, 2.3)) +
+labs(x = "",
+     y = "Effect Size (SMDH)")+
+  theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position.inside = c(0.99, 0.01),
+    legend.justification = c(1, 0), 
+    legend.direction = "horizontal",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))+ 
+  scale_x_discrete(labels = c("Non-aromatic\nVs. aromatic","No material\nVs. aromatic", "No material\nVs. non-Aromatic"))
+
+```
+
+### Now we combine these plots
+
+```{r combining meta-regression plots, effect}
+
+## I am going to remove the y ticks from the SMDH plots to make it smaller..
+SMDH_design_plot <- SMDH_design_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_time_gnm_addition_plot <- SMDH_time_gnm_addition_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_design_time_gnm_addition<- ((lnRR_design_plot + SMDH_design_plot) /
+                               (lnRR_time_gnm_addition_plot + SMDH_time_gnm_addition_plot)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_design_time_gnm_addition.png"), plot = Figure_design_time_gnm_addition, height = 240, width = 250, units = "mm", dpi = 600)
+
+##-----------------------------------------------------------------------------
+
+# Now the cropped figures for the main manuscript
+
+##-----------------------------------------------------------------------------
+
+
+## I am going to remove the y ticks from the SMDH plots to make it smaller..
+SMDH_design_plot_cropped <- SMDH_design_plot_cropped +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_time_gnm_addition_plot_cropped <- SMDH_time_gnm_addition_plot_cropped +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_design_time_gnm_addition_cropped <- ((lnRR_design_plot_cropped + SMDH_design_plot_cropped) /
+                               (lnRR_time_gnm_addition_plot_cropped + SMDH_time_gnm_addition_plot_cropped)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_design_time_gnm_addition_cropped.png"), plot = Figure_design_time_gnm_addition_cropped, height = 240, width = 250, units = "mm", dpi = 600)
+
+```
+
+# B. Combined Plot
+
+## Parasite Type
+
+```{r orchard plot parasite type meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_parasite<-readRDS(here::here("model/lnRR_parasite.rds"))
+SMDH_parasite<-readRDS(here::here("model/SMDH_parasite.rds"))
+
+lnRR_parasite_plot <-
+  orchard_plot(mod_results(
+      lnRR_parasite,
+      mod = "parasite_type",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.2,
+    xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size =6,angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+SMDH_parasite_plot <-
+  orchard_plot(mod_results(
+      SMDH_parasite,
+      mod = "parasite_type",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.2,
+    xlab ="") +
+  scale_colour_manual(values = c("#FF8CAE", "#003A7D")) +
+  scale_fill_manual(values = c("#FF8CAE", "#003A7D")) +
+  labs(x = "",
+       y = "SMD(H)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size =6,angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+```
+
+## Bird Species
+
+```{r orchard plot bird species meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_birds<-readRDS(here::here("model/lnRR_birds.rds"))
+SMDH_birds<-readRDS(here::here("model/SMDH_birds.rds"))
+
+lnRR_birds_plot <-
+  orchard_plot(mod_results(
+      lnRR_birds,
+      mod = "bird_species",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.2,
+    xlab ="") +
+  scale_colour_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  scale_fill_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size =6,angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+SMDH_birds_plot <-
+  orchard_plot(mod_results(
+      SMDH_birds,
+      mod = "bird_species",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.2,
+    xlab ="") +
+  scale_colour_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  scale_fill_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  labs(x = "",
+       y = "SMD(H)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size =6,angle = 0, vjust = 0.5, hjust = 1)
+  )
+```
+
+## Trait studied
+
+```{r orchard plot trait-studied meta-regression}
+
+# Loading models for SMDH and lnRR
+
+lnRR_trait<-readRDS(here::here("model/lnRR_trait.rds"))
+SMDH_trait<-readRDS(here::here("model/SMDH_trait.rds"))
+
+lnRR_trait_plot <-
+  orchard_plot(mod_results(
+      lnRR_trait,
+      mod = "trait_type",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.2,
+    xlab ="") +
+  scale_colour_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  scale_fill_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  labs(x = "",
+       y = "lnRR")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size =6,angle = 0, vjust = 0.5, hjust = 1)
+  )
+
+SMDH_trait_plot <-
+  orchard_plot(mod_results(
+      SMDH_trait,
+      mod = "trait_type",
+      group = "paper_ID"
+    ),
+    trunk.size = 0.25,
+    branch.size = 1,
+    twig.size = 0.5,
+    alpha = 0.2,
+    xlab ="") +
+  scale_colour_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  scale_fill_manual(values =  c("#00B0BE","#FFB255",  "#FF8CAE", 
+                                 "#F47A00", "#98C127","#003A7D","#7E4794")) +
+  labs(x = "",
+       y = "SMD(H)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.position = "none",
+    # legend.position.inside = c(0.98, 0.05),
+    # legend.justification = c(1, 0), 
+    # legend.direction = "horizontal",
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size =6, angle = 0, vjust = 0.5, hjust = 1)
+  )
+```
+
+### Now we combine these plot
+
+```{r combining meta-regression plots, no effect}
+
+## I am going to remove the y ticks from the SMDH plots to make it smaller..
+SMDH_parasite_plot <- SMDH_parasite_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_birds_plot <- SMDH_birds_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+SMDH_trait_plot <- SMDH_trait_plot +
+  theme(axis.text.y  = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# Combine using patchwork
+Figure_parasite_birds_trait <- ((lnRR_parasite_plot + SMDH_parasite_plot) / 
+                                  (lnRR_birds_plot + SMDH_birds_plot) / 
+                                  (lnRR_trait_plot + SMDH_trait_plot)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_parasite_birds_trait.png"), plot = Figure_parasite_birds_trait, height = 250, width = 400, units = "mm", dpi = 600)
+       
+```
+
+# Publication Bias Tests
+
+```{r}
+
+###---Small study Effects ----###
+
+lnRR_small_study<-readRDS(here::here("model/lnRR_small_study.rds"))
+SMDH_small_study<-readRDS(here::here("model/SMDH_small_study.rds"))
+
+
+lnRR_small_study_bubble<-orchaRd::bubble_plot(mod_results(lnRR_small_study,
+                     mod="sqrt_effective_n_inv",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID") +
+  scale_colour_manual(values ="mediumpurple4") +
+  scale_fill_manual(values = "mediumpurple4") +
+  coord_cartesian(ylim = c(-2.5, 2.5)) +
+  labs(y = "Effect size (lnRR)",
+       x = expression(sqrt(1 / N[effective])))+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+SMDH_small_study_bubble<-orchaRd::bubble_plot(mod_results(SMDH_small_study,
+                     mod="sqrt_effective_n_inv",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID") +
+  scale_colour_manual(values ="mediumpurple4") +
+  scale_fill_manual(values = "mediumpurple4") +
+  coord_cartesian(ylim = c(-10, 7)) +
+  labs(y = "Effect size (SMDH)",
+       x = expression(sqrt(1 / N[effective])))+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+###---Decline Effects ----###
+
+lnRR_decline_eff<-readRDS(here::here("model/lnRR_decline_eff.rds"))
+SMDH_decline_eff<-readRDS(here::here("model/SMDH_decline_eff.rds"))
+
+
+lnRR_decline_eff_bubble<-orchaRd::bubble_plot(mod_results(lnRR_decline_eff,
+                     mod="year_MeanCenter",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID")+
+  scale_colour_manual(values ="#218833") +
+  scale_fill_manual(values = "#218833") +
+  coord_cartesian(ylim = c(-2.5, 2.5)) +
+  labs(y = "Effect size (lnRR)",
+       x = "Publication Year (Mean Centered)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+SMDH_decline_effect_bubble<-orchaRd::bubble_plot(mod_results(SMDH_decline_eff,
+                     mod="year_MeanCenter",
+                     group="paper_ID",
+                     weights="prop"),
+                     group="paper_ID")+
+  scale_colour_manual(values ="#218833") +
+  scale_fill_manual(values = "#218833") +
+  coord_cartesian(ylim = c(-10, 7)) +
+  labs(y = "Effect size (SMDH)",
+       x = "Publication Year (Mean Centered)")+
+    theme(
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.8),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 14),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1))
+
+
+# Combine using patchwork
+Figure_publication_bias <- ((lnRR_small_study_bubble + SMDH_small_study_bubble) /
+                               (lnRR_decline_eff_bubble + SMDH_decline_effect_bubble)) +
+  plot_annotation(tag_levels = "A")
+
+ggsave(here::here("figures/Figure_publication_bias.png"), plot = Figure_publication_bias, height = 300, width = 400, units = "mm", dpi = 600)
+```
+
+# ----- Supplementary Material Table -------
+
+```{r}
+
+# Loading packages
+
+pacman::p_load(gt,dplyr,metafor)
+```
+
+```{r}
+#| label: excluded_proxy_table
+
+merged_data_extraction <- read_csv(here::here("data/03_data_cleaning/merged_data_extraction.csv"), show_col_types = F)
+
+dataset_analysis <- read_csv(here::here("data/04_data_analysis/dataset_analysis.csv"), show_col_types = F)
+
+excluded_proxies<- merged_data_extraction %>%
+  filter(fulltext_screening == "included") %>%
+  filter(proxy_decision== "exclude")%>%
+  select(paper_ID, fitness_proxy, proxy_comment) %>%
+  distinct() %>%
+  group_by(paper_ID) %>%
+  summarise(
+    `Number of proxies` = n(),
+    `Excluded Proxies` = paste(fitness_proxy, collapse = ", "),
+    `Reason for Exclusion`= paste(proxy_comment,  collapse = "; "),
+    .groups = "drop")
+
+SA_only_proxies <- dataset_analysis %>%
+  filter(proxy_decision == "sensitivity-analysis")%>%
+  select(paper_ID, fitness_proxy, proxy_comment) %>%
+  distinct() %>%
+  group_by(paper_ID) %>%
+  summarise(
+    `Number of proxies` = n(),
+    `Excluded Proxies` = paste(fitness_proxy, collapse = ", "),
+    `Reason for Exclusion`= paste(proxy_comment,  collapse = "; "),
+    .groups = "drop")
+
+
+
+# Now binding them together
+combined_summary <- bind_rows(
+  excluded_proxies %>% mutate(Category = "Completely excluded"),
+  SA_only_proxies   %>% mutate(Category = "Sensitivity-analysis only")
+) %>%
+  arrange(Category, paper_ID)
+
+# Group by category
+excluded_proxies <-combined_summary %>%
+  gt() %>%
+  tab_header(
+    title = md("**Excluded Fitness Proxies**")
+  ) %>%
+  # define row-groups
+  tab_row_group(
+    group    = "Completely excluded",
+    rows     = Category == "Completely excluded"
+  ) %>%
+  tab_row_group(
+    group    = "Sensitivity-analysis only",
+    rows     = Category == "Sensitivity-analysis only"
+  ) %>%
+  # hide the helper column
+  cols_hide("Category") %>%
+  # relabel columns
+  cols_label(
+         `paper_ID`             = "Paper ID",
+         `Number of proxies`    = "Noumber\nof Proxies",
+         `Excluded Proxies`     = "Excluded\nProxies",
+         `Reason for Exclusion` = "Reason for Exclusion"
+  ) %>%
+  fmt_markdown(columns = c(`Excluded Proxies`, `Reason for Exclusion`)) %>%
+  opt_align_table_header(align = "left") %>%
+  cols_align(
+    align   = "left",
+    columns = everything()
+  ) %>%
+  tab_options(
+    table.width               = pct(90),
+    row.striping.background_color = "#F7F7F7"
+  )
+
+# gtsave(
+#   data = excluded_proxies,
+#   filename = here::here("/tables/excluded_proxies_table.pdf"),
+#   expand = 10   # adds a little padding around the table
+# )
+```
+
+## Table: Sensitivity analysis for intercept only model
+
+```{r}
+#| label: SA_intercept_only_table
+
+# Loading the models including only published data
+SA_lnRR_published<-readRDS(here::here("model/sensitivity_analysis/SA_lnRR_published.rds"))
+SA_SMDH_published<-readRDS(here::here("model/sensitivity_analysis/SA_SMDH_published.rds"))
+
+# Loading the models without Comparison Type 3
+SA_lnRR_no_comp3<-readRDS(here::here("model/sensitivity_analysis/SA_lnRR_no_comp3.rds"))
+SA_SMDH_no_comp3<-readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_comp3.rds"))
+
+# Loading the models including flagged proxies
+SA_lnRR_flagged<-readRDS(here::here("model/sensitivity_analysis/SA_lnRR_flagged.rds"))
+SA_SMDH_flagged<-readRDS(here::here("model/sensitivity_analysis/SA_SMDH_flagged.rds"))
+
+# Loading the models without data for those using 0 as ES because authors reported no effect
+SA_lnRR_no_missingES<-readRDS(here::here("model/sensitivity_analysis/SA_lnRR_no_missingES.rds"))
+SA_SMDH_no_missingES<-readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_missingES.rds"))
+
+# Loading the models without data for those using 0 as ES because authors reported no effect and including flagged proxies
+SA_lnRR_flagged_no_missingES<-readRDS(here::here("model/sensitivity_analysis/SA_lnRR_flagged_no_missingES.rds"))
+SA_SMDH_flagged_no_missingES<-readRDS(here::here("model/sensitivity_analysis/SA_SMDH_flagged_no_missingES.rds"))
+
+# Loading the model for SMDH without inferential statistics. There is none for lnRR because we can only uses means and deviation to estimate lnRR
+SA_SMDH_no_inferential<-readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_inferential.rds"))
+
+# Loading the model for Geary's Test Passed. There is none for SMDH because we do not know the guideline for SMDH and Geary's Test
+SA_lnRR_geary_passed<-readRDS(here::here("model/sensitivity_analysis/SA_lnRR_geary_passed.rds"))
+
+# Now let's build the table
+
+SA_intercept_only <- tibble::tibble(
+  effect_size = c("lnRR","lnRR","lnRR","lnRR","lnRR","lnRR",
+                  "SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMDH"),
+  data_used = c("Including published data only","Excluding Experimental Design Non-Aromatic Vs. No added material","Including flagged proxies", "Without those cases where author reported no effect of the treatment", "Including flagged proxies and without the cases with no effect of the treatment", "Excluding effect sizes where lnRR failed Geary's Test","Including published data only","Excluding Experimental Design Non-Aromatic Vs. No added material", "Including flagged proxies", "Without those cases where author reported no effect of the treatment", "Including flagged proxies and without the cases with no effect of the treatment", "Without the cases where SMDH was calculated from inferential statistics"),
+  
+  Estimate = c(SA_lnRR_published$b[1],
+               SA_lnRR_no_comp3$b[1],
+               SA_lnRR_flagged$b[1],
+               SA_lnRR_no_missingES$b[1],
+               SA_lnRR_flagged_no_missingES$b[1],
+               SA_lnRR_geary_passed$b[1],
+               SA_SMDH_published$b[1],
+               SA_SMDH_no_comp3$b[1],
+               SA_SMDH_flagged$b[1],
+               SA_SMDH_no_missingES$b[1],
+               SA_SMDH_flagged_no_missingES$b[1],
+               SA_SMDH_no_inferential$b[1]),
+
+  CI_Lower = c(SA_lnRR_published$ci.lb,
+               SA_lnRR_no_comp3$ci.lb,
+               SA_lnRR_flagged$ci.lb,
+               SA_lnRR_no_missingES$ci.lb,
+               SA_lnRR_flagged_no_missingES$ci.lb,
+               SA_lnRR_geary_passed$ci.lb,
+               SA_SMDH_published$ci.lb,
+               SA_SMDH_no_comp3$ci.lb,
+               SA_SMDH_flagged$ci.lb,
+               SA_SMDH_no_missingES$ci.lb,
+               SA_SMDH_flagged_no_missingES$ci.lb,
+               SA_SMDH_no_inferential$ci.lb),
+
+  CI_Upper = c(SA_lnRR_published$ci.ub,
+               SA_lnRR_no_comp3$ci.ub,
+               SA_lnRR_flagged$ci.ub,
+               SA_lnRR_no_missingES$ci.ub,
+               SA_lnRR_flagged_no_missingES$ci.ub,
+               SA_lnRR_geary_passed$ci.ub,
+               SA_SMDH_published$ci.ub,
+               SA_SMDH_no_comp3$ci.ub,
+               SA_SMDH_flagged$ci.ub,
+               SA_SMDH_no_missingES$ci.ub,
+               SA_SMDH_flagged_no_missingES$ci.ub,
+               SA_SMDH_no_inferential$ci.ub),
+  
+  PI_Lower = c(predict(SA_lnRR_published)$pi.lb,
+               predict(SA_lnRR_no_comp3)$pi.lb,
+               predict(SA_lnRR_flagged)$pi.lb,
+               predict(SA_lnRR_no_missingES)$pi.lb,
+               predict(SA_lnRR_flagged_no_missingES)$pi.lb,
+               predict(SA_lnRR_geary_passed)$pi.lb,
+               predict(SA_SMDH_published)$pi.lb,
+               predict(SA_SMDH_no_comp3)$pi.lb,
+               predict(SA_SMDH_flagged)$pi.lb,
+               predict(SA_SMDH_no_missingES)$pi.lb,
+               predict(SA_SMDH_flagged_no_missingES)$pi.lb,
+               predict(SA_SMDH_no_inferential)$pi.lb),
+
+  PI_Upper = c(predict(SA_lnRR_published)$pi.ub,
+               predict(SA_lnRR_no_comp3)$pi.ub,
+               predict(SA_lnRR_flagged)$pi.ub,
+               predict(SA_lnRR_no_missingES)$pi.ub,
+               predict(SA_lnRR_flagged_no_missingES)$pi.ub,
+               predict(SA_lnRR_geary_passed)$pi.ub,
+               predict(SA_SMDH_published)$pi.ub,
+               predict(SA_SMDH_no_comp3)$pi.ub,
+               predict(SA_SMDH_flagged)$pi.ub,
+               predict(SA_SMDH_no_missingES)$pi.ub,
+               predict(SA_SMDH_flagged_no_missingES)$pi.ub,
+               predict(SA_SMDH_no_inferential)$pi.ub),
+
+  P_value =  c(SA_lnRR_published$pval,
+               SA_lnRR_no_comp3$pval,
+               SA_lnRR_flagged$pval,
+               SA_lnRR_no_missingES$pval,
+               SA_lnRR_flagged_no_missingES$pval,
+               SA_lnRR_geary_passed$pval,
+               SA_SMDH_published$pval,
+               SA_SMDH_no_comp3$pval,
+               SA_SMDH_flagged$pval,
+               SA_SMDH_no_missingES$pval,
+               SA_SMDH_flagged_no_missingES$pval,
+               SA_SMDH_no_inferential$pval),
+
+  Q_value = c(SA_lnRR_published$QE,
+               SA_lnRR_no_comp3$QE,
+               SA_lnRR_flagged$QE,
+               SA_lnRR_no_missingES$QE,
+               SA_lnRR_flagged_no_missingES$QE,
+               SA_lnRR_geary_passed$QE,
+               SA_SMDH_published$QE,
+               SA_SMDH_no_comp3$QE,
+               SA_SMDH_flagged$QE,
+               SA_SMDH_no_missingES$QE,
+               SA_SMDH_flagged_no_missingES$QE,
+               SA_SMDH_no_inferential$QE),
+
+  k_effect_sizes = c(SA_lnRR_published$k,
+               SA_lnRR_no_comp3$k,
+               SA_lnRR_flagged$k,
+               SA_lnRR_no_missingES$k,
+               SA_lnRR_flagged_no_missingES$k,
+               SA_lnRR_geary_passed$k,
+               SA_SMDH_published$k,
+               SA_SMDH_no_comp3$k,
+               SA_SMDH_flagged$k,
+               SA_SMDH_no_missingES$k,
+               SA_SMDH_flagged_no_missingES$k,
+               SA_SMDH_no_inferential$k),
+  
+  n_studies = c(length(SA_lnRR_published$s.levels.f[[1]]),
+               length(SA_lnRR_no_comp3$s.levels.f[[1]]),
+               length(SA_lnRR_flagged$s.levels.f[[1]]),
+               length(SA_lnRR_no_missingES$s.levels.f[[1]]),
+               length(SA_lnRR_flagged_no_missingES$s.levels.f[[1]]),
+               length(SA_lnRR_geary_passed$s.levels.f[[1]]),
+               length(SA_SMDH_published$s.levels.f[[1]]),
+               length(SA_SMDH_no_comp3$s.levels.f[[1]]),
+               length(SA_SMDH_flagged$s.levels.f[[1]]),
+               length(SA_SMDH_no_missingES$s.levels.f[[1]]),
+               length(SA_SMDH_flagged_no_missingES$s.levels.f[[1]]),
+               length(SA_SMDH_no_inferential$s.levels.f[[1]])
+               ))
+
+
+# Combine CI and PI into a single column each for compactness
+SA_intercept_only <- SA_intercept_only %>%
+  mutate(
+    CI = paste0("[", sprintf("%.3f", CI_Lower), ", ", sprintf("%.3f", CI_Upper), "]"),
+    PI = paste0("[", sprintf("%.3f", PI_Lower), ", ", sprintf("%.3f", PI_Upper), "]"),
+    P_value = scales::pvalue(P_value),
+    Q_value = sprintf("%.2f", Q_value)
+  ) %>%
+  select(
+    effect_size,
+    data_used,
+    Estimate,
+    CI,
+    PI,
+    P_value,
+    k_effect_sizes,
+    n_studies
+  )
+
+# Let's make this table pretty
+SA_intercept_only<-SA_intercept_only%>%
+  gt()%>%
+  tab_options(
+    table.font.size = px(12),
+    table.border.top.color = "black",
+    table.border.bottom.color = "black",
+    heading.title.font.size = px(14),
+    heading.subtitle.font.size = px(12),
+    column_labels.font.weight = "bold"
+  ) %>%
+  tab_header(
+    title = md("**Summary of Sensitivity Analyses for lnRR and SMD(H) Intercept-only models**")
+  ) %>%
+  cols_label(
+    effect_size = "Effect Size",
+    data_used = "Data used in model",
+    Estimate = "Estimate",
+    CI = "95% CI",
+    PI = "95% PI",
+    P_value = "P-value",
+    k_effect_sizes = "k (No. of Effect Sizes)",
+    n_studies = "n (No. of Studies)"
+  ) %>%
+  fmt_number(
+    columns = c(Estimate),
+    decimals = 3
+  ) %>%
+  tab_style(
+    style = cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = px(1)
+    ),
+    locations = cells_body()
+  ) %>%
+  tab_options(
+    table.font.size = "small",
+    heading.title.font.size = 14,
+    table.border.top.width = px(2),
+    column_labels.font.weight = "bold",
+    row_group.font.weight = "bold"
+  ) %>%
+  opt_table_outline()
+
+# Saving as an image
+gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.png"))
+
+# For saving as a docx file
+# gtsave(SA_intercept_only,here::here("tables/SA_intercept_only.docx"))
+# gtsave(SA_intercept_only,here::here("tables/SA_intercept_only.html"))
+```
+
+```{r Table for lnRR rho sensitivity analysis}
+
+# t4 <- data.frame(rho  = rho_range,
+#                  "overall effect"  = sapply(lnRR_VCV_range, function(x) coef(x)),
+#                  "standard error" = sapply(lnRR_VCV_range, function(x) x$se),
+#                  "p-value" = sapply(lnRR_VCV_range, function(x) x$pval),
+#                  "Lower CI" = sapply(lnRR_VCV_range, function(x) x$ci.lb),
+#                  "Upper CI" = sapply(lnRR_VCV_range, function(x) x$ci.ub),
+#                  "Log-likehood" = sapply(lnRR_VCV_range, function(x) fitstats(x)[1,1]),
+#                  "AIC" = sapply(lnRR_VCV_range, function(x) fitstats(x)[3,1]),
+#                  "BIC" = sapply(lnRR_VCV_range, function(x) fitstats(x)[4,1]),
+#                  "AICc" = sapply(lnRR_VCV_range, function(x) fitstats(x)[5,1]))
+# 
+# colnames(t4) <- c("Sampling correlation", "Overall effect (lnRR)", "Standard error", "p-value", "Lower CI", "Upper CI", "Log-likehood", "AIC", "BIC", "AICc")
+# 
+# t4 %>% dfround(4) %>% DT::datatable()
+```
+
+## Table: RoB Meta-regressions
+
+```{r}
+
+# Loading models for blinding performed or not
+lnRR_blinding<-readRDS(here::here("model/lnRR_blinding.rds"))
+SMDH_blinding<-readRDS(here::here("model/SMDH_blinding.rds"))
+
+# Loading models for random sampling assignment performed or not
+lnRR_random_assignment<-readRDS(here::here("model/lnRR_random_assignment.rds"))
+SMDH_random_assignment<-readRDS(here::here("model/SMDH_random_assignment.rds"))
+
+# Loading models for missing data present or not
+lnRR_missing_data<-readRDS(here::here("model/lnRR_missing_data.rds"))
+SMDH_missing_data<-readRDS(here::here("model/SMDH_missing_data.rds"))
+
+```
+
+```{r}
+pacman::p_load(gt, tidyverse, metafor, purrr, stringr)
+
+# Let's source our custom function to extract values from the meta-regressions
+source(here::here("functions/extractor_metareg.R"))
+
+## For lnRR Values
+lnRR_results_RoB <- extractor_metareg(lnRR_blinding,"blinding")%>%
+  bind_rows(extractor_metareg(lnRR_random_assignment,"random_assignment"))%>%
+  bind_rows(extractor_metareg(lnRR_missing_data,"missing_data"))%>%
+  mutate(effect_size = "lnRR")
+
+## For SMDH Values
+SMDH_results_RoB <- extractor_metareg(SMDH_blinding,"blinding")%>%
+  bind_rows(extractor_metareg(SMDH_random_assignment,"random_assignment"))%>%
+  bind_rows(extractor_metareg(SMDH_missing_data,"missing_data"))%>%
+  mutate(effect_size = "SMDH")
+
+## Now let's write the table for publication:
+# Combine both results
+combined_results_RoB <- bind_rows(lnRR_results_RoB, SMDH_results_RoB)%>%
+  pivot_wider(
+    id_cols = c(moderator, level),
+    names_from = effect_size,
+    values_from = c(estimate, p_value, CI, PI, k, n),
+    names_glue = "{.value}_{effect_size}"
+  )%>% # Prepare row labels to mimic grouping
+  arrange(moderator, level)%>%
+  mutate(row_type = "level")
+
+# Final combined table with headers and levels
+ combined_results_RoB <- combined_results_RoB %>%
+   # bind_rows(moderator_header ,combined_results) %>%
+  arrange(moderator, row_type)%>% select(-row_type)%>%
+  relocate(level, .after = moderator)%>%
+  mutate(moderator = case_when(
+    moderator == "blinding" ~ "1. Blinding",
+    moderator == "random_assignment" ~ "2. Random assignment to treatment",
+    moderator == "missing_data" ~ "3. Partial Reporting"
+  ))%>%mutate(moderator = factor(
+    moderator,
+    levels = c(
+      "1. Blinding",
+      "2. Random assignment to treatment",
+      "3. Partial Reporting"
+    )
+  ))%>%
+  arrange(moderator)%>%
+  mutate(level = case_when(level=="y" ~ "Yes",
+                           level=="n" ~ "No", .default=level))
+
+
+# Clean up or reorder columns for display
+# Select and order columns for clarity
+RoB_table <- combined_results_RoB %>%
+  gt(groupname_col = "moderator") %>%
+  tab_header(title = md("**Multilevel Meta Regressions for Risk of Bias**")) %>%
+  cols_label(
+    # R2_marginal_lnRR = "R²_mar",
+    # R2_marginal_SMDH = "R²_mar",
+    level = "Level",
+    estimate_lnRR = "Estimate",
+    CI_lnRR = "95% CI",
+    PI_lnRR = "95% PI",
+    p_value_lnRR = "P-val",
+    k_lnRR = "k",
+    n_lnRR = "n",
+    estimate_SMDH = "Estimate",
+    CI_SMDH = "95% CI",
+    PI_SMDH = "95% PI",
+    p_value_SMDH = "P-val",
+    k_SMDH = "k",
+    n_SMDH = "n"
+  ) %>%
+   sub_missing(
+    columns = everything(),
+    missing_text = ""
+  ) %>%
+  opt_table_outline() %>%
+  tab_options(
+    table.font.size = "small",
+    heading.title.font.size = 12,
+    table.border.top.width = px(2),
+    column_labels.font.weight = "medium",
+    row_group.font.weight = "bold"
+  )   %>%
+  tab_style(
+    style = cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = px(1)
+    ),
+    locations = cells_body()
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_lnRR),
+      rows = p_value_lnRR < 0.05
+    )
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_SMDH),
+      rows = p_value_SMDH < 0.05
+    )
+  )%>%
+  tab_spanner(label = "lnRR", columns = contains("_lnRR")) %>%
+  tab_spanner(label = "SMDH", columns = contains("_SMDH"))  %>%
+  tab_style(
+    style = cell_text(whitespace = "nowrap"),
+    locations = cells_body(columns = c(CI_lnRR, PI_lnRR, CI_SMDH, PI_SMDH))
+  )
+
+# saving the image
+gtsave(RoB_table,here::here("tables/SA_RoB_table.png"))
+
+# #saving as a docx file or html
+# gtsave(RoB_table,here::here("tables/SA_RoB_table.docx"))
+# gtsave(RoB_table,here::here("tables/SA_RoB_table.html"))
+```
+
+# -------- TABLES ----------
+
+## Table: Output from meta-regressions
+
+```{r}
+pacman::p_load(gt, tidyverse, metafor, purrr, stringr)
+
+# Loading models for experimental design
+lnRR_design<-readRDS(here::here("model/lnRR_design.rds"))
+SMDH_design<-readRDS(here::here("model/SMDH_design.rds"))
+
+# Loading models for parasite type
+lnRR_parasite<-readRDS(here::here("model/lnRR_parasite.rds"))
+SMDH_parasite<-readRDS(here::here("model/SMDH_parasite.rds"))
+
+# Loading models for time of green nest material addition
+lnRR_time_gnm_addition<-readRDS(here::here("model/lnRR_time_gnm_addition.rds"))
+SMDH_time_gnm_addition<-readRDS(here::here("model/SMDH_time_gnm_addition.rds"))
+
+# Loading models for the type of trait studied
+lnRR_trait<-readRDS(here::here("model/lnRR_trait.rds"))
+SMDH_trait<-readRDS(here::here("model/SMDH_trait.rds"))
+
+# Loading models for the bird species studied
+lnRR_birds<-readRDS(here::here("model/lnRR_birds.rds"))
+SMDH_birds<-readRDS(here::here("model/SMDH_birds.rds"))
+```
+
+```{r}
+
+# Let's source our custom function to extract values from the meta-regressions
+source(here::here("functions/extractor_metareg.R"))
+
+## For lnRR Values
+lnRR_results <- extractor_metareg(lnRR_parasite,"parasite_type")%>%
+  bind_rows(extractor_metareg(lnRR_birds,"bird_species"))%>%
+  bind_rows(extractor_metareg(lnRR_trait,"trait_type"))%>%
+  bind_rows(extractor_metareg(lnRR_design,"comparision_type"))%>%
+  bind_rows(extractor_metareg(lnRR_time_gnm_addition,"time_of_gnm_addition"))%>%
+  mutate(effect_size = "lnRR")
+
+## For SMDH Values
+SMDH_results <- extractor_metareg(SMDH_parasite,"parasite_type")%>%
+  bind_rows(extractor_metareg(SMDH_birds,"bird_species"))%>%
+  bind_rows(extractor_metareg(SMDH_trait,"trait_type"))%>%
+  bind_rows(extractor_metareg(SMDH_design,"comparision_type"))%>%
+  bind_rows(extractor_metareg(SMDH_time_gnm_addition,"time_of_gnm_addition"))%>%
+  mutate(effect_size = "SMDH")
+
+## Now let's write the table for publication:
+# Combine both results
+combined_results <- bind_rows(lnRR_results, SMDH_results)%>%
+  pivot_wider(
+    id_cols = c(moderator, level),
+    names_from = effect_size,
+    values_from = c(estimate, p_value, CI, PI, k, n),
+    names_glue = "{.value}_{effect_size}"
+  )%>% # Prepare row labels to mimic grouping
+  arrange(moderator, level)%>%
+  mutate(row_type = "level")
+
+# # Create moderator header rows for heterogeneity metrics
+#   moderator_header<-bind_rows(lnRR_results, SMDH_results) %>%
+#   select(moderator, effect_size, R2_marginal) %>%
+#     distinct()%>%
+#     pivot_wider(
+#       names_from = effect_size,
+#       values_from = c( R2_marginal),
+#       names_glue = "{.value}_{effect_size}"
+#     )%>%
+#   mutate(level = "Heterogeneity ",
+#          row_type = "moderator")
+
+# Final combined table with headers and levels
+ combined_results <- combined_results %>%
+   # bind_rows(moderator_header ,combined_results) %>%
+  arrange(moderator, row_type)%>% select(-row_type)%>%
+  relocate(level, .after = moderator)%>%
+  mutate(moderator = case_when(
+    moderator == "parasite_type" ~ "5. Parasite\nType",
+    moderator == "bird_species" ~ "3. Bird\nSpecies",
+    moderator == "trait_type" ~ "4. Trait\nCategory",
+    moderator == "comparision_type" ~ "1. Experimental\nDesign",
+    moderator == "time_of_gnm_addition" ~ "2. Time of\nGNM Addition"
+  ))%>%mutate(moderator = factor(
+    moderator,
+    levels = c(
+      "1. Experimental\nDesign",
+      "2. Time of\nGNM Addition",
+      "3. Bird\nSpecies",
+      "4. Trait\nCategory",
+      "5. Parasite\nType"
+    )
+  ))%>%
+  arrange(moderator)%>%
+  mutate(level = case_when(level==1 ~ "Non-aromatic\nvs. Aromatic",
+                           level==2 ~ "No added material\nvs. Aromatic",
+                           level==3 ~ "No added material\nvs. Non-aromatic",
+                           level=="a" ~ "After egg\nhatching",
+                           level=="b" ~ "Before egg\nhatching",
+                           level=="c" ~ "Continously through\nnesting phase",
+                           level=="Parasitic_and_pathogenic"~"Parasitic and\nPathogen Related", .default=level))
+
+
+# Optional: clean up or reorder columns for display
+# Select and order columns for clarity
+MLMR_table <- combined_results %>%
+  gt(groupname_col = "moderator") %>%
+  tab_header(title = md("**Multilevel Meta Regressions for Exploratory Analyses**")) %>%
+  cols_label(
+    # R2_marginal_lnRR = "R²_mar",
+    # R2_marginal_SMDH = "R²_mar",
+    level = "Level",
+    estimate_lnRR = "Estimate",
+    CI_lnRR = "95% CI",
+    PI_lnRR = "95% PI",
+    p_value_lnRR = "P-val",
+    k_lnRR = "k",
+    n_lnRR = "n",
+    estimate_SMDH = "Estimate",
+    CI_SMDH = "95% CI",
+    PI_SMDH = "95% PI",
+    p_value_SMDH = "P-val",
+    k_SMDH = "k",
+    n_SMDH = "n"
+  ) %>%
+   sub_missing(
+    columns = everything(),
+    missing_text = ""
+  ) %>%
+  opt_table_outline() %>%
+  tab_options(
+    table.font.size = "small",
+    heading.title.font.size = 12,
+    table.border.top.width = px(2),
+    column_labels.font.weight = "medium",
+    row_group.font.weight = "bold"
+  )   %>%
+  tab_style(
+    style = cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = px(1)
+    ),
+    locations = cells_body()
+  ) %>%
+  # tab_style(
+  #   style = cell_text(weight = "bold"),
+  #   locations = cells_body(
+  #     rows = level == "Heterogeneity"
+  #   ))%>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_lnRR),
+      rows = p_value_lnRR < 0.05
+    )
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(
+      columns = c(p_value_SMDH),
+      rows = p_value_SMDH < 0.05
+    )
+  )%>%
+  tab_spanner(label = "lnRR", columns = contains("_lnRR")) %>%
+  tab_spanner(label = "SMDH", columns = contains("_SMDH"))  %>%
+  tab_style(
+    style = cell_text(whitespace = "nowrap"),
+    locations = cells_body(columns = c(CI_lnRR, PI_lnRR, CI_SMDH, PI_SMDH))
+  )
+
+# saving the image
+gtsave(MLMR_table,here::here("tables/MLMR_table.png"))
+
+# #saving as a docx file or html
+# gtsave(MLMR_table,here::here("tables/MLMR_table.docx"))
+# gtsave(MLMR_table,here::here("tables/MLMR_table.html"))
+```
