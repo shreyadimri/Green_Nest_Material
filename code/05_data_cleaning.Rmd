@@ -9,23 +9,34 @@ email: shreya.dimri@uni-bielefeld.de
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,eval = TRUE)
+```
 
+## Preface
+
+In order to replicate the data cleaning steps shown in this document the following packages are required: 
+
+```{r}
+## Install/load package pacman
 if (!requireNamespace("pacman", quietly = TRUE)) {
   install.packages("pacman")
 }
-
-pacman::p_load(here, dplyr, readxl, purrr, stringr, knitr, tidyverse)
-
-rm(list=ls()) ## clearing up any previously present variable
+## Install/load required packages
+pacman::p_load(here, 
+               dplyr, 
+               readxl,
+               purrr,
+               stringr, 
+               knitr, 
+               tidyverse)
 ```
 
-# Data Cleaning
+## Overview
 
-This is the step conducted once all the data from different sources was extracted.
+Data cleaning was conducted once all the data from different sources were extracted.
 
 -   We had **40 papers after abstract and title screening**
 
--   We found **1** **paper** from from repeating the search on 12th August 2024
+-   We found **1** **paper** from repeating the search on 12th August 2024
 
 -   We found **1 paper** from other source (from Meinolf's poster)
 
@@ -33,37 +44,35 @@ This is the step conducted once all the data from different sources was extracte
 
 -   We got access to **2 Unpublished datasets (**One was provided by Meinolf on buzzards and another was a Master Thesis project from Adele Menerate's students)
 
-#### What do we do here?
+## Summary: Steps shown in this document
 
 1.  We import the dataset that we produced after data extraction (3 files for initial data-extraction, 3 for repeat search and additional article, 2 unpublished data sets). We merge these datasets.
 2.  We exclude studies that did not meet our inclusion criteria.
 3.  This script was used to clean the names of the fitness proxies (since we extracted them as they were mentioned in the publication, often with the time of data collection eg. chick mass (day 8). These needed to be standardized into similar names.
 4.  We clean all the names of the moderators and standardise any typos in the dataset.
 
-#### **Importing files after data extraction**
+## Importing files after data extraction
 
-You can find all the data that is needed for this analysis.. in folder **data/02_data_extraction**. In short, we need the following files to run the data cleaning:
+All the data that is required for this analysis are found in [data/02_data_extraction](https://github.com/shreyadimri/Green_Nest_Material/tree/main/data/02_data_extraction). In short, we need the following files to run the data cleaning:
 
--   data_extraction_setJMGS_checkedSD.xlsx
+* [data_extraction_setJMGS_checkedSD.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_setJMGS_checkedSD.xlsx)
 
--   data_extraction_setSD_checkedTR.xlsx
+* [data_extraction_setSD_checkedTR.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_setSD_checkedTR.xlsx)
 
--   data_extraction_setTR_checkedJS_checkedSD.xlsx
+* [data_extraction_setTR_checkedJS_checkedSD.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_setTR_checkedJS_checkedSD.xlsx)
 
--   data_extraction_repeat_search_JMGS.xlsx
+* [data_extraction_repeat_search_JMGS.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_repeat_search_JMGS.xlsx)
 
--   data_extraction_repeat_search_SD.xlsx
+* [data_extraction_repeat_search_SD.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_repeat_search_SD.xlsx)
 
--   data_extraction_repeat_search_TR.xlsx
+* [data_extraction_repeat_search_TR.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_repeat_search_TR.xlsx)
 
--   data_extraction_MO_checkedSD.xlsx
+* [data_extraction_MO_checkedSD.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_MO_checkedSD.xlsx)
 
--   data_extraction_UnpublishedThesis.xlsx
+*[data_extraction_UnpublishedThesis.xlsx](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/02_data_extraction/data_extraction_UnpublishedThesis.xlsx)
 
 ```{r import, warning=FALSE, message=FALSE}
-
-## We use column_types to make the loading variable datatype of all the datafiles same.
-
+## Specifying column_types to control data types of each column
 column_types = c(
   "text", "text", "text", "text", "text", "numeric", 
   "text", "text", "text", "text", "text", "text", 
@@ -76,41 +85,56 @@ column_types = c(
   "numeric", "numeric"
 )
 
-# Data extracted from the selected papers after abstract screening
+## read data extracted from the selected papers after abstract screening
+set_JMGS <- read_excel(path = here::here("data/02_data_extraction/data_extraction_setJMGS_checkedSD.xlsx"),
+                       col_types = column_types)
+set_SD <- read_excel(path = here::here("data/02_data_extraction/data_extraction_setSD_checkedTR.xlsx"),
+                     col_types =column_types)
+set_TR <- read_excel(path = here::here("data/02_data_extraction/data_extraction_setTR_checkedJS_checkedSD.xlsx"),
+                     col_types =column_types)
 
-set_JMGS <- read_excel(here::here("data/02_data_extraction/data_extraction_setJMGS_checkedSD.xlsx"),col_types =column_types)
-set_SD <- read_excel(here::here("data/02_data_extraction/data_extraction_setSD_checkedTR.xlsx"),col_types =column_types)
-set_TR <- read_excel(here::here("data/02_data_extraction/data_extraction_setTR_checkedJS_checkedSD.xlsx"),col_types =column_types)
+## read data extracted from repeated search on 12.Aug.2024
+set2_JMGS <- read_excel(path = here::here("data/02_data_extraction/data_extraction_repeat_search_JMGS.xlsx"),
+                        col_types =column_types)
+set2_SD <- read_excel(path = here::here("data/02_data_extraction/data_extraction_repeat_search_SD.xlsx"),
+                      col_types =column_types)
+set2_TR <- read_excel(path = here::here("data/02_data_extraction/data_extraction_repeat_search_TR.xlsx"),
+                      col_types =column_types)
 
-# Data extracted from repeated search on 12.Aug.2024
+## read data of unpublished dataset
+set_unpublished1 <- read_excel(path = here::here("data/02_data_extraction/data_extraction_MO_checkedSD.xlsx"),
+                               col_types =column_types)
+set_unpublished2 <-read_excel(path = here::here("data/02_data_extraction/data_extraction_UnpublishedThesis.xlsx"),
+                              col_types =column_types)
 
-set2_JMGS <- read_excel(here::here("data/02_data_extraction/data_extraction_repeat_search_JMGS.xlsx"),col_types =column_types)
-set2_SD <- read_excel(here::here("data/02_data_extraction/data_extraction_repeat_search_SD.xlsx"),col_types =column_types)
-set2_TR <- read_excel(here::here("data/02_data_extraction/data_extraction_repeat_search_TR.xlsx"),col_types =column_types)
+## Merge all datasets
+merged_data_extraction <- 
+  full_join(set_JMGS,set_SD) %>% 
+  full_join(set_TR) %>% 
+  full_join(set2_JMGS) %>%
+  full_join(set2_SD) %>% 
+  full_join(set2_TR) %>%
+  full_join(set_unpublished1) %>%
+  full_join(set_unpublished2)
 
-# Unpublished dataset
-set_unpublished1 <- read_excel(here::here("data/02_data_extraction/data_extraction_MO_checkedSD.xlsx"),col_types =column_types)
-set_unpublished2 <-read_excel(here::here("data/02_data_extraction/data_extraction_UnpublishedThesis.xlsx"),col_types =column_types)
-
-# Merge all datasets
-merged_data_extraction<-full_join(set_JMGS,set_SD)%>%full_join(set_TR)%>%full_join(set2_JMGS)%>%full_join(set2_SD)%>%full_join(set2_TR)%>%full_join(set_unpublished1)%>%full_join(set_unpublished2)
-
-write.csv(merged_data_extraction,here::here("data/03_data_cleaning/merged_data_extraction.csv"),row.names=FALSE)
+## export merged datasets to csv file
+# write.csv(merged_data_extraction, here::here("data/03_data_cleaning/merged_data_extraction.csv"), row.names=FALSE)
 ```
 
-### Full-text Screening
+## Full-text Screening
 
-#### **Excluded articles**
+### **Excluded articles**
 
-These were the articles extracted during full-text screening according to the decision tree, for the following reasons given below..
+These were the articles excluded during full-text screening according to the decision tree, for the reasons given below ...
 
 ```{r excluded data}
 #| echo: false
 #| output: asis
 
 excluded_fulltext <- merged_data_extraction %>% filter(fulltext_screening=="excluded")
-excluded_papers_no<-length(unique(excluded_fulltext$paper_ID))
+excluded_papers_no <- length(unique(excluded_fulltext$paper_ID))
 
+## export excluded_fulltext to csv file
 # write.csv(excluded_fulltext,here::here("data/03_data_cleaning/excluded_fulltext.csv"),row.names=FALSE)
 ```
 
@@ -118,13 +142,12 @@ excluded_papers_no<-length(unique(excluded_fulltext$paper_ID))
 
 ```{r}
 #| echo: false
-
 kable(as.data.frame(summary(as.factor(excluded_fulltext$fulltext_notes))),
       col.names=("Number of studies excluded"),
       caption = "Reasons for exclusion")
 ```
 
-#### **Included articles**
+### **Included articles**
 
 ```{r}
 #| echo: false
@@ -133,14 +156,13 @@ kable(as.data.frame(summary(as.factor(excluded_fulltext$fulltext_notes))),
 dataset_after_cleaning <- merged_data_extraction %>%
   filter(fulltext_screening == "included" | is.na(fulltext_screening) | fulltext_screening == "NA")
 included_papers_no<-length(unique(dataset_after_cleaning$paper_ID))
-
 ```
 
 **Number of studies that are included in our meta-analysis so far: `r included_papers_no`**
 
 ## Proxies of fitness
 
-We extracted the names of the variables that the authors measured as it is, often along with the location/year when they were measured. We will now clean them a bit, making sure they are all named correctly. We are cleaning some of the names of the fitness proxy and storing them in the new variable called *fitness_proxy_cleaned*
+We extracted the names of the variables that the authors measured as it is, often along with the location/year when they were measured. We will now clean them a bit, making sure they are all named consistently. We are cleaning some of the names of the fitness proxy and storing them in the new variable called *fitness_proxy_cleaned*
 
 ```{r}
 #| echo: false
@@ -156,13 +178,12 @@ We will try to list down all the decisions that we made along the way about the 
 
 ### Courtship Hypothesis only:
 
-**1. Male and female proportion of visit:**
+#### 1. **Male and female proportion of visit:**
 
 We will exclude female proportion of visit and female provisioning rate from all our analysis. In the study females add the GNM as noted by the authors (Study ID-GNM_018 in our meta-analysis), it is the male that would/should adjust their investment. One can argue female investment will be an indirect reflection of the male's investment. However, this is very indirect and the direction of this proxy in relation to the GNM addition can be argued both ways. That is, if females use GNM as an honest signal to increase male investment, their own investment would not be directly related to fitness or they would increase investment to compensate for the lack of male investment. Or it would be negatively related to fitness because they invested in bringing in the GNM as well as in higher provisioning.
 
 ```{r}
-
-
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("male proportions of visit" , 
@@ -174,15 +195,12 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
    # Keeps existing values for all other cases
   ))
-
-
 ```
 
-**2. Male and female provisioning**
+#### 2. **Male and female provisioning**
 
 ```{r}
-
-
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
      str_detect(fitness_proxy, regex("female provisioning rate" , 
@@ -194,13 +212,12 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
    # Keeps existing values for all other cases
   ))
-
-
 ```
 
-**3.** **Male food provisioning**
+#### 3. **Male food provisioning**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("male food provisioning*" , 
@@ -211,9 +228,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**4.** **Male incubation attendance**
+#### 4. **Male incubation attendance**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("male incubation attendance*" , 
@@ -222,12 +240,12 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
    # Keeps existing values for all other cases
   ))
-
 ```
 
-**5.** **Male Risk Taking**
+#### 5.**Male Risk Taking**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("male risk*" , 
@@ -238,11 +256,12 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**6.** **Sex Ratio**
+#### 6. **Sex Ratio**
 
 We will be excluding sex ratio as a fitness proxy from our main analysis (@krackow2002). However, we will test this with other similarly marked proxies in a sensitivity analysis.
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("Sex ratio offspring*", ignore_case = TRUE))
@@ -254,10 +273,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**7.** **Female Testosterone**
+#### 7. **Female Testosterone**
 
 ```{r}
-
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("females' testosterone level*" , 
@@ -271,9 +290,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**8.** **Yolk Hormones**
+#### 8. **Yolk Hormones**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("Yolk Log T (testosterone)*" , 
@@ -287,9 +307,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**9.** **Courtship Time**
+#### 9. **Courtship Time**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("courtship time*" , 
@@ -300,11 +321,12 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-### Both Hypothesis :
+### Both Hypotheses :
 
-**1.** **Laying Date**
+#### 1. **Laying Date**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("laying date", ignore_case = TRUE))
@@ -315,24 +337,24 @@ mutate(fitness_proxy_cleaned = case_when(
     ~ "laying_date",
     TRUE ~ as.character(fitness_proxy_cleaned)  # Keeps existing values for all other cases
   ))
-
 ```
 
-**2.** **Hatching Date**
+#### 2. **Hatching Date**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("hatching date", ignore_case = TRUE))
     ~ "hatching_date",    
     TRUE ~ as.character(fitness_proxy_cleaned)  # Keeps existing values for all other cases
   ))
-
 ```
 
-**3.** **Clutch size**
+#### 3. **Clutch size**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("clutch size", 
@@ -348,10 +370,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**4. Number of nestlings (different age)**
+#### 4. **Number of nestlings (different age)**
 
 ```{r}
-
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("number of nestling", 
@@ -369,12 +391,12 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
     # Keeps existing values for all other cases
   ))
-
 ```
 
-**5. Number of fledglings**
+#### 5. **Number of fledglings**
 
 ```{r}
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("number of fled", 
@@ -386,10 +408,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**6. Nestling survival rate**
+#### 6. **Nestling survival rate**
 
 ```{r}
-
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("nestling survival rate", 
@@ -398,15 +420,12 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
     # Keeps existing values for all other cases
   ))
-
-
 ```
 
-**7. Recruitment probability**
+#### 7. **Recruitment probability**
 
 ```{r}
-
-
+## code new variable fitness_proxy_cleaned
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("probability of local recruitment" , 
@@ -414,11 +433,9 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
    # Keeps existing values for all other cases
   ))
-
-
 ```
 
-8\. **Hatching success**
+#### 8. **Hatching success**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -432,7 +449,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**9.** **Fledgling success**
+#### 9. **Fledgling success**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -446,7 +463,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**10.** **Reproductive success**
+#### 10. **Reproductive success**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -459,7 +476,7 @@ mutate(fitness_proxy_cleaned = case_when(
 
 ```
 
-11\. **Nest mortality**
+#### 11. **Nest mortality**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -469,13 +486,11 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
    # Keeps existing values for all other cases
   ))
-
 ```
 
-**12. Mouth colouration**
+#### 12. **Mouth colouration**
 
 ```{r}
-
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("brightness" , 
@@ -490,11 +505,9 @@ mutate(fitness_proxy_cleaned = case_when(
     TRUE ~ as.character(fitness_proxy_cleaned)  
    # Keeps existing values for all other cases
   ))
-
-
 ```
 
-**13. Male and female dispersal distance**
+#### 13. **Male and female dispersal distance**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -507,7 +520,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**14. Egg Size**
+#### 14. **Egg Size**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -520,10 +533,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**15. Chick mass, nestling mass and fledgling mass**
+#### 15. **Chick mass, nestling mass and fledgling mass**
 
 ```{r}
-# Checked paper GNM_069 and GNM_349 and the word body mass is used to describe nestlings of 14 days and 17 days respectlively
+# Checked paper GNM_069 and GNM_349 and the word body mass is used to describe nestlings of 14 days and 17 days respectively
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
     str_detect(fitness_proxy, regex("chick mass*", ignore_case = TRUE)) ~ "chick_mass",
@@ -538,7 +551,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**16. Nestling Size**
+#### 16. **Nestling Size**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -550,12 +563,10 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**17. Nestling Tarsus Length**
+#### 17. **Nestling Tarsus Length**
 
 ```{r}
-
-#checked paper GNM_069 word tarsus length is used to describe nestlings of 14 days
-
+##checked paper GNM_069 word tarsus length is used to describe nestlings of 14 days
 dataset_after_cleaning <- dataset_after_cleaning %>%
 mutate(fitness_proxy_cleaned = case_when(
    str_detect(fitness_proxy, regex("nestling tarsus length" , ignore_case = TRUE)) ~ "nestling_tarsus_length",
@@ -567,7 +578,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**18. Nestling Wing Length**
+#### 18. **Nestling Wing Length**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -582,7 +593,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**19. Male and female body size**
+#### 19. **Male and female body size**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -596,7 +607,7 @@ mutate(fitness_proxy_cleaned = case_when(
 
 ```
 
-**20.** **Male and female mass**
+#### 20. **Male and female mass**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -610,7 +621,7 @@ mutate(fitness_proxy_cleaned = case_when(
 
 ```
 
-**21.** **Male and female wing length**
+#### 21. **Male and female wing length**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -623,7 +634,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**21.** **Male and female tarsus length**
+#### 22. **Male and female tarsus length**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -636,7 +647,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**22. Female body condition (Tarsus/wing)**
+#### 23. **Female body condition (Tarsus/wing)**
 
 Here the authors have studied the effect of parasite on he adult female (yearlings) measured at two time point to understand how the parasite load effects the adults in the nest (GNM_101)
 
@@ -650,9 +661,9 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-### For variables that fit Parental care hypothesis:
+### Parental care hypothesis:
 
-1\. **Number of mites**
+#### 1. **Number of mites**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -667,7 +678,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**3.** **Number of fleas**
+#### 2. **Number of fleas**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -681,7 +692,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-**4.** **Ticks Load**
+#### 4. **Ticks Load**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -816,7 +827,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### 1. **Haemoglobin Measure**
+#### 14. **Haemoglobin Measure**
 
 Hematocrit level is combined here with haemoglobin concentration as "hemoglobin_measure". Hematocrit is measured as a percentage as compared to Haemoglobin which is a w/V concentration.
 
@@ -838,7 +849,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **2. Glucose Measure**
+#### 15. **Glucose Measure**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -850,7 +861,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **5. Nestling Immunity**
+#### 16. **Nestling Immunity**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -866,7 +877,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **7. Nestling Leukocytes**
+#### 17. **Nestling Leukocytes**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -880,7 +891,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **8. Chick Feather Development**
+#### 18. **Chick Feather Development**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -892,7 +903,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **9. Development Score**
+#### 19. **Development Score**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -904,7 +915,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **11. Telomere measure**
+#### 20. **Telomere measure**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -920,7 +931,7 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
-#### **12. Fat Score**
+#### 21. **Fat Score**
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -932,45 +943,50 @@ mutate(fitness_proxy_cleaned = case_when(
   ))
 ```
 
+### Summary fitness proxies
+
 ```{r}
 #| echo: false
 
-# # kable(as.data.frame(summary(as.factor
-#                             (na.omit(
-#                               dataset_after_cleaning$fitness_proxy_cleaned)))),
-#       col.names=("Number of effect sizes"),
-#       caption = "Proxies of fitness")
+kable(as.data.frame(summary(as.factor
+                            (na.omit(
+                              dataset_after_cleaning$fitness_proxy_cleaned)))),
+      col.names=("Number of effect sizes"),
+      caption = "Proxies of fitness")
 
 # The variable variable_notes contains additional information about the variable like if it is a mean value, log value or a score/PCA etc.
 ```
 
-## We excluded some proxies from our dataset
+## Proxies exluced from our dataset
+
+Some proxies were excluded from the analyes after data cleaning:
 
 ```{r excluded proxies, echo=F}
-
-unique(dataset_after_cleaning$proxy_decision)
-
-excluded_proxies <- dataset_after_cleaning %>% filter(proxy_decision=="exclude" | proxy_decision=="exclude_NA" | proxy_decision=="excluded_NA" )
+## list all proxy_decision values
+#unique(dataset_after_cleaning$proxy_decision)
+excluded_proxies <- dataset_after_cleaning %>% 
+  filter(proxy_decision=="exclude" | proxy_decision=="exclude_NA" | proxy_decision=="excluded_NA" )
 
 excluded_proxies%>%
-  select(c(paper_ID,fitness_proxy,proxy_comment))%>%
-  kable(col.names=(c("Paper ID","Fitness Trait","Reason for exclusion" )),caption = "Excluded proxies")
+  select(c(paper_ID,fitness_proxy,proxy_comment)) %>%
+  kable(col.names=(c("Paper ID","Fitness Trait","Reason for exclusion" )), caption = "Excluded proxies")
 
+## remove from the data set
 dataset_after_cleaning <- dataset_after_cleaning %>% 
   filter(!proxy_decision %in% c("exclude", "exclude_NA", "excluded_NA"))
 
- unique(dataset_after_cleaning$proxy_decision) 
+## list all proxy_decision values after cleaning
+#unique(dataset_after_cleaning$proxy_decision) 
 ```
 
-### Adding Observation ID column
+## Adding Observation ID column
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
-  mutate(Observation_ID=row_number(), .before = experiment_ID)
-  
+  mutate(Observation_ID = row_number(), .before = experiment_ID)
 ```
 
-### Adding Hypothesis column
+## Adding Hypothesis column
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -979,16 +995,14 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
       CH == 0 & PCH == 1 ~ "PCH",  
       CH == 1 & PCH == 1 ~ "both") 
     ,.after = PCH)
-
 #checked, has no NAs
 ```
 
-#### Cleaning Type of trait studied
+### Cleaning Type of trait studied
 
 (levels: physiology, morphology, reproduction, behaviour, parasite and pathogenic load, phenology)
 
 ```{r}
-
 dataset_after_cleaning <- dataset_after_cleaning %>%
   mutate(trait_type = case_when(
     str_detect(trait_type, regex("physiology", ignore_case = TRUE)) ~ "Physiology",
@@ -1001,12 +1015,11 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
   ))
 ```
 
-### Adding Type of parasites
+## Adding Type of parasites
 
-(levels: arthropods, micro-organisms) 
+(levels: arthropods, micro-organisms)
 
 ```{r}
-
 dataset_after_cleaning <- dataset_after_cleaning %>%
   mutate(parasite_type= case_when(
     str_detect(parasite_type, regex("arthropod", ignore_case = TRUE)) ~ "Arthropod",
@@ -1016,17 +1029,17 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
   ))
 ```
 
-### Time of addition of green nest material
+## Time of addition of green nest material
 
 (levels: before egg hatching, after egg hatching, continuously throughout the nesting phase).
 
-### Type of experimental design
+## Type of experimental design
 
 (levels: 1 = non-aromatic vs. aromatic, 2 = no added material vs. aromatic, 3 = no added material vs. non-aromatic).
 
 ### Bird species
 
-(levels: Cyanistes caeruleus, Sturnus unicolor, Tachycineta bicolor, Sturnus vulgaris; note that these levels reflect the list of species studied in our current database, which may increase after updating our search and/or receiving unpublished data from authors)
+(levels: *Cyanistes caeruleus*, *Sturnus unicolor*, *Tachycineta bicolor*, *Sturnus vulgaris*; note that these levels reflect the list of species studied in our current database, which may increase after updating our search and/or receiving unpublished data from authors)
 
 ```{r}
 dataset_after_cleaning <- dataset_after_cleaning %>%
@@ -1039,13 +1052,13 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
   ))
 ```
 
-## Some quick checks to make sure all names are clean
+### Cleaning coding of factors
+
+Checking coding of several factors to ensure all are named consistently
 
 ```{r}
 unique(dataset_after_cleaning$proxy_decision)
-
 ## found a typo, let's fix:
-
 dataset_after_cleaning <- dataset_after_cleaning %>%
   mutate(proxy_decision = case_when(
     proxy_decision == "senstivity-analysis" ~ "sensitivity-analysis",
@@ -1056,9 +1069,9 @@ dataset_after_cleaning <- dataset_after_cleaning %>%
 unique(dataset_after_cleaning$proxy_decision)
 
 ## Ensuring all names for risk of bias meta-regression are clean
-
 unique(dataset_after_cleaning$blinding)
 
+## make blinding decision 'n' -> 'no'
 dataset_after_cleaning <- dataset_after_cleaning %>%
   mutate(blinding = case_when(
     blinding == "no" ~ "n",
@@ -1101,6 +1114,16 @@ unique(dataset_after_cleaning$random_assignment)
 
 ### Saving dataset
 
-```{r}
-write.csv(dataset_after_cleaning,file=here::here("data/03_data_cleaning/dataset_after_cleaning.csv"),row.names = FALSE)
+```{r, eval=FALSE}
+## save cleaned dataset to csv file
+write.csv(x = dataset_after_cleaning,
+          file = here::here("data/03_data_cleaning/dataset_after_cleaning.csv"), 
+          row.names = FALSE)
 ```
+
+#### Session info
+
+```{r, echo=FALSE}
+sessionInfo()
+```
+
