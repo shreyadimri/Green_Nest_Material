@@ -1,18 +1,61 @@
 project:
   type: manuscript
   output-dir: docs
+  render: 
+    - manuscript_GNM.qmd
   
 manuscript: 
  article: manuscript_GNM.qmd
 
- 
+
+title: "Why do birds use green nest material? A systematic review and meta-analysis of experiments"
+
+affiliations:
+  - id: evobio
+    name: "Department of Evolutionary Biology, Bielefeld University, Germany"
+  - id: animalbehav
+    name: "Department of Animal Behaviour, Bielefeld University, Germany"
+    
+author:
+  - name: "Shreya Dimri"
+    orcid: 0009-0009-2155-7506
+    affiliations: 
+     - ref: evobio
+    corresponding: true
+    email: shreya.dimri@uni-bielefeld.de
+  - name: "Tuba Rizvi"
+    affiliations: 
+     - ref: evobio
+    orcid: 0009-0008-2051-2165
+  - name: "Júlio Segovia"
+    affiliations: 
+     - ref: evobio
+    orcid: 0000-0002-6914-012X
+  - name: "Meinolf Ottensmann"
+    affiliations: 
+     - ref: animalbehav
+    orcid: 0000-0003-3112-6928
+  - name: "Alfredo Sánchez-Tójar"
+    affiliations: 
+     - ref: evobio
+    orcid: 0000-0002-2886-0649
+
+    
+bibliography: references.bib
+csl: proceedings-of-the-royal-society-b.csl
+
 format: 
  html:
-  comments: 
-   hypothesis: true
-  bibliography: references.bib
- # docx:
- #  fontsize: 12
+  comments: false
+ docx:
+  fontsize: 12
+  linestretch: 2
+  number-sections: true
+  include-in-header:
+      text: |
+        \usepackage[left]{lineno}
+        \linenumbers
+  
  # pdf: default
 
 crossref:
