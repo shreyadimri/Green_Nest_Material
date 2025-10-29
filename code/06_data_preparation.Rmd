@@ -6,10 +6,10 @@ output: html_document
 license: CC-BY-4.0
 email: shreya.dimri@uni-bielefeld.de
 ---
-## Preface 
 
-In this script we will continue to prepare our dataset for use in meta-analysis and calculate variables for effect size estimation (SMDH, lnRR). 
-In the previous script [05_data_cleaning.Rmd](https://github.com/shreyadimri/Green_Nest_Material/blob/main/code/05_data_cleaning.Rmd) we merged the data from different sources after data extraction, and performed several data cleaning procedures, including the standardization of terms. We have excluded the articles that did not pass full-text screening and the fitness proxies that we could not find a direction for the effect. The resulting data were saved as [dataset_after_cleaning.csv](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/03_data_cleaning/dataset_after_cleaning.csv)
+## Preface
+
+In this script we will continue to prepare our dataset for use in meta-analysis and calculate variables for effect size estimation (SMDH, lnRR). In the previous script [05_data_cleaning.Rmd](https://github.com/shreyadimri/Green_Nest_Material/blob/main/code/05_data_cleaning.Rmd) we merged the data from different sources after data extraction, and performed several data cleaning procedures, including the standardization of terms. We have excluded the articles that did not pass full-text screening and the fitness proxies that we could not find a direction for the effect. The resulting data were saved as [dataset_after_cleaning.csv](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/03_data_cleaning/dataset_after_cleaning.csv)
 
 #### Input files needed
 
@@ -19,7 +19,7 @@ In the previous script [05_data_cleaning.Rmd](https://github.com/shreyadimri/Gre
 
 ### Setting up the workspace
 
-* Install and load required packages
+-   Install and load required packages
 
 ```{r setup, warning=FALSE, message=FALSE}
 ## Setting up workspace using pacman
@@ -42,8 +42,7 @@ pacman::p_load(
   ggpubr)
 ```
 
-* Load cleaned dataset [dataset_after_cleaning.csv](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/03_data_cleaning/dataset_after_cleaning.csv)
-
+-   Load cleaned dataset [dataset_after_cleaning.csv](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/03_data_cleaning/dataset_after_cleaning.csv)
 
 ```{r load cleaned data}
 # set seed for reproducibility (for random number generation)
@@ -149,21 +148,17 @@ v_lnrr_laj <- function(cv1_2, cv2_2, n1, n2,  taylor = TRUE) {
 
 In our pre-registration, we considered the following levels of non-independence for our analysis:
 
-* (1) paper_ID, which encompasses estimates extracted from the same primary study,
-
-* (2) experiment_ID,
-
-* (3) group_ID
-
-* (4) repeated_traits_ID, and
-
-* (5) observation_ID which corresponds to a unit-level observation identity and models within-study variance
+(1) paper_ID, which encompasses estimates extracted from the same primary study,
+(2) experiment_ID,
+(3) group_ID
+(4) repeated_traits_ID, and
+(5) observation_ID which corresponds to a unit-level observation identity and models within-study variance
 
 As mentioned above, if we obtain additional effect sizes for other bird species after we update our search and/or contact authors, our models may need to account for phylogenetic nonindependence via the inclusion of two additional random effects: "species" and "phylogeny" following Cinar et al. (2022)."
 
-* We also need to add `observation ID` which is the unit-level identity (unique for each row) for within-study variance.
+-   We also need to add `observation ID` which is the unit-level identity (unique for each row) for within-study variance.
 
-* In the way we extracted this information, each paper_ID needs to be added to the random effect level of `experiment_ID`, `group_ID` and `repeated_trait_ID` to make sure they are unique values.
+-   In the way we extracted this information, each paper_ID needs to be added to the random effect level of `experiment_ID`, `group_ID` and `repeated_trait_ID` to make sure they are unique values.
 
 ```{r Prepare Random Effects as Unique ID}
 dataset_analysis <- dataset_analysis %>%
@@ -178,7 +173,7 @@ dataset_analysis <- dataset_analysis %>%
 # random_effects_check<-dataset_analysis%>%select(paper_ID,experiment_ID,group_ID,repeated_trait_ID, experiment_ID_coded,group_ID_coded, repeated_trait_ID_coded)
 ```
 
-* We also decided to add `population ID` since we noticed several studies were performed in the same geographical location.
+-   We also decided to add `population ID` since we noticed several studies were performed in the same geographical location.
 
 ```{r cleaning location names}
 dataset_analysis <- dataset_analysis %>%
@@ -326,7 +321,7 @@ Authors did not report the means/effect size for some cases but said they found 
 
 We will calculate the mean trait values by trait type (e.g. physiological, reproductive, etc.) We calculate the mean of both treatment and control group. Then I will assign this mean trait value to all the fitness proxies of that trait type. This way, the difference X1-X2 would be 0 (for SMDH) as well as the log(X1/X2) would also be zero (for log response ratio). Using this, we will then impute the SD for the effect size.
 
-We imputed its sampling variance using the missing-case approach described for lnRR. (see *Nakagawa, S., Noble, D.W.A., Lagisz, M., Spake, R., Viechtbauer, W. & Senior, A.M. (2023) A robust and readily implementable method for the meta-analysis of response ratios with and without missing standard deviations. Ecology Letters, 26, 232–244. Available from: <https://doi.org/10.1111/ele.14144>* for more details)
+We imputed its sampling variance using the missing-case approach described for lnRR. (see *Nakagawa, S., Noble, D.W.A., Lagisz, M., Spake, R., Viechtbauer, W. & Senior, A.M. (2023) A robust and readily implementable method for the meta-analysis of response ratios with and without missing standard deviations. Ecology Letters, 26, 232--244. Available from: <https://doi.org/10.1111/ele.14144>* for more details)
 
 Using the formula (n1+n2)/(n1×n2)(n_1 + n_2)/(n_1 \\times n_2)(n1​+n2​)/(n1​×n2​) for SMDH (see *Lajeunesse, Marc J., 'Recovering Missing or Partial Data from Studies: A Survey of Conversions and Imputations for Meta-analysis', in Julia Koricheva, Jessica Gurevitch, and Kerrie Mengersen (eds), Handbook of Meta-analysis in Ecology and Evolution (Princeton, NJ, 2013; online edn, Princeton Scholarship Online, 19 Oct. 2017), <https://doi.org/10.23943/princeton/9780691137285.003.0013>, accessed 5 July 2025* for more details)\
 \
@@ -674,9 +669,9 @@ log_values <- dataset_analysis %>%
 
 ### Calculate SMDH
 
-* For results only reported as inferential statistics (e.g., t-test, chi-square), we will use the equations provided by (Lajeunesse 2013; Nakagawa and Cuthill 2007; and other sources if needed) to calculate their corresponding SMD estimates for the analyses.
+-   For results only reported as inferential statistics (e.g., t-test, chi-square), we will use the equations provided by (Lajeunesse 2013; Nakagawa and Cuthill 2007; and other sources if needed) to calculate their corresponding SMD estimates for the analyses.
 
-* Note that lnRR cannot be calculated from inferential statistics and that only SMD without heteroskedasticity correction can be calculated from inferential statistics.
+-   Note that lnRR cannot be calculated from inferential statistics and that only SMD without heteroskedasticity correction can be calculated from inferential statistics.
 
 ```{r}
 # 1. SMDH for most cases where mean, variance and sample size was reported
@@ -741,10 +736,10 @@ General Calculation Formulas
 where N is Total Sample Size and P is the number of successful nests
 
 2.  **Odds Ratio (OR)**\
-$$OR = \frac{S_A \times F_B}{S_B \times F_A}$$
+    $$OR = \frac{S_A \times F_B}{S_B \times F_A}$$
 
 3.  **Log Odds Ratio (lnOR)**\
-$$\ln(OR) = \log \left( \frac{S_A \times F_B}{S_B \times F_A} \right)$$
+    $$\ln(OR) = \log \left( \frac{S_A \times F_B}{S_B \times F_A} \right)$$
 
 4.  **Variance of Log Odds Ratio (lnOR)**
 
@@ -893,7 +888,6 @@ low_sample = dataset_analysis %>%
 write.csv(low_sample,
           file = here::here("data/03_data_cleaning/low_sample.csv"), row.names = FALSE)
 ```
-
 
 This is very very low sample size, it makes no sense to keep them. I will exclude them from all the further analysis.
 

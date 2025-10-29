@@ -7,56 +7,45 @@ project:
 manuscript: 
  article: manuscript_GNM.qmd
 
-
 title: "Why do birds use green nest material? A systematic review and meta-analysis of experiments"
+abstract: |
+ Many animals construct nests. Nests are often considered extended phenotypes that
+ shape survival and reproduction beyond the builder's body. Birds are key examples of nest builders,
+ and many add fresh green plant material to their nests. Yet, the adaptive value of this behaviour remains debated.
+ Non-mutually exclusive hypotheses propose roles in courtship signalling, parasite defence,
+ or direct enhancement of offspring condition. Here, we conducted a pre-registered systematic review
+ and meta-analysis of 28 experimental studies (published and unpublished), spanning seven bird species and 274 effect sizes,
+ to test whether green nest material influences fitness, and to evaluate the competing functional explanations.
+ Our synthesis shows that while green nest material can enhance avian fitness, this effect depends on the fitness proxy used,
+ and its functional role remains unresolved. The strongest predictor was experimental design, strongly influencing the outcomes,
+ challenging the role of aromatic compounds in the fitness benefits of green nest material. Our meta-analysis supports the
+ importance of green nest material on fitness, but calls for more research to elucidate its mechanisms.
 
 affiliations:
-  - id: evobio
-    name: "Department of Evolutionary Biology, Bielefeld University, Germany"
-  - id: animalbehav
-    name: "Department of Animal Behaviour, Bielefeld University, Germany"
-    
+  - id: "1"
+    name: Department of Evolutionary Biology, Bielefeld University, Germany
+  - id: "2"
+    name: Department of Animal Behaviour, Bielefeld University, Germany
+
 author:
   - name: "Shreya Dimri"
     orcid: 0009-0009-2155-7506
-    affiliations: 
-     - ref: evobio
     corresponding: true
     email: shreya.dimri@uni-bielefeld.de
+    affiliations: [{ ref: "1" }]
   - name: "Tuba Rizvi"
-    affiliations: 
-     - ref: evobio
     orcid: 0009-0008-2051-2165
+    affiliations: [{ ref: "1" }]
   - name: "Júlio Segovia"
-    affiliations: 
-     - ref: evobio
     orcid: 0000-0002-6914-012X
+    affiliations: [{ ref: "1" }]
   - name: "Meinolf Ottensmann"
-    affiliations: 
-     - ref: animalbehav
     orcid: 0000-0003-3112-6928
-  - name: "Alfredo Sánchez-Tójar"
-    affiliations: 
-     - ref: evobio
+    affiliations: [{ ref: "2" }]
+  - name: "        Alfredo Sánchez-Tójar"
     orcid: 0000-0002-2886-0649
-
-    
-bibliography: references.bib
-csl: proceedings-of-the-royal-society-b.csl
-
-format: 
- html:
-  comments: false
- docx:
-  fontsize: 12
-  linestretch: 2
-  number-sections: true
-  include-in-header:
-      text: |
-        \usepackage[left]{lineno}
-        \linenumbers
-  
- # pdf: default
+    affiliations: [{ ref: "1" }]
+      
 
 crossref:
   custom:
@@ -85,7 +74,38 @@ crossref:
       space-before-numbering: false
       latex-list-of-description: Article Tables
 
-      
+    
+bibliography: references.bib
+# csl: proceedings-of-the-royal-society-b.csl
+
+format:
+  html:
+    comments: false
+  preprint-typst:
+    theme: jou
+    running-head: "Preprint"
+    layout:
+    - spacing: 0.6em
+    typst-blocks: |
+      #set page(margin: (x: 2, y: 2))
+    
+    include-before-body:
+     - text: |
+          #set text(size: 10pt)
+          #show figure: it => {
+            set text(size: 6pt);
+            it
+          }
+          #show table: it => {
+            set text(size: 6pt);
+            it
+          }
+    citeproc: true
+    line-number: false
+  
+    
+ # pdf: default
+
 execute:
  freeze: auto
  cache: false

@@ -1194,6 +1194,49 @@ ggsave(here::here("figures/Figure_publication_bias.png"),
 
 # ----- Supplementary Material Table -------
 
+## Table: PRISMA Checklist
+
+```{r}
+
+pacman::p_load(kableExtra)
+prisma_checklist <- read_csv("tables/SA_prisma_checklist.csv")
+
+prisma_checklist<-prisma_checklist %>%
+  kbl(
+    col.names = c("Checklist item", "Item score", "Sub-item number",
+                  "Sub-item", "Reported by authors?", "Notes"),
+    booktabs = TRUE,
+    longtable = TRUE
+  ) %>%
+  kable_styling(
+    latex_options = c("scale_down", "hold_position", "repeat_header"),
+    font_size = 9
+  )
+
+save_kable(prisma_checklist, "tables/prisma_checklist.png")
+
+
+```
+
+```{r}
+
+pacman::p_load(readr,knitr, dplyr,kableExtra)
+own_library <- read_csv(here::here("data/01_systematic_search/01_search_strategy/own_library_references.csv"))
+
+own_library_table <- own_library %>% 
+  select(c(title,author,doi, journal, year)) %>% 
+  kable(col.names=(c("Article Title","Authors","DOI", "Journal", "Year of Publication")), booktabs = TRUE,
+    longtable = TRUE
+  ) %>%
+  kable_styling(
+    latex_options = c("scale_down", "hold_position", "repeat_header"),
+    font_size = 9
+  )
+
+save_kable(own_library_table, "tables/initial_library.png")
+
+```
+
 ## Table for all fitness proxies included in the analysis
 
 ```{r}
@@ -1240,14 +1283,14 @@ fitness_proxies_table <- fitness_proxies_table %>%
   cols_label(
     CH   = "Courtship Hypothesis",
     PCH  = "Parental Care Hypothesis",
-    both = "Both Hypothesis"
+    both = "Both Hypotheses"
   ) %>%
     tab_header(title = "Fitness Proxies included in the meta-analysis",
                subtitle = "Proxy: Effect Sizes (Papers), * indicates the fitness proxies included only in a sensitivity analysis")
 
   
 # Saving as an image
-gtsave(fitness_proxies_table, here::here("tables/SA_fitness_proxies_table.png"))
+gtsave(fitness_proxies_table, here::here("tables/SA_fitness_proxies_table.pdf"))
 ```
 
 ## Table for all the excluded proxies
@@ -1326,6 +1369,86 @@ excluded_proxies_table <- excluded_proxies_table %>%
 
 # Saving as an image
 gtsave(excluded_proxies_table, here::here("tables/SA_excluded_proxies_table.png"))
+```
+
+## Table: Different values
+
+```{r}
+
+#Loading the required data for the plots
+
+load(here::here("model/sensitivity_analysis/SA_SMDH_VCV_range.Rdata"))
+
+load(here::here("model/sensitivity_analysis/SA_lnRR_VCV_range.Rdata"))
+
+rho_range <- c(0.2,0.3, 0.5, 0.7,0.8)
+
+
+# Table for lnRR Values
+lnRR_table <- data.frame(rho  = rho_range,
+  "Overall effect" = sapply(SA_lnRR_VCV_range, function(x) coef(x)[1]),
+  "Standard error" = sapply(SA_lnRR_VCV_range, function(x) x$se[1]),
+  "p-value"        = sapply(SA_lnRR_VCV_range, function(x) x$pval[1]),
+  "Lower CI"       = sapply(SA_lnRR_VCV_range, function(x) x$ci.lb[1]),
+  "Upper CI"       = sapply(SA_lnRR_VCV_range, function(x) x$ci.ub[1]),
+  "Log-likelihood" = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[1,1]),
+  "AIC"            = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[3,1]),
+  "BIC"            = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[4,1]),
+  "AICc"           = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[5,1]),
+  "Effect size"    = "lnRR")
+
+# Table for SMDH values
+
+SMDH_table <- data.frame(
+  rho  = rho_range,
+  "Overall effect" = sapply(SA_SMDH_VCV_range, function(x) coef(x)[1]),
+  "Standard error" = sapply(SA_SMDH_VCV_range, function(x) x$se[1]),
+  "p-value"        = sapply(SA_SMDH_VCV_range, function(x) x$pval[1]),
+  "Lower CI"       = sapply(SA_SMDH_VCV_range, function(x) x$ci.lb[1]),
+  "Upper CI"       = sapply(SA_SMDH_VCV_range, function(x) x$ci.ub[1]),
+  "Log-likelihood" = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[1,1]),
+  "AIC"            = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[3,1]),
+  "BIC"            = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[4,1]),
+  "AICc"           = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[5,1]),
+  "Effect size"    = "SMD(H)"
+)
+
+# Combine and rename columns
+table_combined <- bind_rows(lnRR_table, SMDH_table) %>%
+  rename(`Sampling correlation` = rho)
+
+# Create a gt table
+table_combined <- table_combined %>%
+  gt(groupname_col = "Effect size") %>%
+  tab_header(
+    title = md("**Sensitivity to sampling correlation (ρ)**"),
+    subtitle = md("Results for lnRR and SMD(H) Meta-analytic models")
+  ) %>%
+  cols_label(
+    `Sampling correlation` = html("&rho;"),
+    `Overall.effect` = "Overall effect",
+    `Standard.error` = "SE",
+    `p.value` = "p",
+    `Lower.CI` = "CI low",
+    `Upper.CI` = "CI high",
+    `Log.likelihood` = "LogLik"
+  ) %>%
+  tab_spanner(label = "95% CI", columns = c("Lower.CI", "Upper.CI")) %>%
+  fmt_number(
+    columns = c("Overall.effect", "Standard.error", "Lower.CI", "Upper.CI",
+                "Log.likelihood", "AIC", "BIC", "AICc"),
+    decimals = 4
+  ) %>%
+  fmt_number(columns = "p.value", decimals = 3) %>%
+  opt_table_outline() %>%
+  tab_options(
+    table.font.size = px(13),
+    data_row.padding = px(4)
+  )
+
+# Save table
+gtsave(table_combined, here::here("tables/SA_sampling-correlation_table.png"))
+
 ```
 
 ## Table: Sensitivity analysis for intercept only model
