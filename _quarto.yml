@@ -1,6 +1,6 @@
 project:
   type: manuscript
-  output-dir: docs
+  output-dir: _output
   render: 
     - manuscript_GNM.qmd
   
@@ -36,7 +36,7 @@ author:
   - name: "Tuba Rizvi"
     orcid: 0009-0008-2051-2165
     affiliations: [{ ref: "1" }]
-  - name: "Júlio Segovia"
+  - name: "Júlio M.G. Segovia"
     orcid: 0000-0002-6914-012X
     affiliations: [{ ref: "1" }]
   - name: "Meinolf Ottensmann"
@@ -76,19 +76,18 @@ crossref:
 
     
 bibliography: references.bib
-# csl: proceedings-of-the-royal-society-b.csl
 
 format:
   html:
     comments: false
   preprint-typst:
+    output-file: GNM_Preprint1
     theme: jou
     running-head: "Preprint"
     layout:
     - spacing: 0.6em
     typst-blocks: |
       #set page(margin: (x: 2, y: 2))
-    
     include-before-body:
      - text: |
           #set text(size: 10pt)
@@ -102,9 +101,29 @@ format:
           }
     citeproc: true
     line-number: false
-  
     
- # pdf: default
+  elsevier-pdf:
+    output-file: GNM_Submission1
+    journal:
+     name: "Proceedings of the Royal Society B - Biological Sciences"
+     formatting: review
+     layout: onecolumn
+     cite-style: number
+    typst-block: |
+     #set par(line-numbering: true)
+    include-in-header: 
+      text: |
+        \newpageafter{author}
+        \usepackage{lineno}
+    include-before-body:
+      text: |
+        \linenumbers
+    margin-top: 3cm
+    margin-bottom: 3cm
+    margin-left: 2.5cm
+    margin-right: 2.5cm
+    keep-tex: true
+    csl: proceedings-of-the-royal-society-b.csl
 
 execute:
  freeze: auto
