@@ -154,7 +154,7 @@ We originally considered the following levels of non-independence for our analys
 
 To test the relative importance of the two main functional hypotheses suggested for GNM, that is, the courtship and the parental care hypothesis, which combines the nest protection and drug hypotheses, we ran a multilevel meta-regression including the moderator 'hypothesis' (levels: courtship, parental care, both). For all meta-regressions, we estimated $R_{marginal}^2$, which corresponds to the percentage of heterogeneity explained by the moderators [@nakagawa2012]. Unless stated otherwise, all meta-regressions correspond to unimoderator meta-regressions.
 
-```{r, include=FALSE, echo=FALSE}
+```{r include=FALSE, echo=FALSE}
 parasite_pathogen<-dataset_after_cleaning%>%filter(trait_type=="Parasitic_and_pathogenic")
 ```
 
@@ -329,7 +329,7 @@ Third, although none of the species-specific mean estimates were statistically s
 
 ## Publication Bias
 
-```{r}
+```{r include=FALSE, echo=FALSE, message= FALSE}
 lnRR_small_study<-readRDS(here::here("model/lnRR_small_study.rds"))
 SMDH_small_study<-readRDS(here::here("model/SMDH_small_study.rds"))
 
