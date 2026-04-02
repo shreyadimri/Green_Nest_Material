@@ -589,7 +589,7 @@ lnRR_time_gnm_addition_plot <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
 
 SMDH_time_gnm_addition_plot <- orchard_plot(mod_results(
   SMDH_time_gnm_addition,
@@ -616,7 +616,7 @@ SMDH_time_gnm_addition_plot <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
 ```
 
 Now the cropped figures for the main manuscript
@@ -648,7 +648,7 @@ lnRR_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
 
 SMDH_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
   SMDH_time_gnm_addition,
@@ -676,7 +676,7 @@ SMDH_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
 ```
 
 ```{r Sun Aug 31 19:49:27 2025, eval=FALSE}
@@ -1194,29 +1194,7 @@ ggsave(here::here("figures/Figure_publication_bias.png"),
 
 # ----- Supplementary Material Table -------
 
-## Table: PRISMA Checklist
-
-```{r}
-
-pacman::p_load(kableExtra)
-prisma_checklist <- read_csv("tables/SA_prisma_checklist.csv")
-
-prisma_checklist<-prisma_checklist %>%
-  kbl(
-    col.names = c("Checklist item", "Item score", "Sub-item number",
-                  "Sub-item", "Reported by authors?", "Notes"),
-    booktabs = TRUE,
-    longtable = TRUE
-  ) %>%
-  kable_styling(
-    latex_options = c("scale_down", "hold_position", "repeat_header"),
-    font_size = 9
-  )
-
-save_kable(prisma_checklist, "tables/prisma_checklist.png")
-
-
-```
+## Table: Initial Library
 
 ```{r}
 
@@ -1233,7 +1211,7 @@ own_library_table <- own_library %>%
     font_size = 9
   )
 
-save_kable(own_library_table, "tables/initial_library.png")
+save_kable(own_library_table, file = here::here("tables/initial_library.png"))
 
 ```
 
@@ -1464,6 +1442,10 @@ SA_SMDH_published <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_publ
 SA_lnRR_no_comp3 <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_no_comp3.rds"))
 SA_SMDH_no_comp3 <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_comp3.rds"))
 
+# Loading the models without Comparison Type 1
+SA_lnRR_no_comp1 <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_no_comp1.rds"))
+SA_SMDH_no_comp1 <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_comp1.rds"))
+
 # Loading the models including flagged proxies
 SA_lnRR_flagged <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_flagged.rds"))
 SA_SMDH_flagged <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_flagged.rds"))
@@ -1485,17 +1467,19 @@ SA_lnRR_geary_passed <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_g
 
 # Now let's build the table
 SA_intercept_only <- tibble::tibble(
-  effect_size = c("lnRR","lnRR","lnRR","lnRR","lnRR","lnRR",
-                  "SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMDH"),
+  effect_size = c("lnRR","lnRR","lnRR","lnRR","lnRR","lnRR","lnRR",
+                  "SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMDH"),
   data_used = c(
     "Including published data only",
     "Excluding Experimental Design Non-Aromatic Vs. No added material",
+    "Excluding Experimental Design Aromatic Vs. Non-Aromatic",
     "Including flagged proxies", 
     "Without those cases where author reported no effect of the treatment",
     "Including flagged proxies and without the cases with no effect of the treatment", 
     "Excluding effect sizes where lnRR failed Geary's Test",
     "Including published data only",
     "Excluding Experimental Design Non-Aromatic Vs. No added material",
+    "Excluding Experimental Design Aromatic Vs. Non-Aromatic",
     "Including flagged proxies",
     "Without those cases where author reported no effect of the treatment",
     "Including flagged proxies and without the cases with no effect of the treatment",
@@ -1503,12 +1487,14 @@ SA_intercept_only <- tibble::tibble(
   
   Estimate = c(SA_lnRR_published$b[1],
                SA_lnRR_no_comp3$b[1],
+               SA_lnRR_no_comp1$b[1],
                SA_lnRR_flagged$b[1],
                SA_lnRR_no_missingES$b[1],
                SA_lnRR_flagged_no_missingES$b[1],
                SA_lnRR_geary_passed$b[1],
                SA_SMDH_published$b[1],
                SA_SMDH_no_comp3$b[1],
+               SA_SMDH_no_comp1$b[1],
                SA_SMDH_flagged$b[1],
                SA_SMDH_no_missingES$b[1],
                SA_SMDH_flagged_no_missingES$b[1],
@@ -1516,12 +1502,14 @@ SA_intercept_only <- tibble::tibble(
   
   CI_Lower = c(SA_lnRR_published$ci.lb,
                SA_lnRR_no_comp3$ci.lb,
+               SA_lnRR_no_comp1$ci.lb,
                SA_lnRR_flagged$ci.lb,
                SA_lnRR_no_missingES$ci.lb,
                SA_lnRR_flagged_no_missingES$ci.lb,
                SA_lnRR_geary_passed$ci.lb,
                SA_SMDH_published$ci.lb,
                SA_SMDH_no_comp3$ci.lb,
+               SA_SMDH_no_comp1$ci.lb,
                SA_SMDH_flagged$ci.lb,
                SA_SMDH_no_missingES$ci.lb,
                SA_SMDH_flagged_no_missingES$ci.lb,
@@ -1529,12 +1517,14 @@ SA_intercept_only <- tibble::tibble(
   
   CI_Upper = c(SA_lnRR_published$ci.ub,
                SA_lnRR_no_comp3$ci.ub,
+               SA_lnRR_no_comp1$ci.ub,
                SA_lnRR_flagged$ci.ub,
                SA_lnRR_no_missingES$ci.ub,
                SA_lnRR_flagged_no_missingES$ci.ub,
                SA_lnRR_geary_passed$ci.ub,
                SA_SMDH_published$ci.ub,
                SA_SMDH_no_comp3$ci.ub,
+               SA_SMDH_no_comp1$ci.ub,
                SA_SMDH_flagged$ci.ub,
                SA_SMDH_no_missingES$ci.ub,
                SA_SMDH_flagged_no_missingES$ci.ub,
@@ -1542,12 +1532,14 @@ SA_intercept_only <- tibble::tibble(
   
   PI_Lower = c(predict(SA_lnRR_published)$pi.lb,
                predict(SA_lnRR_no_comp3)$pi.lb,
+               predict(SA_lnRR_no_comp1)$pi.lb,
                predict(SA_lnRR_flagged)$pi.lb,
                predict(SA_lnRR_no_missingES)$pi.lb,
                predict(SA_lnRR_flagged_no_missingES)$pi.lb,
                predict(SA_lnRR_geary_passed)$pi.lb,
                predict(SA_SMDH_published)$pi.lb,
                predict(SA_SMDH_no_comp3)$pi.lb,
+               predict(SA_SMDH_no_comp1)$pi.lb,
                predict(SA_SMDH_flagged)$pi.lb,
                predict(SA_SMDH_no_missingES)$pi.lb,
                predict(SA_SMDH_flagged_no_missingES)$pi.lb,
@@ -1555,12 +1547,14 @@ SA_intercept_only <- tibble::tibble(
   
   PI_Upper = c(predict(SA_lnRR_published)$pi.ub,
                predict(SA_lnRR_no_comp3)$pi.ub,
+               predict(SA_lnRR_no_comp1)$pi.ub,
                predict(SA_lnRR_flagged)$pi.ub,
                predict(SA_lnRR_no_missingES)$pi.ub,
                predict(SA_lnRR_flagged_no_missingES)$pi.ub,
                predict(SA_lnRR_geary_passed)$pi.ub,
                predict(SA_SMDH_published)$pi.ub,
                predict(SA_SMDH_no_comp3)$pi.ub,
+               predict(SA_SMDH_no_comp1)$pi.ub,
                predict(SA_SMDH_flagged)$pi.ub,
                predict(SA_SMDH_no_missingES)$pi.ub,
                predict(SA_SMDH_flagged_no_missingES)$pi.ub,
@@ -1568,12 +1562,14 @@ SA_intercept_only <- tibble::tibble(
   
   P_value =  c(SA_lnRR_published$pval,
                SA_lnRR_no_comp3$pval,
+               SA_lnRR_no_comp1$pval,
                SA_lnRR_flagged$pval,
                SA_lnRR_no_missingES$pval,
                SA_lnRR_flagged_no_missingES$pval,
                SA_lnRR_geary_passed$pval,
                SA_SMDH_published$pval,
                SA_SMDH_no_comp3$pval,
+               SA_SMDH_no_comp1$pval,
                SA_SMDH_flagged$pval,
                SA_SMDH_no_missingES$pval,
                SA_SMDH_flagged_no_missingES$pval,
@@ -1581,12 +1577,14 @@ SA_intercept_only <- tibble::tibble(
   
   Q_value = c(SA_lnRR_published$QE,
               SA_lnRR_no_comp3$QE,
+              SA_lnRR_no_comp1$QE,
               SA_lnRR_flagged$QE,
               SA_lnRR_no_missingES$QE,
               SA_lnRR_flagged_no_missingES$QE,
               SA_lnRR_geary_passed$QE,
               SA_SMDH_published$QE,
               SA_SMDH_no_comp3$QE,
+              SA_SMDH_no_comp1$QE,
               SA_SMDH_flagged$QE,
               SA_SMDH_no_missingES$QE,
               SA_SMDH_flagged_no_missingES$QE,
@@ -1594,12 +1592,14 @@ SA_intercept_only <- tibble::tibble(
   
   k_effect_sizes = c(SA_lnRR_published$k,
                      SA_lnRR_no_comp3$k,
+                     SA_lnRR_no_comp1$k,
                      SA_lnRR_flagged$k,
                      SA_lnRR_no_missingES$k,
                      SA_lnRR_flagged_no_missingES$k,
                      SA_lnRR_geary_passed$k,
                      SA_SMDH_published$k,
                      SA_SMDH_no_comp3$k,
+                     SA_SMDH_no_comp1$k,
                      SA_SMDH_flagged$k,
                      SA_SMDH_no_missingES$k,
                      SA_SMDH_flagged_no_missingES$k,
@@ -1607,12 +1607,14 @@ SA_intercept_only <- tibble::tibble(
   
   n_studies = c(length(SA_lnRR_published$s.levels.f[[1]]),
                 length(SA_lnRR_no_comp3$s.levels.f[[1]]),
+                length(SA_lnRR_no_comp1$s.levels.f[[1]]),
                 length(SA_lnRR_flagged$s.levels.f[[1]]),
                 length(SA_lnRR_no_missingES$s.levels.f[[1]]),
                 length(SA_lnRR_flagged_no_missingES$s.levels.f[[1]]),
                 length(SA_lnRR_geary_passed$s.levels.f[[1]]),
                 length(SA_SMDH_published$s.levels.f[[1]]),
                 length(SA_SMDH_no_comp3$s.levels.f[[1]]),
+                length(SA_SMDH_no_comp1$s.levels.f[[1]]),
                 length(SA_SMDH_flagged$s.levels.f[[1]]),
                 length(SA_SMDH_no_missingES$s.levels.f[[1]]),
                 length(SA_SMDH_flagged_no_missingES$s.levels.f[[1]]),
@@ -1684,11 +1686,11 @@ SA_intercept_only <- SA_intercept_only %>%
 
 ```{r SA_intercept_only, eval=FALSE}
 ## Saving as an image
-gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.png"))
+gtsave(SA_intercept_only, filename = here::here("tables/SA_intercept_only.png"), vwidth = 2000, vheight = 2500, expand = 30)
 
 ## For saving as a docx file
-gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.docx"))
-gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.html"))
+# gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.docx"))
+# gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.html"))
 ```
 
 ```{r Table for lnRR rho sensitivity analysis, eval=FALSE}
@@ -1942,7 +1944,7 @@ combined_results <- combined_results %>%
     level==3 ~ "No added material\nvs. Non-aromatic",
     level=="a" ~ "After egg\nhatching",
     level=="b" ~ "Before egg\nhatching",
-    level=="c" ~ "Continously through\nnesting phase",
+    level=="c" ~ "Continuously through\nnesting phase",
     level=="Parasitic_and_pathogenic"~"Parasitic and\nPathogen Related", 
     .default = level))
 
@@ -2009,7 +2011,11 @@ MLMR_table <- combined_results %>%
 
 ```{r, eval=FALSE}
 ## saving the image
-gtsave(MLMR_table, here::here("tables/MLMR_table.png"))
+gtsave(MLMR_table,
+  filename = here::here("tables/MLMR_table.png"),
+  vwidth = 2000,
+  vheight = 2500,
+  expand = 30)
 ## saving as a docx file or html
 gtsave(MLMR_table,here::here("tables/MLMR_table.docx"))
 gtsave(MLMR_table,here::here("tables/MLMR_table.html"))
