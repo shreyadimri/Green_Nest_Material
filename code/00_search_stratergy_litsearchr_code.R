@@ -25,7 +25,7 @@ pacman::p_load(litsearchr,igraph,ggplot2)
 
 
 # In our case we use .bib file "own_library_references.bib" from our own set of references
-search_directory="data/01_systematic_search/01_search_strategy/data_litsearchr"
+search_directory="data/01_systematic_search/01_search_strategy"
 naiveimport<- litsearchr::import_results(directory=search_directory,
                                          file = "own_library_references.bib")
 
@@ -109,9 +109,7 @@ cutoff_fig<-cutoff_fig +
  reducedgraph<- litsearchr::reduce_graph(naivegraph, 
                                          cutoff_strength = cutoff_cum)
 #shows the simplified graph
-# plot(reducedgraph)
+plot(reducedgraph)
 
 # searchterms <- litsearchr::get_keywords(reducedgraph)
-
-
 # write.csv(searchterms, "data/01_systematic_search/01_search_strategy/litsearchr_search_terms.csv")
