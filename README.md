@@ -251,6 +251,25 @@ This repository contains both analysis code and research materials. The code may
 \
 **Additional notice**: No permission is granted for AI training or model development.
 
+### AUTHOR CONTRIBUTIONS
+
+This repository was created and is maintained by **Shreya Dimri**. Shreya Dimri
+organized the repository structure, curated and documented the data files,
+prepared the analysis scripts, generated the reproducible workflow, and wrote
+the repository documentation.
+
+**Meinolf Ottensmann** validated the repository code by checking and running the
+analysis workflow and reviewing code reproducibility.
+
+For author contributions to the associated manuscript, see the complete CRediT
+statement:
+
+**Shreya Dimri:** Conceptualisation, Data curation, Formal analysis, Investigation (lead), Methodology, Project administration, Software, Validation, Visualization, Writing - original draft (lead), review & editing; \
+**Tuba Rizvi:** Conceptualisation, Investigation (equal), Writing - review & editing; \
+**Júlio M.G. Segovia:** Conceptualisation, Investigation (equal), Writing - review & editing; \
+**Meinolf Ottensmann:** Investigation (supporting), Validation; \
+**Alfredo Sánchez-Tójar:** Conceptualisation, Funding acquisition, Methodology, Supervision, Writing - original draft (supporting), review & editing
+
 ### CONTACT
 
 Please feel free to contact **Shreya Dimri : shreyadimriofficial\@gmail.com** for any feedback or questions about the data or code in this repository.
