@@ -1,18 +1,19 @@
+------------------------------------------------------------------------
+
 # Green_Nest_Material
 
-Welcome to the Green Nest Material project repository! 
+Welcome to the Green Nest Material project repository!
+
 This study has been pre-registered here: <https://doi.org/10.17605/OSF.IO/S7J6Z>
 
-This repository contains material related to the study: 
+This repository contains material related to the study:
 
 ## Why do birds use green nest material? A systematic review and meta-analysis of experiments
 
 Many animals build nests. As external structures that can influence survival and reproduction, nests are often considered extended phenotypes. Birds are key examples of nest builders, and some species add green plant material to their nests. Yet, the adaptive value of this behaviour remains debated. Non-mutually exclusive hypotheses propose roles in courtship signalling, parasite defence, and enhancement of offspring condition through pharmacological effects independent of parasite reduction. Here, we conducted a pre-registered systematic review and meta-analysis of 28 experimental studies (26 published, 2 unpublished), spanning seven bird species and 274 effect sizes, to test whether green nest material enhances fitness and to evaluate competing functional explanations. Our meta-analysis shows that green nest material can increase fitness; however, this effect varied depending on the fitness proxy investigated, being strongest for morphological proxies. We found no compelling evidence to preferentially support the courtship, nest protection, or drug hypothesis. Nonetheless, experimental design (i.e., treatment–control comparison type) was the moderator explaining most effect size variation, challenging the traditionally held role of aromatic compounds in the fitness benefits of green nest material. Our synthesis provides evidence for the adaptive significance of green nest material and highlights the need for further research into the underlying mechanisms.
 
-
 - Explicitly point out that package versions are commented inside each of the respective code files at the end.
 - Following acceptance, author/contact details, publication links, and the repository citation/DOI in both the Data Statement and reference list of the main manuscript. Please also ensure the repository is public; your GitHub repository already is.
-
 
 `Green_Nest_Material.Rproj` This is an R Project file for our project. We recommend using this .Rproj file after forking/downloading the repository to access the folders and scripts easily if you are using RStudio. In case of Visual Studio or Positron IDE, please open the entire folder. It sets the working directory correctly and makes folder paths in R script more accessible.
 
@@ -20,30 +21,40 @@ Many animals build nests. As external structures that can influence survival and
 
 - A brief list of instructions for users to run the code (e.g., explain the project workflow),
 
-`code/` This folder contains all the R scripts associated with this project, named in chronological order (eg. 00\_...,01\_..). The later stages of data cleaning and analysis are done using .Rmd files and their .html version is shared where applicable. 
+`code/` This folder contains all the R scripts associated with this project, named in chronological order (eg. 00\_...,01\_..). The later stages of data cleaning and analysis are done using .Rmd files and their .html version is shared where applicable.
 
-This project maintains the actual workflow of the systematic review and meta-analysis as was used in the process of conducting the study. 
- 
-(code/00_search_stratergy_litsearchr_code.R) : This script uses the initial library (of 15 studies) and generates a ..
-(code/01_systematic_search_deduplication.R) : Once the search is conducted and all available files ([GNM_wos.bib](data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib)and [GNM_scopus.bib](data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib)) were downloaded, these scripts were run to deduplicate the files and create relevant 
-(code/02_abstract_screening.R) :
-(code/03_fulltext_and_data_extraction.R) :
-(code/04_search_repeat_12082024.R) :
-(code/05_data_cleaning.Rmd or code/05_data_cleaning.html) : 
-(code/06_data_preparation.Rmd or code/06_data_preparation.html) :
-(code/07_data_analysis.Rmd or code/07_data_analysis.html) :
-(code/08_figures-tables.Rmd or code/08_figures-tables.html) :
+This project maintains the actual workflow of the systematic review and meta-analysis as was used in the process of conducting the study.
+
+- **00_search_stratergy_litsearchr_code.R** : uses `litsearchr` to validate the systematic search terms by extracting candidate keywords from known relevant references ([initial library](data/01_systematic_search/01_search_strategy/own_library_references.bib)) and visualising their co-occurrence network.
+
+- **01_systematic_search_deduplication.R**: Once the search is conducted and all available files from Web of Science and Scopus Database Collection ([GNM_wos.bib](data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib) and [GNM_scopus.bib](data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib)) were downloaded, these scripts were run to identifiy duplicate references using title-based fuzzy matching in `revtools` and saves the unique reference list used for screening.
+
+  **Please note**, due to encoding issues in .bib files, we now use [.csv file](data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv) to maintain the reproducibility.
+
+- **02_abstract_screening.R** : assigns unique paper IDs to the deduplicated reference list, creates randomized screening subsets for independent title-and-abstract screening in `revtools`, then merges the resolved screening decisions, standardizes exclusion reasons, flags manually identified duplicates, and exports the articles selected for full-text screening.
+
+- **03_fulltext_and_data_extraction.R** : imports the records selected after title-and-abstract screening, creates randomized subsets for pilot and main full-text screening/data extraction by multiple reviewers, then combines the checked Excel extraction files and summarizes records excluded at the full-text stage.
+
+- **04_search_repeat_12082024.R** : imports and deduplicates the from Web of Science and Scopus Database Collection ([GNM_repeat_wos.bib](data/01_systematic_search/04_search_repeat_12082024/GNM_repeat_wos.bib) and [GNM_repeat_scopus.csv](data/01_systematic_search/04_search_repeat_12082024/GNM_repeat_scopus.csv)) files from the **updated literature search conducted on 12 August 2024**, assigns repeat-search paper IDs, records the single-reviewer title-and-abstract screening decisions, summarizes exclusions for PRISMA reporting, and adds [other eligible studies](data/01_systematic_search/04_search_repeat_12082024/GNM_additional_studies.bib) identified outside the database search.
+
+- **05_data_cleaning.Rmd (or code/05_data_cleaning.html) :** imports and merges all extracted datasets from the initial search and screening, updated search, additional sources, and unpublished studies. It standardizes fitness-proxy names and moderator variables, removes excluded proxies and adds observation and hypothesis identifiers finally exports the cleaned dataset used for effect-size calculation and meta-analysis.
+
+- **06_data_preparation.Rmd (or code/06_data_preparation.html) :** prepares the cleaned extraction dataset for meta-analysis by coding random-effect identifiers, standardizing population locations, calculating effective sample sizes and standard deviations, handling missing/zero-effect cases, estimating lnRR and SMD(H) effect sizes, applying fitness-direction signs, excluding non-estimable low-sample-size rows, and exporting analysis-ready datasets for both effect sizes as [dataset_lnRR](/data/04_data_analysis/dataset_lnRR.csv) and [dataset_SMDH](/data/04_data_analysis/dataset_SMDH.csv) and combined dataset as [dataset_analysis](/data/04_data_analysis/dataset_analysis.csv).
+
+- **07_data_analysis.Rmd (or code/07_data_analysis.html)** : fits the main multilevel meta-analytic models for lnRR and SMD(H), estimates heterogeneity, runs pre-registered and exploratory meta-regressions, conducts sensitivity analyses, evaluates risk-of-bias moderators and publication-bias diagnostics, and saves model objects and analysis datasets for reporting.
+
+- (code/08_figures-tables.Rmd or code/08_figures-tables.html) :
 
 `data/` This folder contains all the data used or generated during this project. It is organized into sub-folders based on project steps:
 
--   `01_systematic_search/`
-    -   `01_search_strategy` contains data related to developing of the search string for the systematic search.
-    -   `02_reference_data` contains .bib files downloaded from the Web of Science and Scopus and the final unique_reference_list generated from combining and de-duplicating these files.
-    -   `03_title_abstract_screening` contains data files with screening decisions, combined dataset after abstract screening and the selected dataset for subsequent steps.
--   `02_data_extraction/` This folder contains all the files associated with the data extraction for meta-analysis. It contains the different sets for data extraction for the three screeners. It also contains the final extracted data and the combined cleaned dataset for further steps.
--   `03_data_cleaning/`
--   `04_data_analysis/`
--   `05_data_sensitivity_analysis/`
+- `01_systematic_search/`
+  - `01_search_strategy` contains data related to developing of the search string for the systematic search.
+  - `02_reference_data` contains .bib files downloaded from the Web of Science and Scopus and the final unique_reference_list generated from combining and de-duplicating these files.
+  - `03_title_abstract_screening` contains data files with screening decisions, combined dataset after abstract screening and the selected dataset for subsequent steps.
+- `02_data_extraction/` This folder contains all the files associated with the data extraction for meta-analysis. It contains the different sets for data extraction for the three screeners. It also contains the final extracted data and the combined cleaned dataset for further steps.
+- `03_data_cleaning/`
+- `04_data_analysis/`
+- `05_data_sensitivity_analysis/`
 
 #### Data Description
 
@@ -51,13 +62,11 @@ This project maintains the actual workflow of the systematic review and meta-ana
 
 #### Code Desciption
 
-
-
 ### License
 
 - licensing information (e.g., CC-BY)
 
-This project is licensed under the \[\] - see the LICENSE.md file for details.
+This project is licensed under the [] - see the LICENSE.md file for details.
 
 ### Authors contribution
 

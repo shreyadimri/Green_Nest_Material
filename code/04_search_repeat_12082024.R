@@ -88,7 +88,7 @@ full_reference_repeat_12082024 <- rbind(reference_data_wos_reduced,
 
 #we decided to go with fuzzy match at default of 0.1 to remain consistent with 
 # what we had done for the main deduplication before
-search_duplicated <- find_duplicates(data = full_reference_repeat_12082024,
+search_duplicated <- revtools::find_duplicates(data = full_reference_repeat_12082024,
                                      match_variable = "title",
                                      group_variable = NULL,
                                      match_function = "fuzzdist",

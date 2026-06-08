@@ -13,9 +13,13 @@ In the previous script [05_data_cleaning.Rmd](https://github.com/shreyadimri/Gre
 
 #### Input files needed
 
-[data/03_data_cleaning/dataset_after_cleaning.csv](https://github.com/shreyadimri/Green_Nest_Material/blob/main/data/03_data_cleaning/dataset_after_cleaning.csv)
+- [data/03_data_cleaning/dataset_after_cleaning.csv]
 
 #### Output files generated
+
+- [data/04_data_analysis/dataset_analysis.csv]
+- [data/04_data_analysis/dataset_lnRR.csv]
+- [data/04_data_analysis/dataset_SMDH.csv]
 
 ### Setting up the workspace
 
@@ -29,7 +33,6 @@ if (!requireNamespace("pacman", quietly = TRUE)) {
 
 ## installing orchaRd from GitHub
 if (!requireNamespace("orchaRd", quietly = TRUE)) {
-## installing orchaRd from GitHub
 pacman::p_install_gh("daniel1noble/orchaRd", ref = 'main')
 }
 
@@ -159,7 +162,9 @@ In our pre-registration, we considered the following levels of non-independence 
 
 * (5) observation_ID which corresponds to a unit-level observation identity and models within-study variance
 
-As mentioned above, if we obtain additional effect sizes for other bird species after we update our search and/or contact authors, our models may need to account for phylogenetic nonindependence via the inclusion of two additional random effects: "species" and "phylogeny" following Cinar et al. (2022)."
+As mentioned above, if we obtain additional effect sizes for other bird species after we update our search and/or contact authors, our models may need to account for phylogenetic nonindependence via the inclusion of two additional random effects: "species" and "phylogeny" following Cinar et al. (2022).
+
+** However we did not find enough bird species to run a phylogenetic model, so we included only bird species as a random effect **
 
 * We also need to add `observation ID` which is the unit-level identity (unique for each row) for within-study variance.
 
@@ -250,7 +255,7 @@ dataset_analysis <- dataset_analysis %>%
 
 ## Effective Sample Size Calculation
 
-For comparisons involving the shared control or treatment groups across multiple studies, we adjust the sample sizes by dividing them by the number of times each group is included in comparisons. This adjustment helps to prevent any inflation of the effect sizes due to repeated use of the same groups and account for the shared-group non-independence.
+For comparisons involving the shared control or treatment groups across multiple studies, we adjust the sample sizes by dividing them by the number of times each group is included in comparisons. This adjustment helps to prevent any inflation of the precision of effect sizes due to repeated use of the same groups and account for the shared-group non-independence. In other words, this adjustment reduces over-precision caused by reusing the same control or treatment group across multiple comparisons.
 
 ```{r effective sample size}
 dataset_analysis <- dataset_analysis %>%
@@ -710,7 +715,7 @@ noSMDH <- dataset_analysis %>%
 # Since authors report no significant effect of the treatment, 
 # we assume that the means are not different in the treatment and control group. 
 # Under this assumption SMD = M(treatment)-M(control)/SD(pooled) which would be zero
-# and the associated variance = n(treatment)+n(control)/n(treatment)+n(control)
+# and the approximate sampling variance is (n_treatment + n_control) / (n_treatment * n_control).
 
 dataset_analysis <- dataset_analysis %>%
   mutate(SMDH = if_else(proxy_comment == "use 0 as ES" & !is.na(proxy_comment), (measure_central_tendency_experiment-measure_central_tendency_control), SMDH)) %>%
@@ -843,7 +848,7 @@ dataset_analysis <- rows_update(
   by = "Observation_ID")
 ```
 
-![from Table 11.1 Cooper2019](/images/t-d.png)
+![from Table 11.1 Cooper2019](../images/t-d.png)
 
 ```{r}
 # 1 effect size where SMDH needs to be estimated from t-test statistics
@@ -904,6 +909,8 @@ dataset_analysis <- dataset_analysis %>%
 
 ## Saving all output files
 
+Output-writing code is not evaluated when rendering because the generated files are already archived in the repository.
+
 ```{r, eval = F}
 ## Complete dataset that can be used for analysis
 write.csv(dataset_analysis, 
@@ -920,4 +927,11 @@ write.csv(dataset_lnRR,
 dataset_SMDH <- dataset_analysis %>%
 filter(!is.na(SMDH_sign) & !is.na(SMDH_variance))
 write.csv(dataset_SMDH,file=here::here("data/04_data_analysis/dataset_SMDH.csv"),row.names = FALSE)
+```
+
+
+#### Session info
+
+```{r, echo=FALSE}
+sessionInfo()
 ```
