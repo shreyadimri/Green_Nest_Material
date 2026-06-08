@@ -4,7 +4,7 @@
 
 Welcome to the Green Nest Material project repository!
 
-This study has been pre-registered here: <https://doi.org/10.17605/OSF.IO/S7J6Z>
+This study has been pre-registered here: <https://doi.org/10.17605/OSF.IO/S7J6Z> and if you want to see the reproducible Quarto manuscript, here is the link: <https://shreyadimri.github.io/Green_Nest_Material/>
 
 This repository contains material related to the study:
 
@@ -19,6 +19,8 @@ The repository is organized into separate folders for
 `code/`: contains all R scripts and R Markdown files (along with rendered .html) used for the systematic search, screening, data cleaning, effect-size preparation, statistical analyses, and generation of figures and tables.
 
 `data/`: contains all datasets used or produced throughout the workflow, including search records, screening files, extraction sheets, cleaned datasets, datasets used for analysis and sub-datasets used in all the models. Please read through Data description below to understand in more detail.
+
+`data_dictionaries/`: contains simple variable descriptions for the key processed datasets used in the workflow. These files provide short definitions, numbers of unique values, and missingness summaries for datasets the raw data \`dataset_after_cleaning.csv\`, and processed data \`dataset_analysis.csv\`.
 
 `figures/`: contains the manuscript and supplementary figures generated for the project.
 
@@ -74,23 +76,21 @@ This project maintains the actual workflow of the systematic review and meta-ana
 
 ### DATA DESCRIPTION
 
-## Data description
-
 The repository contains several intermediate data files generated during the workflow. These intermediate files are retained for transparency and reproducibility. Because many files share similar columns and several are subsets of later datasets, we highlight below the key files that are most useful for navigating and reproducing the project.
 
 ### Key files
 
-- [`data/01_systematic_search/01_search_strategy/SCOPUS_search-query`](data/01_systematic_search/01_search_strategy/SCOPUS_search-query): final Scopus database search query.
+- `data/01_systematic_search/01_search_strategy/SCOPUS_search-query` and `data/01_systematic_search/01_search_strategy/WOS_search-query`: final Scopus and Web of Science database search query.
 
-- [`data/01_systematic_search/01_search_strategy/WOS_search-query`](data/01_systematic_search/01_search_strategy/WOS_search-query): final Web of Science database search query.
+- `data/03_data_cleaning/dataset_after_cleaning.csv`: cleaned dataset created after data cleaning. This is the cleaned extracted dataset used before effect-size preparation.
 
-- [`data/03_data_cleaning/dataset_after_cleaning.csv`](data/03_data_cleaning/dataset_after_cleaning.csv): cleaned dataset created after data cleaning. This is the cleaned extracted dataset used before effect-size preparation.
+- `data/04_data_analysis/dataset_analysis.csv`: complete analysis-ready dataset containing both effect-size types, sampling variances, signed effect sizes, random-effect identifiers and moderator variables.
 
-- [`data/04_data_analysis/dataset_analysis.csv`](data/04_data_analysis/dataset_analysis.csv): complete analysis-ready dataset containing both effect-size types, sampling variances, signed effect sizes, random-effect identifiers and moderator variables.
+- `data/04_data_analysis/dataset_lnRR.csv`: analysis-ready dataset for models using the log response ratio effect size, lnRR, and its sampling variance.
 
-- [`data/04_data_analysis/dataset_lnRR.csv`](data/04_data_analysis/dataset_lnRR.csv): analysis-ready dataset for models using the log response ratio effect size, lnRR, and its sampling variance.
+- `data/04_data_analysis/dataset_SMDH.csv`: analysis-ready dataset for models using the standardized mean difference effect size, SMD(H), and its sampling variance.
 
-- [`data/04_data_analysis/dataset_SMDH.csv`](data/04_data_analysis/dataset_SMDH.csv): analysis-ready dataset for models using the standardized mean difference effect size, SMD(H), and its sampling variance.
+We provide the **`data dictionaries`** which contain a short description of each variable for `data/03_data_cleaning/dataset_after_cleaning.csv` and `data/04_data_analysis/dataset_analysis.csv` (dataset_lnRR and dataset_SMDH have the same variables).
 
 ### Data folder structure
 
@@ -138,8 +138,7 @@ data/
 │   │   data extraction.
 │   │
 │   ├── extracted_raw_data/
-│   │   Raw numerical data extracted from open data or study
-│   │   materials.
+│   │   Raw data extracted from open data (along with R Scripts used for it)
 │   │
 │   └── *.xlsx
 │       Checked full-text screening and data-extraction spreadsheets
@@ -163,18 +162,19 @@ data/
 │   │
 │   └── dataset_after_cleaning.csv
 │       Cleaned extracted dataset used before effect-size
-│       preparation.
+│       calculation. This is the raw data extracted for this study.
 │
 ├── 04_data_analysis/
 │   │
 │   ├── dataset_analysis.csv
-│   │   Complete analysis-ready dataset with both effect-size types.
+│   │   Complete analysis-ready dataset with both effect-size types (lnRR and SMDH).
+│   │   This is the complete processed data for this study.
 │   │
 │   ├── dataset_lnRR.csv
-│   │   Analysis-ready dataset for lnRR models.
+│   │   Analysis-ready dataset for the lnRR models.
 │   │
 │   ├── dataset_SMDH.csv
-│   │   Analysis-ready dataset for SMD(H) models.
+│   │   Analysis-ready dataset for the SMD(H) models.
 │   │
 │   ├── intercept_*.csv
 │   │   Datasets used for intercept-only models.
@@ -241,16 +241,16 @@ data/
         inferential statistics.
 ```
 
-#### Code Desciption
+### LICENSE
 
-### License
+This repository contains both analysis code and research materials. The code may be reused, modified, and redistributed under the terms of the MIT License, while the research materials may be reused and adapted with appropriate attribution.
 
-- licensing information (e.g., CC-BY)
+**Code** in the \`code/\` and \`functions/\` folders is released under the **MIT License**.\
+\
+**Data, data dictionaries, figures, tables, and documentation** are released under the Creative Commons Attribution-NonCommercial 4.0 International License (**CC BY-NC 4.0**), unless otherwise stated.\
+\
+**Additional notice**: No permission is granted for AI training or model development.
 
-This project is licensed under the [] - see the LICENSE.md file for details.
+### CONTACT
 
-### Authors contribution
-
-### Acknowledgements
-
-- Following acceptance, author/contact details, publication links, and the repository citation/DOI in both the Data Statement and reference list of the main manuscript. Please also ensure the repository is public; your GitHub repository already is.
+Please feel free to contact **Shreya Dimri : shreyadimriofficial\@gmail.com** for any feedback or questions about the data or code in this repository.
