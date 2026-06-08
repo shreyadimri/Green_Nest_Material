@@ -1,14 +1,15 @@
 ---
 title: "Data Analysis"
-author: "Shreya D."
+author: "Shreya Dimri"
 date: "`r Sys.Date()`"
 output: html_document
 ---
 
 ## Preface
+
 ### Setting up the workspace
 
-* Install and load required packages
+- Install and load required packages
 
 ```{r setup, warning=FALSE, message=FALSE}
 ## Setting up workspace using pacman
@@ -52,7 +53,6 @@ pacman::p_load(
 )
 ```
 
-
 ### Custom functions
 
 For the presented analyses, we need to define the function [sigma2_v](https://github.com/Yefeng0920/heterogeneity_ecoevo/blob/main/function/function.R) to estimate typical sampling error variance
@@ -65,8 +65,9 @@ sigma2_v <- function(mod){
 }
 ```
 
-
 ### Loading Data for analysis
+
+These files were created from the code `06_data_preparation.Rmd`
 
 ```{r load_packages-data, warning=FALSE, message=FALSE}
 ## set seed for reproducibility 
@@ -83,7 +84,6 @@ dataset_lnRR <- read_csv(here::here("data/04_data_analysis/dataset_lnRR.csv"))
 
 dataset_SMDH <- read_csv(here::here("data/04_data_analysis/dataset_SMDH.csv"))
 ```
-
 
 ## Creating Phylogeny for the plot
 
@@ -298,8 +298,7 @@ write.csv(dataset_lnRR,
 
 This is the function from Yefeng's Github for interpreting heterogeneity. I have to download the data used for this function to be able to use it.
 
-I am using the values from the table directly..
-
+**I am using the values from the table directly..**
 
 ```{r function-interpret-heterogeneity, eval=FALSE}
 # Sun Aug 31 12:01:40 2025 ------------------------------
@@ -640,8 +639,8 @@ VCV_SMDH_published <- vcalc(
 
 ## Running intercept only model
 SA_SMDH_published<- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_published, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_published, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -744,8 +743,8 @@ VCV_SMDH_flagged <- vcalc(
 ## Running intercept only model
 
 SA_SMDH_flagged<- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_flagged, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_flagged, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -840,8 +839,8 @@ VCV_SMDH_no_missingES <- vcalc(
 
 ## Running intercept only model
 SA_SMDH_no_missingES <- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_no_missingES, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_no_missingES, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -931,8 +930,8 @@ VCV_SMDH_flagged_no_missingES <- vcalc(
 
 ## Running intercept only model
 SA_SMDH_flagged_no_missingES <- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_flagged_no_missingES, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_flagged_no_missingES, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1001,8 +1000,8 @@ VCV_SMDH_design_flagged_no_missingES <- vcalc(
 
 SMDH_design_flagged_no_missingE <-
   metafor::rma.mv(
-    yi = SMDH_sign, # specify lnRR as the effect size measure;
-    V = VCV_SMDH_design_flagged_no_missingES ,# specify lnRR's sampling variance;
+    yi = SMDH_sign, # specify SMDH as the effect size measure;
+    V = VCV_SMDH_design_flagged_no_missingES ,# specify SMDH's sampling variance;
     mods = ~ - 1 + comparision_type,
     random = list(~ 1 | paper_ID,
                   ~ 1 | Observation_ID,
@@ -1036,8 +1035,8 @@ VCV_SMDH_no_inferential <- vcalc(
 
 ## Running intercept only model
 SA_SMDH_no_inferential<- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_no_inferential, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_no_inferential, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1132,8 +1131,8 @@ VCV_lnRR_no_para <- vcalc(
 )
 
 SA_lnRR_no_para <- rma.mv(
-  yi = lnRR_sign, # specify lnRR as the effect size measure;
-  V = VCV_lnRR_no_para, # specify lnRR's sampling variance-covariance matrix;
+  yi = lnRR_sign, # specify SMDH as the effect size measure;
+  V = VCV_lnRR_no_para, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1177,8 +1176,8 @@ VCV_SMDH_no_para <- vcalc(
   rho = 0.5) # assuming that the effect sizes within the same study are correlated with rho = 0.5
 
 SA_SMDH_no_para<- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_no_para, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_no_para, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1322,8 +1321,8 @@ lnRR_hypothesis_R2 <- r2_ml(lnRR_hypothesis)
 round(lnRR_hypothesis_R2 * 100, 1)
 
 SMDH_hypothesis <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
   mods = ~ - 1 + Hypothesis,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1407,8 +1406,8 @@ VCV_SMDH_design <- vcalc(
 )
 
 SMDH_design <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_design ,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_design ,# specify SMDH's sampling variance;
   mods = ~ - 1 + comparision_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1452,8 +1451,8 @@ VCV_lnRR_no_comp3 <- vcalc(
 )
 
 SA_lnRR_no_comp3<- rma.mv(
-  yi = lnRR_sign, # specify lnRR as the effect size measure;
-  V = VCV_lnRR_no_comp3, # specify lnRR's sampling variance-covariance matrix;
+  yi = lnRR_sign, # specify SMDH as the effect size measure;
+  V = VCV_lnRR_no_comp3, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1496,8 +1495,8 @@ VCV_SMDH_no_comp3 <- vcalc(
 )
 
 SA_SMDH_no_comp3<- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_no_comp3, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_no_comp3, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1566,8 +1565,8 @@ VCV_SMDH_design_SA <- vcalc(
 )
 
 SMDH_design_SA <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_design_SA ,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_design_SA ,# specify SMDH's sampling variance;
   mods = ~ - 1 + comparision_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1617,8 +1616,8 @@ write.csv(dataset_lnRR,
 ```{r}
 ## Now similarly for the SMDH effect size using the complete dataset
 SMDH_time_gnm_addition <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance using the variance-covariance matrix we created for the intercept-only model since the whole dataset is being used in this case as well
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance using the variance-covariance matrix we created for the intercept-only model since the whole dataset is being used in this case as well
   mods = ~ - 1 + time_of_gnm_addition,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1709,8 +1708,8 @@ VCV_SMDH_parasite <- vcalc(
 )
 
 SMDH_parasite <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_parasite,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_parasite,# specify SMDH's sampling variance;
   mods = ~ - 1 + parasite_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1769,8 +1768,8 @@ write.csv(dataset_lnRR,here::here("data/04_data_analysis/birds_lnRR.csv"))
 ## Now doing this for SMDH
 
 SMDH_birds <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
   mods = ~ - 1 + bird_species,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1829,8 +1828,8 @@ write.csv(dataset_lnRR,here::here("data/04_data_analysis/trait_lnRR.csv"))
 ## Now similarly for SMDH
 
 SMDH_trait <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
   mods = ~ - 1 + trait_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1920,8 +1919,8 @@ VCV_SMDH_no_comp1 <- vcalc(
 )
 
 SA_SMDH_no_comp1<- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_no_comp1, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_no_comp1, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ 1,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1975,8 +1974,8 @@ saveRDS(lnRR_hypothesis_no_comp1, file = here::here("model/lnRR_hypothesis_no_co
 
 ```{r}
 SMDH_hypothesis_no_comp1 <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_no_comp1,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_no_comp1,# specify SMDH's sampling variance;
   mods = ~ - 1 + Hypothesis,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -1999,7 +1998,7 @@ saveRDS(SMDH_hypothesis_no_comp1, file = here::here("model/SMDH_hypothesis_no_co
 
 ```{r}
 #----------------------------------------------------------------------------
-## Now re-running all the 5 meta-regressions once again
+## Now re-running the meta-regressions once again with experimental design in it
 #----------------------------------------------------------------------------
 
 # This analysis only includes dataset that has a proxy relating to comparison type
@@ -2045,13 +2044,13 @@ VCV_SMDH_design_no_comp1 <- vcalc(
   vi = SMDH_variance,
   cluster = paper_ID,
   obs = Observation_ID,
-  data = dataset_lnRR_design_no_comp1,
+  data = dataset_SMDH_design_no_comp1,
   rho = 0.5 # assuming that the effect sizes within the same study are correlated with rho = 0.5
 )
 
-lnRR_design_no_comp1 <- metafor::rma.mv(
-  yi = lnRR_sign, # specify lnRR as the effect size measure;
-  V = VCV_lnRR_design_no_comp1 ,# specify lnRR's sampling variance;
+SMDH_design_no_comp1 <- metafor::rma.mv(
+  yi = lnRR_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_design_no_comp1 ,# specify SMDH's sampling variance;
   mods = ~ - 1 + comparision_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2061,7 +2060,7 @@ lnRR_design_no_comp1 <- metafor::rma.mv(
   method = "REML",
   test = "t",
   control = list(optimizer="optim"),
-  data = dataset_lnRR_design_no_comp1 )
+  data = dataset_SMDH_design_no_comp1 )
 ```
 
 ```{r, eval=FALSE}
@@ -2069,7 +2068,7 @@ lnRR_design_no_comp1 <- metafor::rma.mv(
 ## -----------------------------------------------------------
 
 # Saving the model
-saveRDS(lnRR_design_no_comp1, file = here::here("model/lnRR_design_no_comp1.rds"))
+saveRDS(SMDH_design_no_comp1, file = here::here("model/SMDH_design_no_comp1.rds"))
 ```
 
 # Risk of Bias
@@ -2252,7 +2251,7 @@ write.csv(dataset_SMDH,here::here("data/04_data_analysis/SMDH_missing_data.csv")
 
 # Publication Bias
 
-Small study effects:
+## Small study effects
 
 ```{r}
 dataset_lnRR_published <- dataset_lnRR_published %>%
@@ -2296,8 +2295,8 @@ dataset_SMDH_published <- dataset_SMDH_published %>%
   mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
 
 SMDH_small_study <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_published,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_published,# specify SMDH's sampling variance;
   mods = ~sqrt_effective_n_inv,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2323,7 +2322,7 @@ summary(SMDH_small_study)
 round(r2_ml(SMDH_small_study)*100,2)
 ```
 
-Decline effects (Time lag bias)
+## Decline effects (Time lag bias)
 
 Next, run a uni-moderator meta-regression to test for evidence of decline effects (also known as time-lag bias) which includes year of publication (mean-centered) as the only moderator, and whose slope would provide information about whether the overall effect size has changed (decline) over time (Nakagawa et al. 2022; Sánchez-Tójar et al. 2018).
 
@@ -2364,8 +2363,8 @@ dataset_SMDH_published<-dataset_SMDH_published %>%
   mutate(year_MeanCenter = scale(as.numeric(year_publication), scale = F)[,1])
 
 SMDH_decline_eff <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_published,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_published,# specify SMDH's sampling variance;
   mods = ~ year_MeanCenter,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2464,8 +2463,8 @@ VCV_SMDH_all_in <- vcalc(
 )
 
 SMDH_all_in <- rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_all_in, # specify lnRR's sampling variance-covariance matrix;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_all_in, # specify SMDH's sampling variance-covariance matrix;
   mods = ~ time_of_gnm_addition +
     year_MeanCenter +
     sqrt_effective_n_inv +
@@ -2524,9 +2523,7 @@ lnRR_hypothesis_pc <- metafor::rma.mv(
   control = list(optimizer="optim"),
   data = dataset_lnRR)
 
-# I now want to test for statistical differences between groups. Male and fem
-# information for androgens can be obtained from the outcome of the table. For thyroid
-# hormones I need to do Post-hoc Wald tests:
+# I now want to test for statistical differences between groups. I need to do Post-hoc Wald tests:
 car::linearHypothesis(lnRR_hypothesis_pc, rbind(c(0,1,-1)))
 
 ```
@@ -2551,8 +2548,8 @@ VCV_SMDH <- vcalc(
 )
 
 SMDH_hypothesis_pc <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
   mods = ~ Hypothesis,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2564,9 +2561,7 @@ SMDH_hypothesis_pc <- metafor::rma.mv(
   control = list(optimizer="optim"),
   data = dataset_SMDH)
 
-# I now want to test for statistical differences between groups. Male and fem
-# information for androgens can be obtained from the outcome of the table. For thyroid
-# hormones I need to do Post-hoc Wald tests:
+# I now want to test for statistical differences between groups. I need to do Post-hoc Wald tests:
 car::linearHypothesis(SMDH_hypothesis_pc, rbind(c(0,1,-1)))
 ```
 
@@ -2632,8 +2627,8 @@ VCV_SMDH_design <- vcalc(
 )
 
 SMDH_design_pc <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_design ,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_design ,# specify SMDH's sampling variance;
   mods = ~ comparision_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2686,8 +2681,8 @@ saveRDS(lnRR_time_gnm_addition_pc, file = here::here("model/lnRR_time_gnm_additi
 ```{r}
 ## Now similarly for the SMDH effect size using the complete dataset
 SMDH_time_gnm_addition_pc <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance using the variance-covariance matrix we created for the intercept-only model since the whole dataset is being used in this case as well
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance using the variance-covariance matrix we created for the intercept-only model since the whole dataset is being used in this case as well
   mods = ~ time_of_gnm_addition,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2768,9 +2763,9 @@ VCV_SMDH_parasite <- vcalc(
 )
 
 SMDH_parasite_pc <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH_parasite,# specify lnRR's sampling variance;
-  mods =  parasite_type,
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH_parasite,# specify SMDH's sampling variance;
+  mods = ~ parasite_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
                 ~ 1 | group_ID_coded,
@@ -2822,8 +2817,8 @@ saveRDS(lnRR_birds_pc, file = here::here("model/lnRR_birds_pc.rds"))
 ## Now doing this for SMDH
 
 SMDH_birds_pc <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
   mods = ~  bird_species,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2875,8 +2870,8 @@ saveRDS(lnRR_trait_pc, file = here::here("model/lnRR_trait_pc.rds"))
 ```{r}
 ## Now similarly for SMDH
 SMDH_trait_pc <- metafor::rma.mv(
-  yi = SMDH_sign, # specify lnRR as the effect size measure;
-  V = VCV_SMDH,# specify lnRR's sampling variance;
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
   mods = ~ trait_type,
   random = list(~ 1 | paper_ID,
                 ~ 1 | Observation_ID,
@@ -2898,7 +2893,7 @@ saveRDS(SMDH_trait_pc, file = here::here("model/SMDH_trait_pc.rds"))
 ```
 
 ## Session info
+
 ```{r}
 sessionInfo()
 ```
-

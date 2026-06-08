@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# ---- FIGURES --------------
+# FIGURES
 
 ## Visualising location and bird species
 
@@ -46,7 +46,7 @@ pacman::p_load(
 
 For the purpose of this map, longitude and latitude of the study area manually added to the dataset. They are saved to `dataset_analysis$population_location` as they were extracted from the respective papers. If not provided by the authors, a general location was manually selected. Note, coordinates are used for visualising only.
 
-* Load datasets
+- Load datasets
 
 ```{r location-map}
 ## Load data for plotting a location map
@@ -684,7 +684,6 @@ SMDH_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
 # Figure save is missing!
 ```
 
-
 ## Experimental Design
 
 ```{r orchard plot experimental design meta-regression}
@@ -753,7 +752,6 @@ SMDH_design_plot <- orchard_plot(mod_results(
 
 Now the cropped figures for the main manuscript
 
-
 ```{r orchard plot experimental design meta-regression; manuscript figure}
 lnRR_design_plot_cropped <- orchard_plot(mod_results(
   lnRR_design,
@@ -821,7 +819,6 @@ SMDH_design_plot_cropped <- orchard_plot(mod_results(
 # Save image file here
 ```
 
-
 ### Now we combine these plots
 
 ```{r combining meta-regression plots, effect}
@@ -850,7 +847,7 @@ ggsave(here::here("figures/Figure_design_time_gnm_addition.png"),
        plot = Figure_design_time_gnm_addition, height = 240, width = 250, units = "mm", dpi = 600)
 ```
 
-* Now the cropped figures for the main manuscript
+- Now the cropped figures for the main manuscript
 
 ```{r SMDH_design_plot_cropped}
 ## I am going to remove the y ticks from the SMDH plots to make it smaller..
@@ -1195,7 +1192,7 @@ ggsave(here::here("figures/Figure_publication_bias.png"),
        plot = Figure_publication_bias, height = 300, width = 400, units = "mm", dpi = 600)
 ```
 
-# ----- Supplementary Material Table -------
+# Supplementary Material Table
 
 ```{r}
 #| label: excluded_proxy_table
@@ -1254,7 +1251,7 @@ excluded_proxies <- combined_summary %>%
   # relabel columns
   cols_label(
     `paper_ID`             = "Paper ID",
-    `Number of proxies`    = "Noumber\nof Proxies",
+    `Number of proxies`    = "Number\nof Proxies",
     `Excluded Proxies`     = "Excluded\nProxies",
     `Reason for Exclusion` = "Reason for Exclusion") %>%
   fmt_markdown(columns = c(`Excluded Proxies`, `Reason for Exclusion`)) %>%
@@ -1667,7 +1664,7 @@ gtsave(RoB_table,here::here("tables/SA_RoB_table.docx"))
 gtsave(RoB_table,here::here("tables/SA_RoB_table.html"))
 ```
 
-# -------- TABLES ----------
+# TABLES
 
 ## Table: Output from meta-regressions
 
