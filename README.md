@@ -52,55 +52,205 @@ Several output-writing chunks are commented out or set to \`eval = FALSE\` becau
 
 This project maintains the actual workflow of the systematic review and meta-analysis as was used in the process of conducting the study.
 
--   **00_search_strategy_litsearchr_code.R** : uses `litsearchr` to validate the systematic search terms by extracting candidate keywords from known relevant references ([initial library](data/01_systematic_search/01_search_strategy/own_library_references.bib)) and visualising their co-occurrence network.
+- **00_search_strategy_litsearchr_code.R** : uses `litsearchr` to validate the systematic search terms by extracting candidate keywords from known relevant references ([initial library](data/01_systematic_search/01_search_strategy/own_library_references.bib)) and visualising their co-occurrence network.
 
--   **01_systematic_search_deduplication.R**: Once the search is conducted and all available files from Web of Science and Scopus Database Collection ([GNM_wos.bib](data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib) and [GNM_scopus.bib](data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib)) were downloaded, these scripts were run to identifiy duplicate references using title-based fuzzy matching in `revtools` and saves the unique reference list used for screening.
+- **01_systematic_search_deduplication.R**: Once the search is conducted and all available files from Web of Science and Scopus Database Collection ([GNM_wos.bib](data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib) and [GNM_scopus.bib](data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib)) were downloaded, these scripts were run to identifiy duplicate references using title-based fuzzy matching in `revtools` and saves the unique reference list used for screening.
 
-    **Please note**, due to encoding issues in .bib files, we now use [.csv file](data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv) to maintain the reproducibility.
+  **Please note**, due to encoding issues in .bib files, we now use [.csv file](data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv) to maintain the reproducibility.
 
--   **02_abstract_screening.R** : assigns unique paper IDs to the deduplicated reference list, creates randomized screening subsets for independent title-and-abstract screening in `revtools`, then merges the resolved screening decisions, standardizes exclusion reasons, flags manually identified duplicates, and exports the articles selected for full-text screening.
+- **02_abstract_screening.R** : assigns unique paper IDs to the deduplicated reference list, creates randomized screening subsets for independent title-and-abstract screening in `revtools`, then merges the resolved screening decisions, standardizes exclusion reasons, flags manually identified duplicates, and exports the articles selected for full-text screening.
 
--   **03_fulltext_and_data_extraction.R** : imports the records selected after title-and-abstract screening, creates randomized subsets for pilot and main full-text screening/data extraction by multiple reviewers, then combines the checked Excel extraction files and summarizes records excluded at the full-text stage.
+- **03_fulltext_and_data_extraction.R** : imports the records selected after title-and-abstract screening, creates randomized subsets for pilot and main full-text screening/data extraction by multiple reviewers, then combines the checked Excel extraction files and summarizes records excluded at the full-text stage.
 
--   **04_search_repeat_12082024.R** : imports and deduplicates the from Web of Science and Scopus Database Collection ([GNM_repeat_wos.bib](data/01_systematic_search/04_search_repeat_12082024/GNM_repeat_wos.bib) and [GNM_repeat_scopus.csv](data/01_systematic_search/04_search_repeat_12082024/GNM_repeat_scopus.csv)) files from the **updated literature search conducted on 12 August 2024**, assigns repeat-search paper IDs, records the single-reviewer title-and-abstract screening decisions, summarizes exclusions for PRISMA reporting, and adds [other eligible studies](data/01_systematic_search/04_search_repeat_12082024/GNM_additional_studies.bib) identified outside the database search.
+- **04_search_repeat_12082024.R** : imports and deduplicates the from Web of Science and Scopus Database Collection ([GNM_repeat_wos.bib](data/01_systematic_search/04_search_repeat_12082024/GNM_repeat_wos.bib) and [GNM_repeat_scopus.csv](data/01_systematic_search/04_search_repeat_12082024/GNM_repeat_scopus.csv)) files from the **updated literature search conducted on 12 August 2024**, assigns repeat-search paper IDs, records the single-reviewer title-and-abstract screening decisions, summarizes exclusions for PRISMA reporting, and adds [other eligible studies](data/01_systematic_search/04_search_repeat_12082024/GNM_additional_studies.bib) identified outside the database search.
 
--   **05_data_cleaning.Rmd (or code/05_data_cleaning.html) :** imports and merges all extracted datasets from the initial search and screening, updated search, additional sources, and unpublished studies. It standardizes fitness-proxy names and moderator variables, removes excluded proxies and adds observation and hypothesis identifiers finally exports the cleaned dataset used for effect-size calculation and meta-analysis.
+- **05_data_cleaning.Rmd (or code/05_data_cleaning.html) :** imports and merges all extracted datasets from the initial search and screening, updated search, additional sources, and unpublished studies. It standardizes fitness-proxy names and moderator variables, removes excluded proxies and adds observation and hypothesis identifiers finally exports the cleaned dataset used for effect-size calculation and meta-analysis.
 
--   **06_data_preparation.Rmd (or code/06_data_preparation.html) :** prepares the cleaned extraction dataset for meta-analysis by coding random-effect identifiers, standardizing population locations, calculating effective sample sizes and standard deviations, handling missing/zero-effect cases, estimating lnRR and SMD(H) effect sizes, applying fitness-direction signs, excluding non-estimable low-sample-size rows, and exporting analysis-ready datasets for both effect sizes as [dataset_lnRR](/data/04_data_analysis/dataset_lnRR.csv) and [dataset_SMDH](/data/04_data_analysis/dataset_SMDH.csv) and combined dataset as [dataset_analysis](/data/04_data_analysis/dataset_analysis.csv).
+- **06_data_preparation.Rmd (or code/06_data_preparation.html) :** prepares the cleaned extraction dataset for meta-analysis by coding random-effect identifiers, standardizing population locations, calculating effective sample sizes and standard deviations, handling missing/zero-effect cases, estimating lnRR and SMD(H) effect sizes, applying fitness-direction signs, excluding non-estimable low-sample-size rows, and exporting analysis-ready datasets for both effect sizes as [dataset_lnRR](/data/04_data_analysis/dataset_lnRR.csv) and [dataset_SMDH](/data/04_data_analysis/dataset_SMDH.csv) and combined dataset as [dataset_analysis](/data/04_data_analysis/dataset_analysis.csv).
 
--   **07_data_analysis.Rmd (or code/07_data_analysis.html)** : fits the main multilevel meta-analytic models for lnRR and SMD(H), estimates heterogeneity, runs pre-registered and exploratory meta-regressions, conducts sensitivity analyses, evaluates risk-of-bias moderators and publication-bias diagnostics, and saves model objects and analysis datasets for each model.
+- **07_data_analysis.Rmd (or code/07_data_analysis.html)** : fits the main multilevel meta-analytic models for lnRR and SMD(H), estimates heterogeneity, runs pre-registered and exploratory meta-regressions, conducts sensitivity analyses, evaluates risk-of-bias moderators and publication-bias diagnostics, and saves model objects and analysis datasets for each model.
 
--   **08_figures-tables.Rmd (or code/08_figures-tables.html)** : it produces the figures and tables from the datasets and saved model objects, including study-location maps, orchard plots for main and moderator models, publication-bias plots, excluded-proxy summaries, sensitivity-analysis tables, and meta-regression result tables.
+- **08_figures-tables.Rmd (or code/08_figures-tables.html)** : it produces the figures and tables from the datasets and saved model objects, including study-location maps, orchard plots for main and moderator models, publication-bias plots, excluded-proxy summaries, sensitivity-analysis tables, and meta-regression result tables.
 
 ### DATA DESCRIPTION
 
-`data/` This folder contains all the data used or generated during this project. It is organized into sub-folders based on project steps:
+## Data description
 
--   `01_systematic_search/`
-    -   `01_search_strategy` contains data related to developing of the search string for the systematic search.
-    -   `02_reference_data` contains .bib files downloaded from the Web of Science and Scopus and the final unique_reference_list generated from combining and de-duplicating these files.
-    -   `03_title_abstract_screening` contains data files with screening decisions, combined dataset after abstract screening and the selected dataset for subsequent steps.
--   `02_data_extraction/` This folder contains all the files associated with the data extraction for meta-analysis. It contains the different sets for data extraction for the three screeners. It also contains the final extracted data and the combined cleaned dataset for further steps.
--   `03_data_cleaning/`
--   `04_data_analysis/`
--   `05_data_sensitivity_analysis/`
+The repository contains several intermediate data files generated during the workflow. These intermediate files are retained for transparency and reproducibility. Because many files share similar columns and several are subsets of later datasets, we highlight below the key files that are most useful for navigating and reproducing the project.
 
-<!-- -->
+### Key files
 
--   A completed overview of the folder/file structure and contents.
--   
--   This would typically include descriptions of all columns/variables in the data files; however, I recognise that you have many data files, each with many columns. Instead, I suggest detailing the variable descriptions for only key data files, such as: “.data/03_data_cleaning/dataset_after_cleaning.csv”.
+- [`data/01_systematic_search/01_search_strategy/SCOPUS_search-query`](data/01_systematic_search/01_search_strategy/SCOPUS_search-query): final Scopus database search query.
+
+- [`data/01_systematic_search/01_search_strategy/WOS_search-query`](data/01_systematic_search/01_search_strategy/WOS_search-query): final Web of Science database search query.
+
+- [`data/03_data_cleaning/dataset_after_cleaning.csv`](data/03_data_cleaning/dataset_after_cleaning.csv): cleaned dataset created after data cleaning. This is the cleaned extracted dataset used before effect-size preparation.
+
+- [`data/04_data_analysis/dataset_analysis.csv`](data/04_data_analysis/dataset_analysis.csv): complete analysis-ready dataset containing both effect-size types, sampling variances, signed effect sizes, random-effect identifiers and moderator variables.
+
+- [`data/04_data_analysis/dataset_lnRR.csv`](data/04_data_analysis/dataset_lnRR.csv): analysis-ready dataset for models using the log response ratio effect size, lnRR, and its sampling variance.
+
+- [`data/04_data_analysis/dataset_SMDH.csv`](data/04_data_analysis/dataset_SMDH.csv): analysis-ready dataset for models using the standardized mean difference effect size, SMD(H), and its sampling variance.
+
+### Data folder structure
+
+``` text
+
+data/
+├── 01_systematic_search/
+│   │
+│   ├── 01_search_strategy/
+│   │   Search-term development and validation files.
+│   │
+│   │   ├── litsearchr_search_terms.csv
+│   │   │   Candidate terms identified during search-term validation.
+│   │   │
+│   │   ├── own_library_references.csv
+│   │   │   Initial library of known relevant references.
+│   │   │
+│   │   ├── SCOPUS_search-query
+│   │   │   Final Scopus database search query.
+│   │   │
+│   │   └── WOS_search-query
+│   │       Final Web of Science database search query.
+│   │
+│   ├── 02_reference_data/
+│   │   Imported records, pre-deduplication files, and unique
+│   │   reference lists.
+│   │
+│   ├── 03_title_and_abstract_screening/
+│   │   Screening subsets, resolved decisions, exclusions, and
+│   │   records selected for full-text screening.
+│   │
+│   │   └── screening_sets/
+│   │       Files used by screeners before screening outcomes were
+│   │       added.
+│   │
+│   └── 04_search_repeat_12082024/
+│       Updated search records, deduplicated references, screening
+│       decisions, and additional-study records from the repeat
+│       search on 12 August 2024.
+│
+├── 02_data_extraction/
+│   │
+│   ├── extracted_figures/
+│   │   Figures extracted from primary studies where needed for
+│   │   data extraction.
+│   │
+│   ├── extracted_raw_data/
+│   │   Raw numerical data extracted from open data or study
+│   │   materials.
+│   │
+│   └── *.xlsx
+│       Checked full-text screening and data-extraction spreadsheets
+│       from the main search, repeat search, additional sources, and
+│       unpublished datasets.
+│
+├── 03_data_cleaning/
+│   │
+│   ├── merged_data_extraction.csv
+│   │   Combined extracted dataset before data cleaning.
+│   │
+│   ├── excluded_fulltext.csv
+│   │   Records excluded during full-text screening.
+│   │
+│   ├── included_fulltext.csv
+│   │   Records retained after full-text screening.
+│   │
+│   ├── low_sample.csv
+│   │   Rows flagged for insufficient sample size during effect-size
+│   │   preparation.
+│   │
+│   └── dataset_after_cleaning.csv
+│       Cleaned extracted dataset used before effect-size
+│       preparation.
+│
+├── 04_data_analysis/
+│   │
+│   ├── dataset_analysis.csv
+│   │   Complete analysis-ready dataset with both effect-size types.
+│   │
+│   ├── dataset_lnRR.csv
+│   │   Analysis-ready dataset for lnRR models.
+│   │
+│   ├── dataset_SMDH.csv
+│   │   Analysis-ready dataset for SMD(H) models.
+│   │
+│   ├── intercept_*.csv
+│   │   Datasets used for intercept-only models.
+│   │
+│   ├── hypothesis_*.csv
+│   │   Datasets used for mechanistic-hypothesis models.
+│   │
+│   ├── design_*.csv
+│   │   Datasets used for experimental-design meta-regressions.
+│   │
+│   ├── time_gnm_*.csv
+│   │   Datasets used for timing-of-GNM-addition meta-regressions.
+│   │
+│   ├── parasite_*.csv
+│   │   Datasets used for parasite/pathogen-type meta-regressions.
+│   │
+│   ├── birds_*.csv
+│   │   Datasets used for bird-species meta-regressions.
+│   │
+│   ├── trait_*.csv
+│   │   Datasets used for trait-category meta-regressions.
+│   │
+│   ├── *_blinding.csv
+│   │   Datasets used for blinding risk-of-bias models.
+│   │
+│   ├── *_random_assignment.csv
+│   │   Datasets used for random-assignment risk-of-bias models.
+│   │
+│   └── *_missing_data.csv
+│       Datasets used for missing-data risk-of-bias models.
+│
+└── 05_data_sensitivity_analysis/
+    │
+    ├── dataset_bivariate.csv
+    │   Dataset used for the bivariate lnRR/SMD(H) model.
+    │
+    ├── dataset_*_published.csv
+    │   Published-data-only sensitivity datasets.
+    │
+    ├── dataset_*_con_flagged.csv
+    │   Sensitivity datasets including flagged proxies.
+    │
+    ├── dataset_*_flagged_no_missingES.csv
+    │   Flagged-proxy datasets excluding zero-effect imputed cases.
+    │
+    ├── dataset_*_sin_missingES.csv
+    │   Datasets excluding cases where authors reported no effect
+    │   without numerical estimates.
+    │
+    ├── dataset_*_no_comp1.csv
+    │   Datasets excluding non-aromatic vs. aromatic comparisons.
+    │
+    ├── dataset_*_no_comp3.csv
+    │   Datasets excluding no-material vs. non-aromatic comparisons.
+    │
+    ├── dataset_*_no_para.csv
+    │   Datasets excluding parasite/pathogen-load proxies.
+    │
+    ├── dataset_lnRR_geary_passed.csv
+    │   lnRR dataset retaining rows that passed Geary’s test.
+    │
+    └── dataset_SMDH_no_inferential.csv
+        SMD(H) dataset excluding effect sizes calculated from
+        inferential statistics.
+```
 
 #### Code Desciption
 
 ### License
 
--   licensing information (e.g., CC-BY)
+- licensing information (e.g., CC-BY)
 
-This project is licensed under the \[\] - see the LICENSE.md file for details.
+This project is licensed under the [] - see the LICENSE.md file for details.
 
 ### Authors contribution
 
 ### Acknowledgements
 
--   Following acceptance, author/contact details, publication links, and the repository citation/DOI in both the Data Statement and reference list of the main manuscript. Please also ensure the repository is public; your GitHub repository already is.
+- Following acceptance, author/contact details, publication links, and the repository citation/DOI in both the Data Statement and reference list of the main manuscript. Please also ensure the repository is public; your GitHub repository already is.
