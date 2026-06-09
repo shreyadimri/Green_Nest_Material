@@ -1,4 +1,16 @@
+# ==============================================================================
+
 # Description of script and Instructions ---------------------
+
+
+
+# NOTE: The raw Web of Science .bib file can fail to import with
+# revtools::read_bibliography() on some systems because of character-encoding
+# issues. Therefore, deduplication is run from the archived
+# "full_reference_before_deduplication.csv" file, which preserves the exact
+# combined reference list used before duplicate removal to keep the 
+# reproducibility intact
+
 
 # This script is to:
 # 1. import the .bib files from Web of Science (WOS) and Scopus
@@ -25,61 +37,64 @@
 # created on 12.09.22 for green nest material project and updated on 02.06.2025
 # Code written by: SD and revised by: MO [2025/08/18]
 
-# Required packages ------------------------------------------
 
-# Required packages are load and managed through pacman
-# Install package pacman if not installed already
-if (!"pacman" %in% rownames(installed.packages())) {
-  install.packages("pacman")
-}
-pacman::p_load(dplyr, revtools, readr)
+# ==============================================================================
 
-# importing the .bib files from WEB OF SCIENCE and SCOPUS ----
-
-# Initially this code used revtools::read_bibliography to read the .bib files from
-# WOS and Scopus. On re-running the code during check, this gives loading error. 
-# A good fix is to use the synthesisr package so I am switching to that now even though 
-# in the project I used revtools (and report the same)..
-
-# Mon Aug 18 17:32:54 2025 ------------------------------
-# I tested this script by running all code with a clean (empty) R library to ensure 
-# all packages are installed based on current releases on CRAN:
-# revtools::read_bibliography seems to work just fine, only prompting a warning message. 
-# The content is equal to synthesisr::read_ref, except for minor 
-# encoding differences in certain identifiers, i.e. strings denoting researcher names etc. 
+# # Required packages ------------------------------------------
 # 
-# Therefore, changing back to revtools::read_bibliography [MO]
-
-# Mon Aug 18 16:27:39 2025 ------------------------------
-# pacman::p_load(synthesisr)
-
-reference_data_wos <- 
-  revtools::read_bibliography("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
-reference_data_scopus <- 
-  revtools::read_bibliography("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
-
-# Mon Aug 18 15:43:41 2025 ------------------------------
-# reference_data_wos <- synthesisr::read_ref("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
-# reference_data_scopus <- synthesisr::read_ref("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
-
-# merging the .bib files from WEB OF SCIENCE and SCOPUS ------
-
-# selecting fields required for further processing 
-# and combine data frames 
-reducing_fields <- c("label","title","author","journal",
-                     "volume","number","pages","year",
-                     "doi","abstract")
-
-# Assemble full reference list without de-duplication --------
-full_reference_data <- rbind(
-  reference_data_wos[,reducing_fields],
-  reference_data_scopus[,reducing_fields])
-
-# export as csv file (saved as part of this repository)
-# write.csv(x = full_reference_data, 
-#           file = "data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv",
-#           row.names = FALSE,
-#           fileEncoding = "UTF-16LE")
+# # Required packages are load and managed through pacman
+# # Install package pacman if not installed already
+# if (!"pacman" %in% rownames(installed.packages())) {
+#   install.packages("pacman")
+# }
+# pacman::p_load(dplyr, revtools, readr)
+# 
+# # importing the .bib files from WEB OF SCIENCE and SCOPUS ----
+# 
+# # Initially this code used revtools::read_bibliography to read the .bib files from
+# # WOS and Scopus. On re-running the code during check, this gives loading error. 
+# # A good fix is to use the synthesisr package so I am switching to that now even though 
+# # in the project I used revtools (and report the same)..
+# 
+# # Mon Aug 18 17:32:54 2025 ------------------------------
+# # I tested this script by running all code with a clean (empty) R library to ensure 
+# # all packages are installed based on current releases on CRAN:
+# # revtools::read_bibliography seems to work just fine, only prompting a warning message. 
+# # The content is equal to synthesisr::read_ref, except for minor 
+# # encoding differences in certain identifiers, i.e. strings denoting researcher names etc. 
+# # 
+# # Therefore, changing back to revtools::read_bibliography [MO]
+# 
+# # Mon Aug 18 16:27:39 2025 ------------------------------
+# # pacman::p_load(synthesisr)
+# 
+# reference_data_wos <- 
+#   revtools::read_bibliography("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
+# reference_data_scopus <- 
+#   revtools::read_bibliography("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
+# 
+# # Mon Aug 18 15:43:41 2025 ------------------------------
+# # reference_data_wos <- synthesisr::read_ref("data/01_systematic_search/02_reference_data/web_of_science/GNM_wos.bib")
+# # reference_data_scopus <- synthesisr::read_ref("data/01_systematic_search/02_reference_data/scopus/GNM_scopus.bib")
+# 
+# # merging the .bib files from WEB OF SCIENCE and SCOPUS ------
+# 
+# # selecting fields required for further processing 
+# # and combine data frames 
+# reducing_fields <- c("label","title","author","journal",
+#                      "volume","number","pages","year",
+#                      "doi","abstract")
+# 
+# # Assemble full reference list without de-duplication --------
+# full_reference_data <- rbind(
+#   reference_data_wos[,reducing_fields],
+#   reference_data_scopus[,reducing_fields])
+# 
+# # export as csv file (saved as part of this repository)
+# # write.csv(x = full_reference_data, 
+# #           file = "data/01_systematic_search/02_reference_data/full_reference_before_deduplication.csv",
+# #           row.names = FALSE,
+# #           fileEncoding = "UTF-16LE")
 
 
 # Mon Aug 18 17:36:49 2025 ------------------------------

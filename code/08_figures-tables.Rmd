@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# ---- FIGURES --------------
+# FIGURES
 
 ## Visualising location and bird species
 
@@ -46,7 +46,7 @@ pacman::p_load(
 
 For the purpose of this map, longitude and latitude of the study area manually added to the dataset. They are saved to `dataset_analysis$population_location` as they were extracted from the respective papers. If not provided by the authors, a general location was manually selected. Note, coordinates are used for visualising only.
 
--   Load datasets
+- Load datasets
 
 ```{r location-map}
 ## Load data for plotting a location map
@@ -589,7 +589,7 @@ lnRR_time_gnm_addition_plot <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
 
 SMDH_time_gnm_addition_plot <- orchard_plot(mod_results(
   SMDH_time_gnm_addition,
@@ -616,7 +616,7 @@ SMDH_time_gnm_addition_plot <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
 ```
 
 Now the cropped figures for the main manuscript
@@ -648,7 +648,7 @@ lnRR_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
 
 SMDH_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
   SMDH_time_gnm_addition,
@@ -676,7 +676,7 @@ SMDH_time_gnm_addition_plot_cropped <- orchard_plot(mod_results(
         axis.title = element_text(size = 10),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 1)) +
-  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continuous\naddition"))
+  scale_x_discrete(labels = c("After egg\nlaying", "Before egg\nlaying", "Continous\naddition"))
 ```
 
 ```{r Sun Aug 31 19:49:27 2025, eval=FALSE}
@@ -847,7 +847,7 @@ ggsave(here::here("figures/Figure_design_time_gnm_addition.png"),
        plot = Figure_design_time_gnm_addition, height = 240, width = 250, units = "mm", dpi = 600)
 ```
 
--   Now the cropped figures for the main manuscript
+- Now the cropped figures for the main manuscript
 
 ```{r SMDH_design_plot_cropped}
 ## I am going to remove the y ticks from the SMDH plots to make it smaller..
@@ -1192,241 +1192,83 @@ ggsave(here::here("figures/Figure_publication_bias.png"),
        plot = Figure_publication_bias, height = 300, width = 400, units = "mm", dpi = 600)
 ```
 
-# ----- Supplementary Material Table -------
-
-## Table: Initial Library
+# Supplementary Material Table
 
 ```{r}
+#| label: excluded_proxy_table
 
-pacman::p_load(readr,knitr, dplyr,kableExtra)
-own_library <- read_csv(here::here("data/01_systematic_search/01_search_strategy/own_library_references.csv"))
-
-own_library_table <- own_library %>% 
-  select(c(title,author,doi, journal, year)) %>% 
-  kable(col.names=(c("Article Title","Authors","DOI", "Journal", "Year of Publication")), booktabs = TRUE,
-    longtable = TRUE
-  ) %>%
-  kable_styling(
-    latex_options = c("scale_down", "hold_position", "repeat_header"),
-    font_size = 9
-  )
-
-save_kable(own_library_table, file = here::here("tables/initial_library.png"))
-
-```
-
-## Table for all fitness proxies included in the analysis
-
-```{r}
-
-pacman::p_load(readr,knitr, tidyverse, gt)
-dataset_analysis <- read_csv(here::here("data/04_data_analysis/dataset_analysis.csv"), show_col_types = F)
-
-fitness_proxies<-dataset_analysis%>%
-  select(c(fitness_proxy_cleaned,paper_ID, proxy_decision, Hypothesis))%>%
-  # make proxy names clean and pretty
-  mutate(fitness_proxy_cleaned = fitness_proxy_cleaned %>%
-      str_replace_all("_", " ") %>%
-      str_to_title())
-
-fitness_proxies_table <- fitness_proxies %>%
-  group_by(fitness_proxy_cleaned, Hypothesis) %>%
-  summarise(
-    k = n(),
-    n = n_distinct(paper_ID),
-    proxy_decision = first(proxy_decision),
-    .groups = "drop"
-  ) %>%
-  arrange(Hypothesis, desc(k))
-
-fitness_proxies_table <- fitness_proxies_table %>%
-    mutate( 
-    # Add * to proxies used only in sensitivity analyses
-    fitness_proxy_cleaned = if_else(
-      proxy_decision == "sensitivity-analysis",
-      paste0(fitness_proxy_cleaned, "*"),
-      fitness_proxy_cleaned
-    ),
-      Hypothesis = factor(Hypothesis, levels = c("CH","PCH","both"))) %>%
-    group_by(Hypothesis) %>%
-    mutate(row = row_number(),
-           entry = sprintf("%s: %d (%d)", fitness_proxy_cleaned, k, n)) %>%
-    ungroup() %>%
-    select(Hypothesis, row, entry) %>%
-    pivot_wider(names_from = Hypothesis, 
-                values_from = entry, 
-                values_fill = list(entry = " ")) %>%
-    select(CH, PCH, both) %>%
-    gt() %>%
-  cols_label(
-    CH   = "Courtship Hypothesis",
-    PCH  = "Parental Care Hypothesis",
-    both = "Both Hypotheses"
-  ) %>%
-    tab_header(title = "Fitness Proxies included in the meta-analysis",
-               subtitle = "Proxy: Effect Sizes (Papers), * indicates the fitness proxies included only in a sensitivity analysis")
-
-  
-# Saving as an image
-gtsave(fitness_proxies_table, here::here("tables/SA_fitness_proxies_table.pdf"))
-```
-
-## Table for all the excluded proxies
-
-```{r}
-
-merged_data_extraction <- read_csv(here::here("data/03_data_cleaning/merged_data_extraction.csv"), show_col_types = F)
+merged_data_extraction <- read_csv(here::here("data/03_data_cleaning/merged_data_extraction.csv"),
+                                   show_col_types = F)
 
 dataset_analysis <- read_csv(here::here("data/04_data_analysis/dataset_analysis.csv"),
                              show_col_types = F)
 
-excluded_proxies<- merged_data_extraction %>%
-  filter(fulltext_screening == "included" |
-         is.na(fulltext_screening) |
-         fulltext_screening == "NA") %>%
-  filter(proxy_decision== "exclude")%>%
-    mutate(Category = "Completely excluded")
-
-SA_only_proxies <- dataset_analysis %>% 
-  filter(proxy_decision == "sensitivity-analysis") %>%
-    mutate(Category = "Sensitivity-analysis only")
-
-excluded_proxies_table<-bind_rows(excluded_proxies,SA_only_proxies)%>%
-  select(Category, fitness_proxy, proxy_comment, paper_ID)%>%
-  mutate(
-    fitness_proxy = fitness_proxy %>%
-      # Remove days
-      str_remove_all("\\(day\\s*\\d+\\)") %>%
-      # Remove years
-      str_remove_all("\\d{4}") %>%   
-      # Remove any leftover parentheses
-      str_remove_all("\\(.*?\\)") %>%
-      # Replace underscores with spaces
-      str_replace_all("_", " ") %>%
-      # Same name for all sex ratio proxies
-      {case_when(
-        str_detect(.,regex("sex\\s*ratio|proportion\\s+of\\s+males", TRUE))~"Sex Ratio",
-        str_detect(.,regex("glucose", TRUE))~"Glucose Concentration",
-        TRUE ~ .)}%>%
-      # Trim any extra spaces
-      str_trim() %>%
-      # Capitalize each word
-      str_to_title()) %>% 
-  group_by(Category, fitness_proxy) %>%
+excluded_proxies <- merged_data_extraction %>%
+  filter(fulltext_screening == "included") %>%
+  filter(proxy_decision == "exclude") %>%
+  select(paper_ID, fitness_proxy, proxy_comment) %>%
+  distinct() %>%
+  group_by(paper_ID) %>%
   summarise(
-    k = n(),
-    n = n_distinct(paper_ID),
-    proxy_comment = first(proxy_comment),
-    .groups = "drop"
-  ) %>% 
-  arrange(factor(Category, levels = c("Completely excluded", 
-                                    "Sensitivity-analysis only")), desc(k))
+    `Number of proxies` = n(),
+    `Excluded Proxies` = paste(fitness_proxy, collapse = ", "),
+    `Reason for Exclusion` = paste(proxy_comment,  collapse = "; "),
+    .groups = "drop")
+
+SA_only_proxies <- dataset_analysis %>%
+  filter(proxy_decision == "sensitivity-analysis") %>%
+  select(paper_ID, fitness_proxy, proxy_comment) %>%
+  distinct() %>%
+  group_by(paper_ID) %>%
+  summarise(
+    `Number of proxies` = n(),
+    `Excluded Proxies` = paste(fitness_proxy, collapse = ", "),
+    `Reason for Exclusion` = paste(proxy_comment,  collapse = "; "),
+    .groups = "drop")
 
 
-excluded_proxies_table <- excluded_proxies_table %>%
-  select(
-    Category,
-    `Fitness Proxy` = fitness_proxy,
-    `Effect Sizes (k)` = k,
-    `Articles (n)` = n,
-    `Reason for Exclusion` = proxy_comment
-  ) %>%
-  gt(groupname_col = "Category") %>%       # << This creates the subheadings
+
+# Now binding them together
+combined_summary <- bind_rows(
+  excluded_proxies %>% mutate(Category = "Completely excluded"),
+  SA_only_proxies   %>% mutate(Category = "Sensitivity-analysis only")) %>%
+  arrange(Category, paper_ID)
+
+# Group by category
+excluded_proxies <- combined_summary %>%
+  gt() %>%
   tab_header(
-    title = md("**Fitness proxies excluded from the meta-analysis**")
-  ) %>%
-  cols_align("center", columns = c(`Effect Sizes (k)`, `Articles (n)`)) %>%
-  cols_align("left", columns = c(`Fitness Proxy`, `Reason for Exclusion`)) %>%
+    title = md("**Excluded Fitness Proxies**")) %>%
+  # define row-groups
+  tab_row_group(
+    group    = "Completely excluded",
+    rows     = Category == "Completely excluded") %>%
+  tab_row_group(
+    group    = "Sensitivity-analysis only",
+    rows     = Category == "Sensitivity-analysis only") %>%
+  # hide the helper column
+  cols_hide("Category") %>%
+  # relabel columns
+  cols_label(
+    `paper_ID`             = "Paper ID",
+    `Number of proxies`    = "Number\nof Proxies",
+    `Excluded Proxies`     = "Excluded\nProxies",
+    `Reason for Exclusion` = "Reason for Exclusion") %>%
+  fmt_markdown(columns = c(`Excluded Proxies`, `Reason for Exclusion`)) %>%
+  opt_align_table_header(align = "left") %>%
+  cols_align(align   = "left",
+             columns = everything()) %>%
   tab_options(
-    table.font.size = 10,
-    data_row.padding = px(2),
-    heading.align = "left",
-    column_labels.font.weight = "bold",
-    row.striping.background_color = "#F7F7F7"
-  )
-
-# Saving as an image
-gtsave(excluded_proxies_table, here::here("tables/SA_excluded_proxies_table.png"))
+    table.width               = pct(90),
+    row.striping.background_color = "#F7F7F7")
+print(excluded_proxies)
 ```
 
-## Table: Different values
-
-```{r}
-
-#Loading the required data for the plots
-
-load(here::here("model/sensitivity_analysis/SA_SMDH_VCV_range.Rdata"))
-
-load(here::here("model/sensitivity_analysis/SA_lnRR_VCV_range.Rdata"))
-
-rho_range <- c(0.2,0.3, 0.5, 0.7,0.8)
-
-
-# Table for lnRR Values
-lnRR_table <- data.frame(rho  = rho_range,
-  "Overall effect" = sapply(SA_lnRR_VCV_range, function(x) coef(x)[1]),
-  "Standard error" = sapply(SA_lnRR_VCV_range, function(x) x$se[1]),
-  "p-value"        = sapply(SA_lnRR_VCV_range, function(x) x$pval[1]),
-  "Lower CI"       = sapply(SA_lnRR_VCV_range, function(x) x$ci.lb[1]),
-  "Upper CI"       = sapply(SA_lnRR_VCV_range, function(x) x$ci.ub[1]),
-  "Log-likelihood" = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[1,1]),
-  "AIC"            = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[3,1]),
-  "BIC"            = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[4,1]),
-  "AICc"           = sapply(SA_lnRR_VCV_range, function(x) fitstats(x)[5,1]),
-  "Effect size"    = "lnRR")
-
-# Table for SMDH values
-
-SMDH_table <- data.frame(
-  rho  = rho_range,
-  "Overall effect" = sapply(SA_SMDH_VCV_range, function(x) coef(x)[1]),
-  "Standard error" = sapply(SA_SMDH_VCV_range, function(x) x$se[1]),
-  "p-value"        = sapply(SA_SMDH_VCV_range, function(x) x$pval[1]),
-  "Lower CI"       = sapply(SA_SMDH_VCV_range, function(x) x$ci.lb[1]),
-  "Upper CI"       = sapply(SA_SMDH_VCV_range, function(x) x$ci.ub[1]),
-  "Log-likelihood" = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[1,1]),
-  "AIC"            = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[3,1]),
-  "BIC"            = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[4,1]),
-  "AICc"           = sapply(SA_SMDH_VCV_range, function(x) fitstats(x)[5,1]),
-  "Effect size"    = "SMD(H)"
-)
-
-# Combine and rename columns
-table_combined <- bind_rows(lnRR_table, SMDH_table) %>%
-  rename(`Sampling correlation` = rho)
-
-# Create a gt table
-table_combined <- table_combined %>%
-  gt(groupname_col = "Effect size") %>%
-  tab_header(
-    title = md("**Sensitivity to sampling correlation (ρ)**"),
-    subtitle = md("Results for lnRR and SMD(H) Meta-analytic models")
-  ) %>%
-  cols_label(
-    `Sampling correlation` = html("&rho;"),
-    `Overall.effect` = "Overall effect",
-    `Standard.error` = "SE",
-    `p.value` = "p",
-    `Lower.CI` = "CI low",
-    `Upper.CI` = "CI high",
-    `Log.likelihood` = "LogLik"
-  ) %>%
-  tab_spanner(label = "95% CI", columns = c("Lower.CI", "Upper.CI")) %>%
-  fmt_number(
-    columns = c("Overall.effect", "Standard.error", "Lower.CI", "Upper.CI",
-                "Log.likelihood", "AIC", "BIC", "AICc"),
-    decimals = 4
-  ) %>%
-  fmt_number(columns = "p.value", decimals = 3) %>%
-  opt_table_outline() %>%
-  tab_options(
-    table.font.size = px(13),
-    data_row.padding = px(4)
-  )
-
-# Save table
-gtsave(table_combined, here::here("tables/SA_sampling-correlation_table.png"))
-
+```{r excluded_proxies_table.pdf, eval=FALSE}
+## save image file
+gtsave(data = excluded_proxies,
+       filename = here::here("/tables/excluded_proxies_table.pdf"),
+       expand = 10)   # adds a little padding around the table
 ```
 
 ## Table: Sensitivity analysis for intercept only model
@@ -1441,10 +1283,6 @@ SA_SMDH_published <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_publ
 # Loading the models without Comparison Type 3
 SA_lnRR_no_comp3 <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_no_comp3.rds"))
 SA_SMDH_no_comp3 <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_comp3.rds"))
-
-# Loading the models without Comparison Type 1
-SA_lnRR_no_comp1 <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_no_comp1.rds"))
-SA_SMDH_no_comp1 <- readRDS(here::here("model/sensitivity_analysis/SA_SMDH_no_comp1.rds"))
 
 # Loading the models including flagged proxies
 SA_lnRR_flagged <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_flagged.rds"))
@@ -1467,19 +1305,17 @@ SA_lnRR_geary_passed <- readRDS(here::here("model/sensitivity_analysis/SA_lnRR_g
 
 # Now let's build the table
 SA_intercept_only <- tibble::tibble(
-  effect_size = c("lnRR","lnRR","lnRR","lnRR","lnRR","lnRR","lnRR",
-                  "SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMDH"),
+  effect_size = c("lnRR","lnRR","lnRR","lnRR","lnRR","lnRR",
+                  "SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMD(H)","SMDH"),
   data_used = c(
     "Including published data only",
     "Excluding Experimental Design Non-Aromatic Vs. No added material",
-    "Excluding Experimental Design Aromatic Vs. Non-Aromatic",
     "Including flagged proxies", 
     "Without those cases where author reported no effect of the treatment",
     "Including flagged proxies and without the cases with no effect of the treatment", 
     "Excluding effect sizes where lnRR failed Geary's Test",
     "Including published data only",
     "Excluding Experimental Design Non-Aromatic Vs. No added material",
-    "Excluding Experimental Design Aromatic Vs. Non-Aromatic",
     "Including flagged proxies",
     "Without those cases where author reported no effect of the treatment",
     "Including flagged proxies and without the cases with no effect of the treatment",
@@ -1487,14 +1323,12 @@ SA_intercept_only <- tibble::tibble(
   
   Estimate = c(SA_lnRR_published$b[1],
                SA_lnRR_no_comp3$b[1],
-               SA_lnRR_no_comp1$b[1],
                SA_lnRR_flagged$b[1],
                SA_lnRR_no_missingES$b[1],
                SA_lnRR_flagged_no_missingES$b[1],
                SA_lnRR_geary_passed$b[1],
                SA_SMDH_published$b[1],
                SA_SMDH_no_comp3$b[1],
-               SA_SMDH_no_comp1$b[1],
                SA_SMDH_flagged$b[1],
                SA_SMDH_no_missingES$b[1],
                SA_SMDH_flagged_no_missingES$b[1],
@@ -1502,14 +1336,12 @@ SA_intercept_only <- tibble::tibble(
   
   CI_Lower = c(SA_lnRR_published$ci.lb,
                SA_lnRR_no_comp3$ci.lb,
-               SA_lnRR_no_comp1$ci.lb,
                SA_lnRR_flagged$ci.lb,
                SA_lnRR_no_missingES$ci.lb,
                SA_lnRR_flagged_no_missingES$ci.lb,
                SA_lnRR_geary_passed$ci.lb,
                SA_SMDH_published$ci.lb,
                SA_SMDH_no_comp3$ci.lb,
-               SA_SMDH_no_comp1$ci.lb,
                SA_SMDH_flagged$ci.lb,
                SA_SMDH_no_missingES$ci.lb,
                SA_SMDH_flagged_no_missingES$ci.lb,
@@ -1517,14 +1349,12 @@ SA_intercept_only <- tibble::tibble(
   
   CI_Upper = c(SA_lnRR_published$ci.ub,
                SA_lnRR_no_comp3$ci.ub,
-               SA_lnRR_no_comp1$ci.ub,
                SA_lnRR_flagged$ci.ub,
                SA_lnRR_no_missingES$ci.ub,
                SA_lnRR_flagged_no_missingES$ci.ub,
                SA_lnRR_geary_passed$ci.ub,
                SA_SMDH_published$ci.ub,
                SA_SMDH_no_comp3$ci.ub,
-               SA_SMDH_no_comp1$ci.ub,
                SA_SMDH_flagged$ci.ub,
                SA_SMDH_no_missingES$ci.ub,
                SA_SMDH_flagged_no_missingES$ci.ub,
@@ -1532,14 +1362,12 @@ SA_intercept_only <- tibble::tibble(
   
   PI_Lower = c(predict(SA_lnRR_published)$pi.lb,
                predict(SA_lnRR_no_comp3)$pi.lb,
-               predict(SA_lnRR_no_comp1)$pi.lb,
                predict(SA_lnRR_flagged)$pi.lb,
                predict(SA_lnRR_no_missingES)$pi.lb,
                predict(SA_lnRR_flagged_no_missingES)$pi.lb,
                predict(SA_lnRR_geary_passed)$pi.lb,
                predict(SA_SMDH_published)$pi.lb,
                predict(SA_SMDH_no_comp3)$pi.lb,
-               predict(SA_SMDH_no_comp1)$pi.lb,
                predict(SA_SMDH_flagged)$pi.lb,
                predict(SA_SMDH_no_missingES)$pi.lb,
                predict(SA_SMDH_flagged_no_missingES)$pi.lb,
@@ -1547,14 +1375,12 @@ SA_intercept_only <- tibble::tibble(
   
   PI_Upper = c(predict(SA_lnRR_published)$pi.ub,
                predict(SA_lnRR_no_comp3)$pi.ub,
-               predict(SA_lnRR_no_comp1)$pi.ub,
                predict(SA_lnRR_flagged)$pi.ub,
                predict(SA_lnRR_no_missingES)$pi.ub,
                predict(SA_lnRR_flagged_no_missingES)$pi.ub,
                predict(SA_lnRR_geary_passed)$pi.ub,
                predict(SA_SMDH_published)$pi.ub,
                predict(SA_SMDH_no_comp3)$pi.ub,
-               predict(SA_SMDH_no_comp1)$pi.ub,
                predict(SA_SMDH_flagged)$pi.ub,
                predict(SA_SMDH_no_missingES)$pi.ub,
                predict(SA_SMDH_flagged_no_missingES)$pi.ub,
@@ -1562,14 +1388,12 @@ SA_intercept_only <- tibble::tibble(
   
   P_value =  c(SA_lnRR_published$pval,
                SA_lnRR_no_comp3$pval,
-               SA_lnRR_no_comp1$pval,
                SA_lnRR_flagged$pval,
                SA_lnRR_no_missingES$pval,
                SA_lnRR_flagged_no_missingES$pval,
                SA_lnRR_geary_passed$pval,
                SA_SMDH_published$pval,
                SA_SMDH_no_comp3$pval,
-               SA_SMDH_no_comp1$pval,
                SA_SMDH_flagged$pval,
                SA_SMDH_no_missingES$pval,
                SA_SMDH_flagged_no_missingES$pval,
@@ -1577,14 +1401,12 @@ SA_intercept_only <- tibble::tibble(
   
   Q_value = c(SA_lnRR_published$QE,
               SA_lnRR_no_comp3$QE,
-              SA_lnRR_no_comp1$QE,
               SA_lnRR_flagged$QE,
               SA_lnRR_no_missingES$QE,
               SA_lnRR_flagged_no_missingES$QE,
               SA_lnRR_geary_passed$QE,
               SA_SMDH_published$QE,
               SA_SMDH_no_comp3$QE,
-              SA_SMDH_no_comp1$QE,
               SA_SMDH_flagged$QE,
               SA_SMDH_no_missingES$QE,
               SA_SMDH_flagged_no_missingES$QE,
@@ -1592,14 +1414,12 @@ SA_intercept_only <- tibble::tibble(
   
   k_effect_sizes = c(SA_lnRR_published$k,
                      SA_lnRR_no_comp3$k,
-                     SA_lnRR_no_comp1$k,
                      SA_lnRR_flagged$k,
                      SA_lnRR_no_missingES$k,
                      SA_lnRR_flagged_no_missingES$k,
                      SA_lnRR_geary_passed$k,
                      SA_SMDH_published$k,
                      SA_SMDH_no_comp3$k,
-                     SA_SMDH_no_comp1$k,
                      SA_SMDH_flagged$k,
                      SA_SMDH_no_missingES$k,
                      SA_SMDH_flagged_no_missingES$k,
@@ -1607,14 +1427,12 @@ SA_intercept_only <- tibble::tibble(
   
   n_studies = c(length(SA_lnRR_published$s.levels.f[[1]]),
                 length(SA_lnRR_no_comp3$s.levels.f[[1]]),
-                length(SA_lnRR_no_comp1$s.levels.f[[1]]),
                 length(SA_lnRR_flagged$s.levels.f[[1]]),
                 length(SA_lnRR_no_missingES$s.levels.f[[1]]),
                 length(SA_lnRR_flagged_no_missingES$s.levels.f[[1]]),
                 length(SA_lnRR_geary_passed$s.levels.f[[1]]),
                 length(SA_SMDH_published$s.levels.f[[1]]),
                 length(SA_SMDH_no_comp3$s.levels.f[[1]]),
-                length(SA_SMDH_no_comp1$s.levels.f[[1]]),
                 length(SA_SMDH_flagged$s.levels.f[[1]]),
                 length(SA_SMDH_no_missingES$s.levels.f[[1]]),
                 length(SA_SMDH_flagged_no_missingES$s.levels.f[[1]]),
@@ -1686,11 +1504,11 @@ SA_intercept_only <- SA_intercept_only %>%
 
 ```{r SA_intercept_only, eval=FALSE}
 ## Saving as an image
-gtsave(SA_intercept_only, filename = here::here("tables/SA_intercept_only.png"), vwidth = 2000, vheight = 2500, expand = 30)
+gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.png"))
 
 ## For saving as a docx file
-# gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.docx"))
-# gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.html"))
+gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.docx"))
+gtsave(SA_intercept_only, here::here("tables/SA_intercept_only.html"))
 ```
 
 ```{r Table for lnRR rho sensitivity analysis, eval=FALSE}
@@ -1846,7 +1664,7 @@ gtsave(RoB_table,here::here("tables/SA_RoB_table.docx"))
 gtsave(RoB_table,here::here("tables/SA_RoB_table.html"))
 ```
 
-# -------- TABLES ----------
+# TABLES
 
 ## Table: Output from meta-regressions
 
@@ -1944,7 +1762,7 @@ combined_results <- combined_results %>%
     level==3 ~ "No added material\nvs. Non-aromatic",
     level=="a" ~ "After egg\nhatching",
     level=="b" ~ "Before egg\nhatching",
-    level=="c" ~ "Continuously through\nnesting phase",
+    level=="c" ~ "Continously through\nnesting phase",
     level=="Parasitic_and_pathogenic"~"Parasitic and\nPathogen Related", 
     .default = level))
 
@@ -2011,11 +1829,7 @@ MLMR_table <- combined_results %>%
 
 ```{r, eval=FALSE}
 ## saving the image
-gtsave(MLMR_table,
-  filename = here::here("tables/MLMR_table.png"),
-  vwidth = 2000,
-  vheight = 2500,
-  expand = 30)
+gtsave(MLMR_table, here::here("tables/MLMR_table.png"))
 ## saving as a docx file or html
 gtsave(MLMR_table,here::here("tables/MLMR_table.docx"))
 gtsave(MLMR_table,here::here("tables/MLMR_table.html"))

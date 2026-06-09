@@ -10,7 +10,16 @@ manuscript:
 title: "Why do birds use green nest material? A systematic review and meta-analysis of experiments"
 
 abstract: |
- Many animals build nests, often considered extended phenotypes that shape survival and reproduction beyond the builder’s body. Birds are key examples of nest builders, and some species add fresh green plant material to their nests. Yet, the adaptive value of this behaviour remains debated. Non-mutually exclusive hypotheses propose roles in courtship signalling, parasite defence, and direct enhancement of offspring condition through pharmacological effects independent of parasite reduction. Here, we conducted a pre-registered systematic review and meta-analysis of 28 experimental studies (published and unpublished), spanning seven bird species and 274 effect sizes, to test whether green nest material enhances fitness and to evaluate competing functional explanations. Our synthesis shows that green nest material can increase fitness in birds that exhibit this behaviour. However, this effect varies depending on the fitness proxy investigated, and its functional role remains inconclusive. We found no clear evidence supporting the courtship, nest protection, or drug hypothesis. Instead, experimental design was the strongest moderator of effect size variation, challenging the role of aromatic compounds in the fitness benefits of green nest material and highlighting the need for further research into the underlying mechanisms.
+ Many animals build nests. As external structures that can influence survival and reproduction, nests are often considered extended phenotypes. 
+ Birds are key examples of nest builders, and some species add fresh green plant material to their nests. Yet, the adaptive value of this behaviour remains debated. 
+ Non-mutually exclusive hypotheses propose roles in courtship signalling, parasite defence, and direct enhancement of offspring condition through pharmacological 
+ effects independent of parasite reduction. Here, we conducted a pre-registered systematic review and meta-analysis of 28 experimental studies (26 published, 2 unpublished), 
+ spanning seven bird species and 274 effect sizes, to test whether green nest material enhances fitness and to evaluate competing functional explanations. 
+ Our meta-analysis shows that green nest material can increase fitness; however, this effect varied depending on the fitness proxy investigated, being strongest for morphological proxies. 
+ We found no compelling evidence to preferentially support the courtship, nest protection, or drug hypothesis. 
+ Nonetheless, experimental design (i.e., treatment–control comparison type) was the moderator explaining most effect size variation, 
+ challenging the traditionally held role of aromatic compounds in the fitness benefits of green nest material. 
+ Our synthesis provides evidence for the adaptive significance of green nest material and highlights the need for further research into the underlying mechanisms.
  
 affiliations:
   - id: "1"
@@ -79,7 +88,7 @@ format:
     comments: false
     csl: apa.csl
   preprint-typst:
-    output-file: GNM_Preprint1
+    output-file: GNM_Preprint_V4
     theme: jou
     running-head: "Preprint"
     layout:
@@ -102,40 +111,42 @@ format:
     line-number: false
     csl: apa.csl
     
-  elsevier-pdf:
-    output-file: GNM_Submission1
-    journal:
-     name: "Proceedings of the Royal Society B - Biological Sciences"
-     formatting: review
-     layout: onecolumn
-     cite-style: number
-    typst-block: |
-     #set par(line-numbering: true)
-    include-in-header: 
-      text: |
-        \newpageafter{author}
-        \usepackage{lineno}
-    include-before-body:
-      text: |
-        \linenumbers
-    margin-top: 3cm
-    margin-bottom: 3cm
-    margin-left: 2.5cm
-    margin-right: 2.5cm
-    keep-tex: true
-    csl: proceedings-of-the-royal-society-b.csl
+  # elsevier-pdf:
+  #   output-file: GNM_Submission4
+  #   journal:
+  #    name: "Proceedings of the Royal Society B - Biological Sciences"
+  #    formatting: review
+  #    layout: onecolumn
+  #    cite-style: number
+  #   typst-block: |
+  #    #set par(line-numbering: true)
+  #   include-in-header: 
+  #     text: |
+  #       \newpageafter{author}
+  #       \usepackage{lineno}
+  #   include-before-body:
+  #     text: |
+  #       \linenumbers
+  #   margin-top: 3cm
+  #   margin-bottom: 3cm
+  #   margin-left: 2.5cm
+  #   margin-right: 2.5cm
+  #   keep-tex: true
+  #   csl: proceedings-of-the-royal-society-b.csl
   
   docx:
-    output-file: GNM_Supervisor1
+    output-file: GNM_Submission4
     journal:
      name: "Proceedings of the Royal Society B - Biological Sciences"
      formatting: review
      cite-style: number
     citeproc: true
     csl: proceedings-of-the-royal-society-b.csl
-
 execute:
  freeze: auto
+ echo: false
+ warning: false
+ message: false
  cache: false
  notebook: false
 
