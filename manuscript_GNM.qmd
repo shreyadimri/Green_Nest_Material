@@ -60,7 +60,7 @@ We conducted a systematic search on Web of Science Core Collection and Scopus on
 
 ## Eligibility criteria
 
-All titles and abstracts were equally allocated and screened independently by at least two of the three screeners (SD, TR, JMGS) using 'revtools' following a pre-designed decision tree with all inclusion/exclusion criteria (@figsupp-decision-tree). We included all studies on birds that experimentally manipulated the GNM (both aromatics and non-aromatic). `{r} tools::toTitleCase(as.character(english::english(nrow(selected_abstract_screening))))` articles passed the title-and-abstract screening and were further evaluated during the full-text screening, where each article was independently screened by a single screener, with another screener verifying the procedure. We used the same criteria as above (@figsupp-decision-tree) with an additional evaluation of whether the variable of interest studied in the article was in our list of fitness proxies of interest (@tabsupp-fitness-proxies). All conflicts in screening decisions (1% for title-and-abstract screening, and none for full-text screening) were discussed and resolved. `r { total_n <- (nrow(selected_abstract_screening) - nrow(excluded_fulltext)) + sum(selected_abstract_screening_repeat$screened_abstracts == "selected", na.rm = TRUE); x <- as.character(english::english(total_n)); paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x))) }` articles passed the full-text screening, and we identified `{r} as.character(english::english(nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)), 1, 1))` additional eligible articles recommended by two colleagues, likely missed because their experimental nature was not indexed in the searchable metadata. In all, `{r} nrow(selected_abstract_screening)-nrow(excluded_fulltext)+nrow(selected_abstract_screening_repeat)` published articles were eligible for our meta-analysis. We also obtained two additional unpublished studies, resulting in a total of 28 studies included in our meta-analysis (more details below; see also @figsupp-prisma-flowchart and @figsupp-included-studies).
+All titles and abstracts were equally allocated and screened independently by at least two of the three screeners (SD, TR, JMGS) using 'revtools' following a pre-designed decision tree with all inclusion/exclusion criteria (@figsupp-decision-tree). We included all studies on birds that experimentally manipulated the GNM (both aromatics and non-aromatic). `{r} tools::toTitleCase(as.character(english::english(nrow(selected_abstract_screening))))` articles passed the title-and-abstract screening and were further evaluated during the full-text screening, where each article was independently screened by a single screener, with another screener verifying the procedure. We used the same criteria as above (@figsupp-decision-tree) with an additional evaluation of whether the variable of interest studied in the article was in our list of fitness proxies of interest (@tabsupp-fitness-proxies). All conflicts in screening decisions (1% for title-and-abstract screening, and none for full-text screening) were discussed and resolved. `r { total_n <- (nrow(selected_abstract_screening) - nrow(excluded_fulltext)) + sum(selected_abstract_screening_repeat$screened_abstracts == "selected", na.rm = TRUE); x <- as.character(english::english(total_n)); paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x))) }` articles passed the full-text screening, and we identified `{r} as.character(english::english(nrow(selected_abstract_screening_repeat)-(sum(selected_abstract_screening_repeat$screened_abstracts=="selected", na.rm=T)), 1, 1))` additional eligible articles recommended by two colleagues, likely missed because their experimental nature was not indexed in the searchable metadata. In all, `{r} nrow(selected_abstract_screening)-nrow(excluded_fulltext)+nrow(selected_abstract_screening_repeat)` published articles were eligible for our meta-analysis. We also obtained two additional unpublished studies, resulting in a total of 28 studies included in our meta-analysis (more details below; see also @figsupp-prisma-flowchart and @tabsupp-included-studies).
 
 ## Data extraction
 
@@ -123,7 +123,7 @@ group_by(paper_ID) %>%
 
 Data from each article were extracted by one of three authors (SD, TR, JMGS), with another screener verifying the procedure, and four authors (SD, TR, JMGS, AST) collectively discussing and revising unclear cases. We prioritised extracting primary data (i.e., means, variances and sample size for each control-treatment comparison) from text and tables, and if that was not possible, from figures (e.g., boxplots) using the R package 'metaDigitise' v1.0.1 [@pick2018]. If primary data were not available, we extracted inferential statistics (e.g., t and F values, contingency tables) to transform them into effect sizes (details below). Last, if these steps failed but the article had openly archived data, we calculated the means, standard deviations and sample sizes from each group ourselves (n = `{r} length(raw_data)` studies). We extracted the number of nests in each group as the sample size rather than the number of individuals wherever possible (discussed below).
 
-To capture differences in the type of experimental setup used in the studies, we coded each control-treatment comparison into an 'experimental design' moderator, with the following three levels: (i) non-aromatic GNM vs. aromatic GNM, (ii) no material vs. aromatic GNM, and (iii) no material vs. non-aromatic GNM. Where "non-aromatic GNM" refers to nests containing non-aromatic material (e.g., grass, moss, etc.), "aromatic GNM" refers to nests containing aromatic material added by birds (e.g.,*Lavandula stoechas*,*Marrubium vulgare*, etc.), researchers, or both; and "no material" refers to nests that had no material added by researchers or where any plant material added by birds was removed. Importantly, our conclusions remained robust to the exclusion of the no material vs. non-aromatic GNM category (n = `{r} length(unique(SMDH_comp3$paper_ID))` studies; @tabsupp-SA-intercept), so we kept this category in our dataset following our pre-registered plan. A fourth experimental design compared enhanced supplementation of GNM by the researchers (i.e., researchers + birds) to GNM added by birds alone (n = 2 studies). This experimental design represents a fundamentally different comparison focusing on potential additive effects of GNM, comparing different amounts of aromatic GNM. Therefore, we did not include this fourth category in the meta-regression testing the 'experimental design' moderator. In studies where three groups were compared (n = `{r} nrow(multiple_comparision)`), we extracted all possible pairwise comparisons, and accounted for (shared group) non-independence in our analyses (more below).
+To capture differences in the type of experimental setup used in the studies, we coded each control-treatment comparison into an 'experimental design' moderator, with the following three levels: (i) non-aromatic GNM vs. aromatic GNM, (ii) no material vs. aromatic GNM, and (iii) no material vs. non-aromatic GNM. Where "non-aromatic GNM" refers to nests containing non-aromatic material (e.g., grass, moss, etc.), "aromatic GNM" refers to nests containing aromatic material added by birds (e.g., *Lavandula stoechas*, *Marrubium vulgare*, etc.), researchers, or both; and "no material" refers to nests that had no material added by researchers or where any plant material added by birds was removed. Importantly, our conclusions remained robust to the exclusion of the no material vs. non-aromatic GNM category (n = `{r} length(unique(SMDH_comp3$paper_ID))` studies; @tabsupp-SA-intercept), so we kept this category in our dataset following our pre-registered plan. A fourth experimental design compared enhanced supplementation of GNM by the researchers (i.e., researchers + birds) to GNM added by birds alone (n = 2 studies). This experimental design represents a fundamentally different comparison focusing on potential additive effects of GNM, comparing different amounts of aromatic GNM. Therefore, we did not include this fourth category in the meta-regression testing the 'experimental design' moderator. In studies where three groups were compared (n = `{r} nrow(multiple_comparision)`), we extracted all possible pairwise comparisons, and accounted for (shared group) non-independence in our analyses (more below).
 
 For each study, we also extracted information related to the study subjects (bird species, geographical location of the study population) and the source from which we extracted data (e.g., figures, raw data files). We categorised the reported fitness proxies into 6 broad categories: physiology, morphology, reproduction, behaviour, parasite and pathogenic load, and phenology. For studies testing whether GNM affects the number of parasites or pathogens found in offspring and/or nests, we categorised them into arthropods (e.g., fleas) or microorganisms (e.g., bacteria). For a complete list of variables extracted, see @figsupp-variables. During data extraction, we encountered some traits (e.g., Leukocyte measures, parent mass; k = `{r} nrow(excluded_proxies)` effect sizes, n = `{r} length(unique(excluded_proxies$paper_ID))` studies) that we did not include in any of our analyses because it was unclear from the study and our own judgement how these traits related to fitness (see @tabsupp-fitness-proxies for the reasons of exclusion).
 
@@ -374,31 +374,31 @@ When interpreting our results, it is important to acknowledge some constraints o
 
 After more than 40 years of research on this topic, ours is the first quantitative synthesis confirming an overall effect of green nest material on fitness. Despite moderate-to-high heterogeneity, our results suggest that the effect may be generalisable across studies once methodological and biological factors within studies are accounted for. Our small-study effects analyses, although non-conclusively, indicate that some studies may remain unpublished, despite our efforts to include unpublished work. Moreover, our study emphasises that the mechanism remains largely unclear and challenges the assumption that volatile compounds alone explain the relationship between green nest material and fitness. Future experimental designs should focus on decoupling volatiles from structural or microclimate effects, while quantifying mediators (e.g., nest microclimate, parasite load) and prioritising fitness proxies more directly linked to fitness (e.g., fledging success, recruitment), as well as testing explicitly, rather than assuming, the role of these volatiles. Replications across parasite and climatic gradients, together with cross-fostering experiments, could allow us to understand the context dependency and distinguish nest-level effects from parental quality. In addition, theoretical work could further solidify the field’s foundations and yield testable predictions. Cost-benefit models of GNM could help predict when net benefits are expected to occur and why effects vary among species and environments, generating concrete predictions (e.g., benefits arising only above certain parasite pressure threshold or under certain temperature or humidity conditions) that are directly testable with multi-site experiments. Altogether, our synthesis contributes to a more nuanced understanding of the adaptive significance of one of the most fascinating and most studied natural structures—bird nests, opening doors to several questions that remain elusive.
 
-## Data and Code Availability Statement
+# Data and Code Availability Statement
 
-All materials, data and code associated with this study have been archived on Zenodo \[<https://zenodo.org/records/20612105>\] [@dimri2026] and on GitHub at \[<https://github.com/shreyadimri/Green_Nest_Material>\].
+All materials, data and code associated with this study have been archived on Zenodo \[<https://doi.org/10.5281/zenodo.20612105>\] [@dimri2026] and on GitHub at \[<https://github.com/shreyadimri/Green_Nest_Material>\].
 
-## Author contributions
+# Author contributions
 
 **SD:** Conceptualisation, Data curation, Formal analysis, Investigation (lead), Methodology, Project administration, Software, Validation, Visualization, Writing - original draft (lead), review & editing; **TR:** Conceptualisation, Investigation (equal), Writing - review & editing; **JMGS:** Conceptualisation, Investigation (equal), Writing - review & editing; **MO:** Investigation (supporting), Validation; **AST:** Conceptualisation, Funding acquisition, Methodology, Supervision, Writing - original draft (supporting), review & editing
 
-## Conflict of interest
+# Conflict of interest
 
 Authors declare no competing interests.
 
-## AI use declaration
+# AI use declaration
 
 The authors declare that they occasionally used 'Claude Sonnet 4.6' only to improve readability of some text. After using these tools, the authors reviewed and edited the content as needed and take full responsibility for the content within the manuscript.
 
-## Ethics
+# Ethics
 
 This study is a meta-analysis of previously published literature and did not require ethical approval from an institutional review board or animal welfare committee.
 
-## Acknowledgements
+# Acknowledgements
 
 We thank Klaus Reinhold (https://orcid.org/0000-0002-0249-8346) for his support for his support and Jorge Garrido-Bautista (https://orcid.org/0000-0002-8120-0826) for his valuable comments on the manuscript. We also thank all the authors who replied to our emails and who addressed our questions. We are particularly grateful to those who kindly shared their data: Adèle Mennerat (https://orcid.org/0000-0003-0368-7197), Dave Shutler (https://orcid.org/0000-0002-2032-8148) and Gustavo Tomás Gutiérrez (https://orcid.org/0000-0001-6701-2055).
 
-## Funding
+# Funding
 
 SD and AST were funded by the DFG (Deutsche Forschungsgemeinschaft) as part of the SFB TRR 212 (NC³) Second Phase 2022-2025 (Project number 316099922), and MO by the First Phase 2018-2021 (Project number 396780709). AST was also partially supported by Portuguese national funds via Fundação para a Ciência e a Tecnologia (FCT) under projects LA/P/0058/2020, UID/PRR/4539/2025 and UID/04539/2025, and project EXCELScIOR, funded by the EU's Horizon Europe under Grant Agreement No. 101087416. JMGS was financially supported by a Walter Benjamin Fellowship (Project number 528240618) from the DFG. TR was financially supported by a Research Grant for Doctoral Programmes by the DAAD (Deutscher Akademischer Austauschdienst).
 
@@ -411,6 +411,8 @@ SD and AST were funded by the DFG (Deutsche Forschungsgemeinschaft) as part of t
 #set page(columns: 1)
 ```
 # Supplementary Appendix
+
+<br> <br> <br>
 
 ## Why do birds use green nest material? A systematic review and meta-analysis of experiments
 
@@ -427,6 +429,54 @@ SD and AST were funded by the DFG (Deutsche Forschungsgemeinschaft) as part of t
 Journal: Proceedings of the Royal Society B
 
 DOI : 10.1098/rspb.2026-0777
+
+<br> <br> <br>
+
+## Index
+
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Item       | Figure/Table                     | Brief description                                                                                                  |
++============+==================================+====================================================================================================================+
+| Table S1   | PRISMA checklist                 | Completed PRISMA-EcoEvo reporting checklist.                                                                       |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S1  | PRISMA flowchart                 | The steps and number of studies included in the study identification, screening, exclusion, and inclusion process. |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S2  | Search-validation library        | Validation of the search strategy using 15 known relevant articles (initial library).                              |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S3  | Screening decision tree          | Inclusion and exclusion criteria used during screening.                                                            |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Table S2   | Fitness proxies                  | Fitness proxies included, excluded, or used only in sensitivity analyses.                                          |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Table S3   | Included studies                 | Published and unpublished studies included in the meta-analysis.                                                   |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S4  | Author email template            | Standardised email used to request missing or unpublished data.                                                    |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Text S1    | Unpublished studies              | Description of the two unpublished datasets included in the meta-analysis.                                         |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Text S2    | Extracted variables              | Details of all the variables recorded during data extraction.                                                      |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S5  | Random effects                   | Overlap among all possible random-effect terms.                                                                    |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Table S4   | Sampling-correlation sensitivity | Sensitivity of model estimates to assumed sampling correlations.                                                   |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Table S5   | Robustness checks                | Sensitivity analyses for the intercept-only models.                                                                |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S6  | Overall-effect plots             | Overall lnRR and SMD(H) estimates without axis cropping.                                                           |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S7  | Hypothesis models                | Moderator models comparing functional hypotheses.                                                                  |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S8  | Design and timing models         | Moderator models for experimental design and timing of GNM addition.                                               |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S9  | Additional moderator models      | Moderator models for parasite/pathogen type, bird species, and fitness proxy category.                             |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Table S6   | Risk-of-bias analyses            | Effects of blinding, random assignment, and partial reporting.                                                     |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Figure S10 | Publication-bias plots           | Small-study and decline-effect analyses.                                                                           |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Text S3    | Search information               | Search dates, databases, and complete search strings.                                                              |
++------------+----------------------------------+--------------------------------------------------------------------------------------------------------------------+
+
+<br> <br> <br>
 
 ## PRISMA Checklist
 
@@ -618,8 +668,6 @@ Completed PRISMA-EcoEvo Checklist [@odea2021]: This checklist shows how the syst
 |                                                       |                | 27.2                | List included studies as referenced sources (e.g., rather than listing them in a table or supplement)                                                                                                                                                                                                 | Yes                      | We have included all the studies in our meta-analysis within the text of the article in appropriate places.                                                                                                                                                                                                                                                                              |
 +-------------------------------------------------------+----------------+---------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-## PRISMA Flowchart
-
 ![PRISMA flowchart illustrating the steps and number of studies included in the systematic review and meta-analysis on green nest material and fitness outcomes.](figures/Prisma_Flowchart.png){#figsupp-prisma-flowchart fig-align="left" width="100%"}
 
 ## Initial library used for search validation
@@ -629,7 +677,9 @@ Completed PRISMA-EcoEvo Checklist [@odea2021]: This checklist shows how the syst
 ## Decision Tree
 
 ![**Decision tree used for screening studies during title--abstract and full-text screening process:**\
-The diagram illustrates the stepwise inclusion and exclusion criteria applied to each article during screenings. At each decision point, reviewers selected *include/uncertain* or *exclude*, following pre-registered criteria to ensure consistency.](figures/Decision_Tree_updated.png){#figsupp-decision-tree fig-align="left" width="80%"}
+The diagram illustrates the stepwise inclusion and exclusion criteria applied to each article during screenings. At each decision point, reviewers selected *include/uncertain* or *exclude*, following pre-registered criteria to ensure consistency.](figures/Decision_Tree_updated.png){#figsupp-decision-tree fig-align="left" width="90%"}
+
+<br> <br> <br>
 
 ## Fitness proxies included in or excluded from the meta-analysis
 
@@ -817,9 +867,11 @@ The diagram illustrates the stepwise inclusion and exclusion criteria applied to
 |                                                | WBC measures of Nestlings: 1(1)                       |                                                                                                                                                                                                                                                                                                                                                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 +------------------------------------------------+-------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+<br> <br> <br>
+
 ## Studies included in the meta-analysis
 
-::: {#figsupp-included-studies}
+::: {#tabsupp-included-studies}
 **Summary of all studies included in the meta-analysis**: For each study, the table reports the unique paper identifier used in this meta-analysis (**Paper ID**), the full article title (**Title**), the study authors (**Authors**), the journal in which the study was published (**Journal**), the publication year (**Year**), and the digital object identifier (**DOI**). The table includes both published studies and unpublished unpublished dataset and thesis.
 :::
 
@@ -883,6 +935,8 @@ The diagram illustrates the stepwise inclusion and exclusion criteria applied to
 | GNM_2_Unpublished | Aromatic plants in nests of blue tits (Cyanistes caeruleus)                                                                                               | Anna Pantazi                                                                                                                                | Master Thesis (Not peer-reviewed)                                         | 2024   | https://hdl.handle.net/11250/3172874 |
 +-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------+--------+--------------------------------------+
 
+<br> <br> <br>
+
 ## Standardized Email Template
 
 ![**Standardized email template sent to all the authors whose article was included in the meta-analysis**: In cases where we needed the incomplete information, the fitness proxies of interest were mentioned. In all cases, we requested for any unpublished experimental data that could be used for the purpose of our meta-analysis](images/standardized-email-template.png){#figsupp-email fig-align="left" width="80%"}
@@ -924,6 +978,8 @@ The following variables were provided in the dataset:
 This data was part of a Master thesis "**Aromatic plants in nests of blue tits (Cyanistes caeruleus)"** and all the details can be found at <https://hdl.handle.net/11250/3172874>.
 
 Data used for the meta-analysis can be found data/02_data_extraction/data_extraction_UnpublishedThesis.xlsx\
+
+<br> <br> <br>
 
 ## Complete List of Variables extracted from each study
 
