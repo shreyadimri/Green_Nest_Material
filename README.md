@@ -20,7 +20,7 @@ The repository is organized into separate folders for
 
 `data/`: contains all datasets used or produced throughout the workflow, including search records, screening files, extraction sheets, cleaned datasets, datasets used for analysis and sub-datasets used in all the models. Please read through Data description below to understand in more detail.
 
-`data_dictionaries/`: contains simple variable descriptions for the key processed datasets used in the workflow. These files provide short definitions, numbers of unique values, and missingness summaries for datasets the raw data \`dataset_after_cleaning.csv\`, and processed data \`dataset_analysis.csv\`.
+`data_dictionaries/`: contains simple variable descriptions for the key datasets used in the meta-analysis. These files provide short definitions, numbers of unique values, and missingness summaries for datasets the raw data \`dataset_after_cleaning.csv\`, and processed data \`dataset_analysis.csv\`.
 
 `figures/`: contains the manuscript and supplementary figures generated for the project.
 
@@ -84,7 +84,7 @@ The repository contains several intermediate data files generated during the wor
 
 - `data/03_data_cleaning/dataset_after_cleaning.csv`: cleaned dataset created after data cleaning. This is the cleaned extracted dataset used before effect-size preparation.
 
-- `data/04_data_analysis/dataset_analysis.csv`: complete analysis-ready dataset containing both effect-size types, sampling variances, signed effect sizes, random-effect identifiers and moderator variables.
+- `data/04_data_analysis/dataset_analysis.csv`: complete analysis dataset containing both effect-size types, sampling variances, random-effect identifiers and moderator variables.
 
 - `data/04_data_analysis/dataset_lnRR.csv`: analysis-ready dataset for models using the log response ratio effect size, lnRR, and its sampling variance.
 
@@ -103,16 +103,16 @@ data/
 │   │   Search-term development and validation files.
 │   │
 │   │   ├── litsearchr_search_terms.csv
-│   │   │   Candidate terms identified during search-term validation.
+│   │   │   Additional terms identified during search-term validation.
 │   │   │
 │   │   ├── own_library_references.csv
-│   │   │   Initial library of known relevant references.
+│   │   │   Initial library of known relevant references used for search validation.
 │   │   │
 │   │   ├── SCOPUS_search-query
-│   │   │   Final Scopus database search query.
+│   │   │   **Final Scopus database search query.**
 │   │   │
 │   │   └── WOS_search-query
-│   │       Final Web of Science database search query.
+│   │       **Final Web of Science database search query.**
 │   │
 │   ├── 02_reference_data/
 │   │   Imported records, pre-deduplication files, and unique
@@ -158,7 +158,7 @@ data/
 │   │
 │   ├── low_sample.csv
 │   │   Rows flagged for insufficient sample size during effect-size
-│   │   preparation.
+│   │   calculation.
 │   │
 │   └── dataset_after_cleaning.csv
 │       Cleaned extracted dataset used before effect-size
@@ -167,14 +167,14 @@ data/
 ├── 04_data_analysis/
 │   │
 │   ├── dataset_analysis.csv
-│   │   Complete analysis-ready dataset with both effect-size types (lnRR and SMDH).
-│   │   This is the complete processed data for this study.
+│   │   Complete dataset for analysis with both effect-size types (lnRR and SMDH).
+│   │   This is the processed data for this study.
 │   │
 │   ├── dataset_lnRR.csv
-│   │   Analysis-ready dataset for the lnRR models.
+│   │   Dataset ready for analysis for the lnRR models.
 │   │
 │   ├── dataset_SMDH.csv
-│   │   Analysis-ready dataset for the SMD(H) models.
+│   │   Dataset ready for analysis for the SMD(H) models.
 │   │
 │   ├── intercept_*.csv
 │   │   Datasets used for intercept-only models.
@@ -243,7 +243,7 @@ data/
 
 ### LICENSE
 
-This repository contains both analysis code and research materials. The code may be reused, modified, and redistributed under the terms of the MIT License, while the research materials may be reused and adapted with appropriate attribution.
+This repository contains both analysis code and research materials. The code may be reused, modified, and redistributed under the terms of the MIT License, while the research materials may be reused and adapted with appropriate attribution according to **CC BY-NC 4.0**.
 
 **Code** in the \`code/\` and \`functions/\` folders is released under the **MIT License**.\
 \
@@ -253,21 +253,16 @@ This repository contains both analysis code and research materials. The code may
 
 ### AUTHOR CONTRIBUTIONS
 
-This repository was created and is maintained by **Shreya Dimri**. Shreya Dimri
-organized the repository structure, curated and documented the data files,
-prepared the analysis scripts, generated the reproducible workflow, and wrote
-the repository documentation.
+This repository was created and is maintained by **Shreya Dimri**. Shreya Dimri organized the repository structure, curated and documented the data files, prepared the analysis scripts, generated the reproducible workflow, and wrote the repository documentation.
 
-**Meinolf Ottensmann** validated the repository code by checking and running the
-analysis workflow and reviewing code reproducibility.
+**Meinolf Ottensmann** validated the repository code by checking and running the analysis workflow and reviewing code reproducibility.
 
-For author contributions to the associated manuscript, see the complete CRediT
-statement:
+For author contributions to the associated manuscript, see the complete CRediT statement:
 
-**Shreya Dimri:** Conceptualisation, Data curation, Formal analysis, Investigation (lead), Methodology, Project administration, Software, Validation, Visualization, Writing - original draft (lead), review & editing; \
-**Tuba Rizvi:** Conceptualisation, Investigation (equal), Writing - review & editing; \
-**Júlio M.G. Segovia:** Conceptualisation, Investigation (equal), Writing - review & editing; \
-**Meinolf Ottensmann:** Investigation (supporting), Validation; \
+**Shreya Dimri:** Conceptualisation, Data curation, Formal analysis, Investigation (lead), Methodology, Project administration, Software, Validation, Visualization, Writing - original draft (lead), review & editing;\
+**Tuba Rizvi:** Conceptualisation, Investigation (equal), Writing - review & editing;\
+**Júlio M.G. Segovia:** Conceptualisation, Investigation (equal), Writing - review & editing;\
+**Meinolf Ottensmann:** Investigation (supporting), Validation;\
 **Alfredo Sánchez-Tójar:** Conceptualisation, Funding acquisition, Methodology, Supervision, Writing - original draft (supporting), review & editing
 
 ### CONTACT
