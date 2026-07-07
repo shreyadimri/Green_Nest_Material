@@ -46,7 +46,7 @@ pacman::p_load(
 
 For the purpose of this map, longitude and latitude of the study area manually added to the dataset. They are saved to `dataset_analysis$population_location` as they were extracted from the respective papers. If not provided by the authors, a general location was manually selected. Note, coordinates are used for visualising only.
 
-- Load datasets
+-   Load datasets
 
 ```{r location-map}
 ## Load data for plotting a location map
@@ -847,7 +847,7 @@ ggsave(here::here("figures/Figure_design_time_gnm_addition.png"),
        plot = Figure_design_time_gnm_addition, height = 240, width = 250, units = "mm", dpi = 600)
 ```
 
-- Now the cropped figures for the main manuscript
+-   Now the cropped figures for the main manuscript
 
 ```{r SMDH_design_plot_cropped}
 ## I am going to remove the y ticks from the SMDH plots to make it smaller..

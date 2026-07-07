@@ -9,7 +9,7 @@ output: html_document
 
 ### Setting up the workspace
 
-- Install and load required packages
+-   Install and load required packages
 
 ```{r setup, warning=FALSE, message=FALSE}
 ## Setting up workspace using pacman
@@ -2256,7 +2256,7 @@ write.csv(dataset_SMDH,here::here("data/04_data_analysis/SMDH_missing_data.csv")
 ```{r}
 dataset_lnRR_published <- dataset_lnRR_published %>%
   mutate(effective_n_inv = 
-           1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control))) %>%
+           1/((effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control))) %>%
   mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
 
 lnRR_small_study <- metafor::rma.mv(
@@ -2291,7 +2291,7 @@ round(r2_ml(lnRR_small_study)*100,2)
 
 dataset_SMDH_published <- dataset_SMDH_published %>%
   mutate(effective_n_inv = 
-           1/((4*effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control))) %>%
+           1/((effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control))) %>%
   mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
 
 SMDH_small_study <- metafor::rma.mv(
@@ -2320,6 +2320,34 @@ saveRDS(SMDH_small_study, file = here::here("model/SMDH_small_study.rds"))
 ```{r}
 summary(SMDH_small_study)
 round(r2_ml(SMDH_small_study)*100,2)
+```
+
+```{r}
+## Now for SMDH model
+
+dataset_SMDH <- dataset_SMDH %>%
+  mutate(effective_n_inv = 
+           1/((effective_n_experiment*effective_n_control)/(effective_n_experiment+effective_n_control))) %>%
+  mutate(sqrt_effective_n_inv=sqrt(effective_n_inv))
+
+SMDH_small_study2 <- metafor::rma.mv(
+  yi = SMDH_sign, # specify SMDH as the effect size measure;
+  V = VCV_SMDH,# specify SMDH's sampling variance;
+  mods = ~sqrt_effective_n_inv,
+  random = list(~ 1 | paper_ID,
+                ~ 1 | Observation_ID,
+                ~ 1 | group_ID_coded,
+                ~ 1 | population_ID,
+                ~ 1 | bird_species),
+  method = "REML",
+  test = "t",
+  control = list(optimizer="optim"),
+  data = dataset_SMDH)
+
+summary(SMDH_small_study2)
+
+# saving the model
+saveRDS(SMDH_small_study2, file = here::here("model/SMDH_small_study2.rds"))
 ```
 
 ## Decline effects (Time lag bias)
